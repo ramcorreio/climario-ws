@@ -10,6 +10,12 @@
 		<description>Loader for Spring Context</description>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
+	
+	 <context-param>
+		<param-name>contextConfigLocation</param-name>
+        <param-value>WEB-INF/app-context*.xml</param-value>
+	</context-param>
+	
 
 	<!-- <servlet>
         <servlet-name>Jersey Web Application</servlet-name>
@@ -46,7 +52,7 @@
 		<param-value>none</param-value>
 	</context-param>
 	
-	<context-param>
+	<!-- <context-param>
     	<param-name>javax.faces.FACELETS_LIBRARIES</param-name>
     	<param-value>/WEB-INF/springsecurity.taglib.xml</param-value>
 	</context-param>
@@ -59,12 +65,13 @@
 	<filter-mapping>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+	</filter-mapping> -->
 
 	<filter>
     	<filter-name>PrimeFaces FileUpload Filter</filter-name>
     	<filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
 	</filter>
+	
 	<filter-mapping>
 	    <filter-name>PrimeFaces FileUpload Filter</filter-name>
 	    <servlet-name>Faces Servlet</servlet-name>
@@ -82,7 +89,7 @@
 	</servlet-mapping>
 
 	<welcome-file-list>
-		<welcome-file>pages/home.jsf</welcome-file>
+		<welcome-file>pages/index.jsf</welcome-file>
 	</welcome-file-list>
 
 	<!-- web fonts -->
@@ -117,7 +124,7 @@
 
 	<servlet>
 		<servlet-name>errorServlet</servlet-name>
-		<servlet-class>com.senfio.monitore.util.ErrorController</servlet-class>
+		<servlet-class>br.com.climario.integracao.ErrorController</servlet-class>
 	</servlet>	
 	<servlet-mapping>
 		<servlet-name>errorServlet</servlet-name>
