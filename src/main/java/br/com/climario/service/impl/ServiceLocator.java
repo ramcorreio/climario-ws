@@ -40,7 +40,7 @@ public class ServiceLocator {
 		return INSTANCE;
 	}
 
-	public IPedidoService getPedidoSerice() {
+	public IPedidoService getPedidoService() {
 
 		return (IPedidoService) applicationContext.getBean("pedidoService");
 	}
