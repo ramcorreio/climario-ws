@@ -1,5 +1,9 @@
 package br.com.climario.service;
 
-public class IPedidoService {
+import br.com.climario.dominio.Pedido;
+
+public interface IPedidoService {
+	
+	public Pedido criar(Pedido pedido);
 
 }
