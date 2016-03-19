@@ -1,16 +1,24 @@
 package br.com.climario.dominio;
 
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Embeddable
 public class ItemPedido {
 
+	@NotNull
 	private String codigo;
 
+	@NotNull
 	private String descricao;
 
+	@NotNull
 	private Integer qtd;
 
+	@NotNull
+	@NotEmpty
 	private Double precoUnitario;
 
 	public String getCodigo() {

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.climario.dominio.Cliente;
+import br.com.climario.dominio.ItemPedido;
 import br.com.climario.dominio.Pedido;
 import br.com.climario.persistence.BaseManager;
 import br.com.climario.service.IPedidoService;
@@ -21,6 +22,13 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService {
 	@Transactional(value="climarioTM", readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public Pedido criar(Pedido pedido) {
 	
+		for (ItemPedido item : pedido.getItens()) {
+			
+			if(item.getQtd() <= 0 || item.getPrecoUnitario() < 0 ) {
+				throw new IllegalArgumentException("item: " + item.getCodigo());
+			}
+		}
+		
 		create(pedido);
 		return pedido;
 	}

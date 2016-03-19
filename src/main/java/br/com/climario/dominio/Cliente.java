@@ -26,7 +26,7 @@ public class Cliente {
 
 	private String nome;
 
-	/*@OneToMany(fetch = FetchType.LAZY)
+	/*@OneToMany(fetch=FetchType.LAZY, orphanRemoval = true)
 	private List<Pedido> pedidos = new ArrayList<>();*/
 
 	public Long getId() {
@@ -53,7 +53,7 @@ public class Cliente {
 		this.nome = nome;
 	}
 
-/*	public List<Pedido> getPedidos() {
+	/*public List<Pedido> getPedidos() {
 		return pedidos;
 	}
 

@@ -1,14 +1,19 @@
 package br.com.climario.integracao;
 
+import java.util.Calendar;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,15 +35,22 @@ public class WebServicePedido {
     @Produces(MediaType.APPLICATION_JSON)
 	public Pedido enviar(Pedido pedido) {
 		
-		_logger.info("processando pedido: " + pedido.getNumero());
-		if(!pedidoService.isClienteExiste(pedido.getCliente().getCodigo())) {
-			pedido.setCliente(pedidoService.criarCliente(pedido.getCliente()));
+		try {
+			_logger.info("processando pedido: " + pedido.getNumero());
+			if(!pedidoService.isClienteExiste(pedido.getCliente().getCodigo())) {
+				pedido.setCliente(pedidoService.criarCliente(pedido.getCliente()));
+			}
+			else {
+				pedido.setCliente(pedidoService.recuperarCliente(pedido.getCliente().getCodigo()));
+			}
+			
+			//pedido.setCriacao(Calendar.getInstance().getTime());
+			return pedidoService.criar(pedido);
 		}
-		else {
-			pedido.setCliente(pedidoService.recuperarCliente(pedido.getCliente().getCodigo()));
+		catch(RuntimeException e) {
+			
+			throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build());
 		}
-		
-		return pedidoService.criar(pedido);
 	}
 	
 	@Path("pedidos/{idCliente}")
@@ -47,10 +59,16 @@ public class WebServicePedido {
     @Produces(MediaType.APPLICATION_JSON)
 	public List<Pedido> listar(@PathParam("idCliente") String idCliente) {
 		
-		System.out.println("cliente: " + idCliente);
-		List<Pedido>  pedidos = pedidoService.listarPedidosPorCliente(idCliente);
-		_logger.info("pedidos encontrados: " + pedidos.size());
-		System.out.println(pedidos);
-		return pedidos;
+		try {
+			
+			List<Pedido>  pedidos = pedidoService.listarPedidosPorCliente(idCliente);
+			_logger.info("pedidos encontrados: " + pedidos.size());
+			System.out.println(pedidos);
+			return pedidos;
+		}
+		catch(RuntimeException e) {
+			
+			throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build());
+		}
 	}
 }
