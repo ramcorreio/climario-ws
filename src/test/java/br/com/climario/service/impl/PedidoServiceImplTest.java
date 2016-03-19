@@ -1,5 +1,7 @@
 package br.com.climario.service.impl;
 
+import java.util.List;
+
 import org.exparity.hamcrest.BeanMatchers;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -69,5 +71,45 @@ public class PedidoServiceImplTest {
 		MatcherAssert.assertThat(pedidoService.isClienteExiste(c.getCodigo()), Matchers.is(Matchers.equalTo(true)));
 		MatcherAssert.assertThat(pedidoService.recuperarCliente(c.getCodigo()), BeanMatchers.theSameAs(c));
 	}
+	
+	@Test
+	public void pedidosPorCliente() {
+		
+		Cliente c = new Cliente();
+		c.setNome("Cliente de Teste Final");
+		c.setCodigo("07828359711");
+		c = pedidoService.criarCliente(c);
+		
 
+		Pedido pedido1 = new Pedido();
+		pedido1.setCliente(c);
+		pedido1.setNumero("3298433");
+		pedidoService.criar(pedido1);
+		
+		Pedido pedido2 = new Pedido();
+		pedido2.setCliente(c);
+		pedido2.setNumero("3298434");
+		pedidoService.criar(pedido2);
+		
+		Pedido pedido3 = new Pedido();
+		pedido3.setCliente(c);
+		pedido3.setNumero("3298435");
+		pedidoService.criar(pedido3);
+		
+		List<Pedido> pedidos = pedidoService.listarPedidosPorCliente(c.getCodigo());
+		
+		MatcherAssert.assertThat(pedidos.size(), Matchers.greaterThan(2));
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void pedidosPorClienteCodigoEmpty() {
+		
+		pedidoService.listarPedidosPorCliente("");
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void pedidosPorClienteCodigoNull() {
+		
+		pedidoService.listarPedidosPorCliente(null);
+	}
 }

@@ -15,22 +15,21 @@
 		<param-name>contextConfigLocation</param-name>
         <param-value>WEB-INF/app-context*.xml</param-value>
 	</context-param>
-	
 
-	<!-- <servlet>
+	<servlet>
         <servlet-name>Jersey Web Application</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>com.senfio.coletor.http</param-value>
+            <param-value>br.com.climario.integracao</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
-    </servlet> -->
+    </servlet>
 
-    <!-- <servlet-mapping>
+    <servlet-mapping>
         <servlet-name>Jersey Web Application</servlet-name>
         <url-pattern>/api/*</url-pattern>
-    </servlet-mapping> -->
+    </servlet-mapping>
 
 	<!-- <context-param>
 		<param-name>contextConfigLocation</param-name>

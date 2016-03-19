@@ -14,7 +14,7 @@ import br.com.climario.service.IPedidoService;
  */
 public class ServiceLocator {
 
-	private static ServiceLocator INSTANCE;
+	private static ServiceLocator INSTANCE = new ServiceLocator();
 
 	@Autowired
 	private ApplicationContext applicationContext;
@@ -28,14 +28,6 @@ public class ServiceLocator {
 	 * @return A instância local
 	 */
 	public static ServiceLocator getInstance() {
-
-		//synchronized (INSTANCE) {
-
-			if (INSTANCE == null) {
-
-				INSTANCE = new ServiceLocator();
-			}
-		//}
 
 		return INSTANCE;
 	}

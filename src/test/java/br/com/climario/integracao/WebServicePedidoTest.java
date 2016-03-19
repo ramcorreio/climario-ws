@@ -1,15 +1,8 @@
 package br.com.climario.integracao;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
+import java.util.List;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
@@ -21,8 +14,6 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -55,7 +46,7 @@ public class WebServicePedidoTest extends JerseyTest {
     }
     
     @Test
-    public void postPedido() {
+    public void putPedido() {
         
     	Cliente c = new Cliente();
     	c.setCodigo("90283129830912");
@@ -69,58 +60,35 @@ public class WebServicePedidoTest extends JerseyTest {
         MatcherAssert.assertThat(rtw, Matchers.notNullValue());
         MatcherAssert.assertThat(rtw.getId(), Matchers.notNullValue());
         MatcherAssert.assertThat(rtw.getNumero(), Matchers.is(Matchers.equalTo(p.getNumero())));
-        //Assert.assertEquals("velho-mac", rtw.getLastMac());
-        //Assert.assertEquals("velho-serial-update", rtw.getLastSerial());
-        ///Assert.assertEquals(ModeloTag.STB1, rtw.getValue().getModelo());
-        //Assert.assertEquals(IntegratioTag.Operation.UPDATE, rtw.getOperation());
     }
     
     @Test
-    @Ignore
-    public void postPedidoText() throws UnknownHostException, IOException {
+    public void putPedidoText() throws UnknownHostException, IOException {
         
-    	Cliente c = new Cliente();
-    	c.setCodigo("90283129830912");
-    	c.setNome("Teste Ws");
+    	String input = "{\"numero\":\"93824094\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"}}";
+        
+    	Pedido rtw = target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input), Pedido.class);
+    	            
+        MatcherAssert.assertThat(rtw, Matchers.notNullValue());
+        MatcherAssert.assertThat(rtw.getId(), Matchers.notNullValue());
+        MatcherAssert.assertThat(rtw.getNumero(), Matchers.is(Matchers.equalTo("93824094")));
+    }
+    
+    @Test
+    public void getPedidoPorCliente() throws UnknownHostException, IOException {
+        
+    	String input1 = "{\"numero\":\"93824095\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"}}";
+    	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input1), Pedido.class);
     	
-        Pedido p = new Pedido();
-        p.setNumero("93824093");
-        p.setCliente(c);
-        
-        
-        SocketChannel socketChannel = SocketChannel.open();
-        socketChannel.connect(new InetSocketAddress("localhost", 9998));
-        //socketChannel.configureBlocking(false);
-        
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(baos);
-        ps.println("PUT /pedido-ws/enviar");
-        ps.println("Accept: application/json");
-        ps.println("Content-Type: application/json");
-        ps.println("{\"numero\":\"93824093\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"}}");
-        ps.close();
-        
-        ByteBuffer buf = ByteBuffer.allocate(2048);
-        buf.clear();
-        buf.put(baos.toByteArray());
-        buf.flip();
-        
-        while(buf.hasRemaining()) {
-            socketChannel.write(buf);
-        }
-        
-        buf = ByteBuffer.allocate(2048);
-        int bytesRead = socketChannel.read(buf);
-        socketChannel.close();
-        System.out.println(new String(buf.array()));
-        //final Pedido rtw = target().path("pedido-ws").path("enviar").request().equest(MediaType.APPLICATION_JSON).build("PUT").put(Entity.json(p), Pedido.class);
-        //MatcherAssert.assertThat(rtw, Matchers.notNullValue());
-        //MatcherAssert.assertThat(rtw.getId(), Matchers.notNullValue());
-        //MatcherAssert.assertThat(rtw.getNumero(), Matchers.is(Matchers.equalTo(p.getNumero())));
-        //Assert.assertEquals("velho-mac", rtw.getLastMac());
-        //Assert.assertEquals("velho-serial-update", rtw.getLastSerial());
-        ///Assert.assertEquals(ModeloTag.STB1, rtw.getValue().getModelo());
-        //Assert.assertEquals(IntegratioTag.Operation.UPDATE, rtw.getOperation());
-       Assert.fail();
+    	String input2 = "{\"numero\":\"93824096\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"}}";
+    	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input2), Pedido.class);
+    	
+    	String input3 = "{\"numero\":\"93824097\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"}}";
+    	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input3), Pedido.class);
+    	
+    	
+    	List<Pedido> pedidos = target().path("pedido-ws").path("pedidos").path("90283129830912").request(MediaType.APPLICATION_JSON).get(List.class);
+    	MatcherAssert.assertThat(pedidos.size(), Matchers.greaterThan(2));
+    	
     }
 }

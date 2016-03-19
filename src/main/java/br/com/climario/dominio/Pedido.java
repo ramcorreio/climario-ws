@@ -1,15 +1,19 @@
 package br.com.climario.dominio;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
 @Entity
+@NamedQueries({ 
+    @NamedQuery(name = "Pedido.por.cliente", query = "select p from Pedido p where p.cliente.codigo = :codigo")
+})
 public class Pedido {
 	
 	@Id
@@ -17,6 +21,7 @@ public class Pedido {
 	private Long id;
 
 	@NotNull
+	@Column(unique = true)
 	private String numero;
 	
 	/*private String filial;
