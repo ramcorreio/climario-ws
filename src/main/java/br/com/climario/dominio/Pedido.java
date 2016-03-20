@@ -44,7 +44,7 @@ public class Pedido {
 	@XmlJavaTypeAdapter(DateAdapter.class)
 	private Date criacao;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@NotNull
 	private Cliente cliente;
 	
@@ -52,7 +52,7 @@ public class Pedido {
 	
 	private String descricaoPlanoPagamento;*/
 	
-	@ElementCollection(fetch=FetchType.LAZY)
+	@ElementCollection(fetch=FetchType.EAGER)
 	@CollectionTable(uniqueConstraints= @UniqueConstraint(columnNames={"pedido_id","codigo"}))
     @NotEmpty()
     @Size(min=1)

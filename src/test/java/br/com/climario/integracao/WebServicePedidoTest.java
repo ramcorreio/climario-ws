@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
 import org.glassfish.jersey.server.ResourceConfig;
@@ -32,8 +33,8 @@ public class WebServicePedidoTest extends JerseyTest {
     private static class MyResourceConfig extends ResourceConfig {
         
         public MyResourceConfig() {
-            final Resource.Builder resourceBuilder = Resource.builder(WebServicePedido.class);
-     
+        	
+            final Resource.Builder resourceBuilder = Resource.builder(WebServicePedido.class);     
             final Resource resource = resourceBuilder.build();
             registerResources(resource);
         }
@@ -43,9 +44,7 @@ public class WebServicePedidoTest extends JerseyTest {
         enable(TestProperties.LOG_TRAFFIC);
         enable(TestProperties.DUMP_ENTITY);
                 
-        MyResourceConfig config = new MyResourceConfig();
-        
-        return config;
+        return new MyResourceConfig();
     }
     
     @Test
@@ -84,17 +83,16 @@ public class WebServicePedidoTest extends JerseyTest {
     @Test
     public void getPedidoPorCliente() throws UnknownHostException, IOException {
         
-    	String input1 = "{\"numero\":\"93824095\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"}}";
+    	String input1 = "{\"numero\":\"93824095\",\"criacao\":\"2016-03-18 00:00:00\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"},\"itens\":[{\"codigo\":\"2\",\"descricao\":\"Descrição 2\",\"qtd\":6,\"precoUnitario\":1.9320663346223177},{\"codigo\":\"1\",\"descricao\":\"Descrição 1\",\"qtd\":2,\"precoUnitario\":8.83666440420624}]}";
     	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input1), Pedido.class);
     	
-    	String input2 = "{\"numero\":\"93824096\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"}}";
+    	String input2 = "{\"numero\":\"93824096\",\"criacao\":\"2016-03-18 00:00:00\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"},\"itens\":[{\"codigo\":\"2\",\"descricao\":\"Descrição 2\",\"qtd\":2,\"precoUnitario\":1.9320663346223177},{\"codigo\":\"1\",\"descricao\":\"Descrição 1\",\"qtd\":3,\"precoUnitario\":8.83666440420624}]}";
     	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input2), Pedido.class);
     	
-    	String input3 = "{\"numero\":\"93824097\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"}}";
+    	String input3 = "{\"numero\":\"93824097\",\"criacao\":\"2016-03-18 00:00:00\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"},\"itens\":[{\"codigo\":\"2\",\"descricao\":\"Descrição 2\",\"qtd\":1,\"precoUnitario\":1.9320663346223177},{\"codigo\":\"1\",\"descricao\":\"Descrição 1\",\"qtd\":1,\"precoUnitario\":8.83666440420624}]}";
     	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input3), Pedido.class);
     	
-    	
-    	List<Pedido> pedidos = target().path("pedido-ws").path("pedidos").path("90283129830912").request(MediaType.APPLICATION_JSON).get(List.class);
+    	List<Pedido> pedidos = target().path("pedido-ws").path("pedidos").path("90283129830912").request(MediaType.APPLICATION_JSON).get(new GenericType<List<Pedido>>() {});
     	MatcherAssert.assertThat(pedidos.size(), Matchers.greaterThan(2));
     	
     }
