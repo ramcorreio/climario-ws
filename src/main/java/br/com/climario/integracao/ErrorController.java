@@ -18,20 +18,20 @@ public class ErrorController extends HttpServlet {
 		request.setAttribute("statusCode", statusCode);
 
 		switch (statusCode) {
-		case HttpServletResponse.SC_NOT_FOUND:
-
-			request.setAttribute("description", "Desculpe, mas esta página não existe!");
-			request.setAttribute("subDescription", "Gostaria de voltar ao <a href='home.jsf'>início</a>?");
-			break;
-
-		case HttpServletResponse.SC_INTERNAL_SERVER_ERROR:
-
-			request.setAttribute("description", "Não se preocupe, há um pouco de turbulência!");
-			request.setAttribute("subDescription", "Estamos trabalhando para corrigí-lo, por favor, tente mais tarde.");
-			break;
-
-		default:
-			break;
+			case HttpServletResponse.SC_NOT_FOUND:
+	
+				request.setAttribute("description", "Desculpe, mas esta página não existe!");
+				request.setAttribute("subDescription", "Gostaria de voltar ao <a href='"+ request.getContextPath() + "'>início</a>?");
+				break;
+	
+			case HttpServletResponse.SC_INTERNAL_SERVER_ERROR:
+	
+				request.setAttribute("description", "Não se preocupe, há um pouco de turbulência!");
+				request.setAttribute("subDescription", "Estamos trabalhando para corrigí-lo, por favor, tente mais tarde.");
+				break;
+	
+			default:
+				break;
 		}
 
 		RequestDispatcher requestDispatcher = request.getRequestDispatcher("/error/error.jsp");

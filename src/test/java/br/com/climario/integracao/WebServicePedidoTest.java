@@ -92,7 +92,7 @@ public class WebServicePedidoTest extends JerseyTest {
     	String input3 = "{\"numero\":\"93824097\",\"criacao\":\"2016-03-18 00:00:00\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"},\"itens\":[{\"codigo\":\"2\",\"descricao\":\"Descrição 2\",\"qtd\":1,\"precoUnitario\":1.9320663346223177},{\"codigo\":\"1\",\"descricao\":\"Descrição 1\",\"qtd\":1,\"precoUnitario\":8.83666440420624}]}";
     	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input3), Pedido.class);
     	
-    	List<Pedido> pedidos = target().path("pedido-ws").path("pedidos").path("90283129830912").request(MediaType.APPLICATION_JSON).get(new GenericType<List<Pedido>>() {});
+    	List<Pedido> pedidos = target().path("pedido-ws").path("pedidos").queryParam("idCliente", "90283129830912").request(MediaType.APPLICATION_JSON).get(new GenericType<List<Pedido>>() {});
     	MatcherAssert.assertThat(pedidos.size(), Matchers.greaterThan(2));
     	
     }

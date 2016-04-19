@@ -6,8 +6,8 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -20,7 +20,7 @@ import br.com.climario.dominio.Pedido;
 import br.com.climario.service.IPedidoService;
 import br.com.climario.service.impl.ServiceLocator;
 
-@Path("pedido-ws")
+@Path("/pedido-ws")
 public class WebServicePedido {
 	
 	private static Logger _logger = LoggerFactory.getLogger(WebServicePedido.class);
@@ -51,11 +51,11 @@ public class WebServicePedido {
 		}
 	}
 	
-	@Path("pedidos/{idCliente}")
+	@Path("pedidos")
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-	public List<Pedido> listar(@PathParam("idCliente") String idCliente) {
+	public List<Pedido> listar(@QueryParam("idCliente") String idCliente) {
 		
 		try {
 			

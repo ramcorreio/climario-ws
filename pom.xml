@@ -15,7 +15,7 @@
 		<build.id>LOCAL</build.id>
 
 		<jersey.version>2.17</jersey.version>
-		<jersey-media-json-jackson.version>2.22.2</jersey-media-json-jackson.version>
+		<!-- <jersey-media-json-jackson.version>2.22.2</jersey-media-json-jackson.version> -->
 
 		<h2.version>1.3.172</h2.version>
 		<glassfish.version>2.2.6</glassfish.version>
@@ -100,7 +100,7 @@
 			<version>${easymock.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
@@ -280,6 +280,15 @@
 		</dependency>
 	</dependencies>
 
+	<pluginRepositories>
+		<pluginRepository>
+			<id>codehaus-mule-repo</id>
+			<name>codehaus-mule-repo</name>
+			<url>https://repository-master.mulesoft.org/nexus/content/groups/public</url>
+			<layout>default</layout>
+		</pluginRepository>
+	</pluginRepositories>
+
 
 	<build>
 		<resources>
@@ -317,8 +326,8 @@
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.sonar</groupId>
-					<artifactId>sonar-maven3-plugin</artifactId>
-					<version>4.5.4</version>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>5.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -352,7 +361,7 @@
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.sonar</groupId>
-				<artifactId>sonar-maven3-plugin</artifactId>
+				<artifactId>sonar-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
