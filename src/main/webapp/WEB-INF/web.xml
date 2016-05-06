@@ -23,6 +23,11 @@
             <param-name>jersey.config.server.provider.packages</param-name>
             <param-value>br.com.climario.integracao</param-value>
         </init-param>
+        <init-param>
+            <param-name>jersey.config.server.monitoring.statistics.enabled</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        
         <load-on-startup>1</load-on-startup>
     </servlet>
 

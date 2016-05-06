@@ -1,5 +1,6 @@
 package br.com.climario.integracao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.primefaces.util.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +33,7 @@ public class WebServicePedido {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-	public Pedido enviar(Pedido pedido) {
+	public PedidoRequest enviar(PedidoRequest pedido) {
 		
 		try {
 			_logger.info("processando pedido: " + pedido.getNumero());
@@ -42,8 +44,15 @@ public class WebServicePedido {
 				pedido.setCliente(pedidoService.recuperarCliente(pedido.getCliente().getCodigo()));
 			}
 			
-			//pedido.setCriacao(Calendar.getInstance().getTime());
-			return pedidoService.criar(pedido);
+			Pedido p = new Pedido();
+			p.setNumero(pedido.getNumero());
+			p.setCriacao(pedido.getCriacao());
+			p.setCliente(pedido.getCliente());
+			
+			pedidoService.criar(p);
+			
+			pedido.setId(p.getId());
+			return pedido; 
 		}
 		catch(RuntimeException e) {
 			
@@ -55,14 +64,23 @@ public class WebServicePedido {
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-	public List<Pedido> listar(@QueryParam("idCliente") String idCliente) {
+	public List<PedidoRequest> listar(@QueryParam("idCliente") String idCliente) {
 		
 		try {
 			
+			List<PedidoRequest> rs = new ArrayList<>();
 			List<Pedido>  pedidos = pedidoService.listarPedidosPorCliente(idCliente);
+			for (Pedido pedido : pedidos) {
+				PedidoRequest p = new PedidoRequest();
+				p.setId(pedido.getId());
+				p.setNumero(pedido.getNumero());
+				p.setCriacao(pedido.getCriacao());
+				p.setCliente(pedido.getCliente());
+				rs.add(p);
+			}
+			
 			_logger.info("pedidos encontrados: " + pedidos.size());
-			System.out.println(pedidos);
-			return pedidos;
+			return rs;
 		}
 		catch(RuntimeException e) {
 			

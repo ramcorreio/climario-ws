@@ -1,0 +1,50 @@
+PUT /climario/api/pedido-ws/enviar
+Host: localhost:8080
+Content-Length: 285
+Content-Type: application/json
+Connection: close
+
+{"numero":"93824094","criacao":"2016-03-18 00:00:00","cliente":{"codigo":"90283129830912","nome":"Teste Ws"},"itens":[{"codigo":"2","descricao":"Descrição 2","qtd":8,"precoUnitario":1.9320663346223177},{"codigo":"1","descricao":"Descrição 1","qtd":6,"precoUnitario":8.83666440420624}]}
+
+
+
+PUT /climario/api/pedido-ws/enviar
+Host: localhost:8080
+Content-Length: 197
+Content-Type: application/json
+Connection: close
+
+{"numero":93824094,"criacao":"2016-03-18 00:00:00","cliente":{"codigo":90283129830912,"nome":"Teste Ws"},"itens":[{"codigo":2,"descricao":"Descrição 2","qtd":8,"precoUnitario":1.9320663346223177}]}
+
+
+PUT /climario/api/pedido-ws/enviar
+Host: localhost:8080
+Content-Length: 285
+Accept: application/json
+Content-Type: application/json
+Connection: close
+
+{"numero":"93824094","criacao":"2016-03-18 00:00:00","cliente":{"codigo":"90283129830912","nome":"Teste Ws"},"itens":[{"codigo":"2","descricao":"Descrição 2","qtd":8,"precoUnitario":1.9320663346223177},{"codigo":"1","descricao":"Descrição 1","qtd":6,"precoUnitario":8.83666440420624}]}
+
+
+
+
+PUT /climario/api/pedido-ws/enviar
+Host: localhost:8080
+Content-Length: 21
+Accept: application/json
+Content-Type: application/json
+Connection: close
+
+{"numero":"93824094"}
+
+{"codigo":"2","descricao":"Descrição 2","qtd":8,"precoUnitario":1.9320663346223177}
+
+PUT /climario/api/pedido-ws/enviar
+Host: localhost:8080
+Content-Length: 109
+Accept: application/json
+Content-Type: application/json
+Connection: close
+
+{"numero":"93824094","criacao":"2016-03-18 00:00:00","cliente":{"codigo":"90283129830912","nome":"Teste Ws"},"itens": [{"codigo":"2","descricao":"Descrição 2","qtd":8,"precoUnitario":1.9320663346223177}]}
