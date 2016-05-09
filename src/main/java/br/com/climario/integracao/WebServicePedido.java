@@ -14,7 +14,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.primefaces.util.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +32,7 @@ public class WebServicePedido {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-	public PedidoRequest enviar(PedidoRequest pedido) {
+	public Pedido enviar(Pedido pedido) {
 		
 		try {
 			_logger.info("processando pedido: " + pedido.getNumero());
@@ -44,14 +43,9 @@ public class WebServicePedido {
 				pedido.setCliente(pedidoService.recuperarCliente(pedido.getCliente().getCodigo()));
 			}
 			
-			Pedido p = new Pedido();
-			p.setNumero(pedido.getNumero());
-			p.setCriacao(pedido.getCriacao());
-			p.setCliente(pedido.getCliente());
+			pedidoService.criar(pedido);
 			
-			pedidoService.criar(p);
-			
-			pedido.setId(p.getId());
+			//pedido.setId(p.getId());
 			return pedido; 
 		}
 		catch(RuntimeException e) {
@@ -64,14 +58,14 @@ public class WebServicePedido {
     @GET
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-	public List<PedidoRequest> listar(@QueryParam("idCliente") String idCliente) {
+	public List<Pedido> listar(@QueryParam("idCliente") String idCliente) {
 		
 		try {
 			
-			List<PedidoRequest> rs = new ArrayList<>();
+			List<Pedido> rs = new ArrayList<>();
 			List<Pedido>  pedidos = pedidoService.listarPedidosPorCliente(idCliente);
 			for (Pedido pedido : pedidos) {
-				PedidoRequest p = new PedidoRequest();
+				Pedido p = new Pedido();
 				p.setId(pedido.getId());
 				p.setNumero(pedido.getNumero());
 				p.setCriacao(pedido.getCriacao());

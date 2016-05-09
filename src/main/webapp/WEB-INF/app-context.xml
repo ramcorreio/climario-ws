@@ -8,7 +8,7 @@
         http://www.springframework.org/schema/jee/spring-jee.xsd">    
     
     <bean id="propsLocation" class="java.lang.String">
-        <constructor-arg value="WEB-INF/climario.local.properties"/>
+        <constructor-arg value="file:${user.home}/climario.local.properties"/>
     </bean>
     
     <import resource="classpath:climario-service-context.xml"/>

@@ -1,8 +1,12 @@
 package br.com.climario.dominio;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -11,8 +15,12 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 import br.com.climario.integracao.DateAdapter;
 
@@ -38,11 +46,11 @@ public class Pedido {
 	@NotNull
 	private Cliente cliente;
 	
-	/*@ElementCollection(fetch=FetchType.EAGER)
+	@ElementCollection(fetch=FetchType.EAGER)
 	@CollectionTable(uniqueConstraints= @UniqueConstraint(columnNames={"pedido_id","codigo"}))
     @NotEmpty()
     @Size(min=1)
-	private Set<ItemPedido> itens = new HashSet<ItemPedido>();*/
+	private Set<ItemPedido> itens = new HashSet<ItemPedido>();
 	
 	public Long getId() {
 		return id;
@@ -76,11 +84,11 @@ public class Pedido {
 		this.cliente = cliente;
 	}
 	
-	/*public Set<ItemPedido> getItens() {
+	public Set<ItemPedido> getItens() {
 		return itens;
 	}
 	
 	public void setItens(Set<ItemPedido> itens) {
 		this.itens = itens;
-	}*/
+	}
 }
