@@ -1,14 +1,16 @@
 package br.com.climario.service.impl;
 
+
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import javax.validation.ConstraintViolationException;
 
 import org.exparity.hamcrest.BeanMatchers;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,13 +47,13 @@ public class PedidoServiceImplTest {
 		addItem(pedido, 2);
 		
 		pedido = pedidoService.criar(pedido);
-		MatcherAssert.assertThat(pedido.getId(), Matchers.notNullValue());
-		MatcherAssert.assertThat(pedido.getId(), Matchers.greaterThan(0l));
-		MatcherAssert.assertThat(pedido.getNumero(), Matchers.is(Matchers.equalTo("3298432")));
-		MatcherAssert.assertThat(pedido.getCliente().getId(), Matchers.notNullValue());
-		MatcherAssert.assertThat(pedido.getCliente().getId(), Matchers.greaterThan(0l));
-		MatcherAssert.assertThat(pedido.getItens().size(), Matchers.greaterThan(0));
-		MatcherAssert.assertThat(pedido.getItens().size(), Matchers.is(Matchers.equalTo(2)));
+		assertThat(pedido.getId(), notNullValue());
+		assertThat(pedido.getId(), greaterThan(0l));
+		assertThat(pedido.getNumero(), is(equalTo("3298432")));
+		assertThat(pedido.getCliente().getId(), notNullValue());
+		assertThat(pedido.getCliente().getId(), greaterThan(0l));
+		assertThat(pedido.getItens().size(), greaterThan(0));
+		assertThat(pedido.getItens().size(), is(equalTo(2)));
 	}
 
 	public static void addItem(Pedido pedido, int qtd) {
@@ -88,11 +90,11 @@ public class PedidoServiceImplTest {
 		pedido.setCriacao(Calendar.getInstance().getTime());
 		
 		pedido = pedidoService.criar(pedido);
-		MatcherAssert.assertThat(pedido.getId(), Matchers.notNullValue());
-		MatcherAssert.assertThat(pedido.getId(), Matchers.greaterThan(0l));
-		MatcherAssert.assertThat(pedido.getNumero(), Matchers.is(Matchers.equalTo("3298435667")));
-		MatcherAssert.assertThat(pedido.getCliente().getId(), Matchers.notNullValue());
-		MatcherAssert.assertThat(pedido.getCliente().getId(), Matchers.greaterThan(0l));
+		assertThat(pedido.getId(), notNullValue());
+		assertThat(pedido.getId(), greaterThan(0l));
+		assertThat(pedido.getNumero(), is(equalTo("3298435667")));
+		assertThat(pedido.getCliente().getId(), notNullValue());
+		assertThat(pedido.getCliente().getId(), greaterThan(0l));
 	}
 	
 	@Test
@@ -111,13 +113,13 @@ public class PedidoServiceImplTest {
 		addItem(pedido, 5);
 		
 		pedido = pedidoService.criar(pedido);
-		MatcherAssert.assertThat(pedido.getId(), Matchers.notNullValue());
-		MatcherAssert.assertThat(pedido.getId(), Matchers.greaterThan(0l));
-		MatcherAssert.assertThat(pedido.getNumero(), Matchers.is(Matchers.equalTo("3298442")));
-		MatcherAssert.assertThat(pedido.getCliente().getId(), Matchers.notNullValue());
-		MatcherAssert.assertThat(pedido.getCliente().getId(), Matchers.greaterThan(0l));
-		MatcherAssert.assertThat(pedido.getItens().size(), Matchers.greaterThan(0));
-		MatcherAssert.assertThat(pedido.getItens().size(), Matchers.is(Matchers.equalTo(5)));
+		assertThat(pedido.getId(), notNullValue());
+		assertThat(pedido.getId(), greaterThan(0l));
+		assertThat(pedido.getNumero(), is(equalTo("3298442")));
+		assertThat(pedido.getCliente().getId(), notNullValue());
+		assertThat(pedido.getCliente().getId(), greaterThan(0l));
+		assertThat(pedido.getItens().size(), greaterThan(0));
+		assertThat(pedido.getItens().size(), is(equalTo(5)));
 		
 	}
 	
@@ -167,9 +169,9 @@ public class PedidoServiceImplTest {
 		c.setCodigo("07828359708");
 		c = pedidoService.criarCliente(c);		
 		
-		MatcherAssert.assertThat(c.getId(), Matchers.notNullValue());
-		MatcherAssert.assertThat(c.getId(), Matchers.greaterThan(0l));
-		MatcherAssert.assertThat(pedidoService.isClienteExiste(c.getCodigo()), Matchers.is(Matchers.equalTo(true)));
+		assertThat(c.getId(), notNullValue());
+		assertThat(c.getId(), greaterThan(0l));
+		assertThat(pedidoService.isClienteExiste(c.getCodigo()), is(equalTo(true)));
 	}
 	
 	@Test
@@ -180,10 +182,10 @@ public class PedidoServiceImplTest {
 		c.setCodigo("07828359709");
 		c = pedidoService.criarCliente(c);
 		
-		MatcherAssert.assertThat(c.getId(), Matchers.notNullValue());
-		MatcherAssert.assertThat(c.getId(), Matchers.greaterThan(0l));
-		MatcherAssert.assertThat(pedidoService.isClienteExiste(c.getCodigo()), Matchers.is(Matchers.equalTo(true)));
-		MatcherAssert.assertThat(pedidoService.recuperarCliente(c.getCodigo()), BeanMatchers.theSameAs(c));
+		assertThat(c.getId(), notNullValue());
+		assertThat(c.getId(), greaterThan(0l));
+		assertThat(pedidoService.isClienteExiste(c.getCodigo()), is(equalTo(true)));
+		assertThat(pedidoService.recuperarCliente(c.getCodigo()), BeanMatchers.theSameAs(c));
 	}
 	
 	@Test
@@ -219,13 +221,13 @@ public class PedidoServiceImplTest {
 		
 		List<Pedido> pedidos = pedidoService.listarPedidosPorCliente(c.getCodigo());
 		
-		MatcherAssert.assertThat(pedidos.size(), Matchers.greaterThan(2));
-		MatcherAssert.assertThat(pedido1.getItens().size(), Matchers.greaterThan(0));
-		MatcherAssert.assertThat(pedido1.getItens().size(), Matchers.is(Matchers.equalTo(2)));
-		MatcherAssert.assertThat(pedido2.getItens().size(), Matchers.greaterThan(0));
-		MatcherAssert.assertThat(pedido2.getItens().size(), Matchers.is(Matchers.equalTo(1)));
-		MatcherAssert.assertThat(pedido3.getItens().size(), Matchers.greaterThan(0));
-		MatcherAssert.assertThat(pedido3.getItens().size(), Matchers.is(Matchers.equalTo(4)));
+		assertThat(pedidos.size(), greaterThan(2));
+		assertThat(pedido1.getItens().size(), greaterThan(0));
+		assertThat(pedido1.getItens().size(), is(equalTo(2)));
+		assertThat(pedido2.getItens().size(), greaterThan(0));
+		assertThat(pedido2.getItens().size(), is(equalTo(1)));
+		assertThat(pedido3.getItens().size(), greaterThan(0));
+		assertThat(pedido3.getItens().size(), is(equalTo(4)));
 	}
 	
 	@Test(expected = RuntimeException.class)
@@ -238,5 +240,24 @@ public class PedidoServiceImplTest {
 	public void pedidosPorClienteCodigoNull() {
 		
 		pedidoService.listarPedidosPorCliente(null);
+	}
+	
+	@Test
+	public void pedidoExiste() {
+		
+		Cliente c = new Cliente();
+		c.setNome("Cliente de Teste Pedido");
+		c.setCodigo("07828359713");
+		c = pedidoService.criarCliente(c);		
+
+		Pedido pedido = new Pedido();
+		pedido.setCliente(c);
+		pedido.setNumero("3298453555");
+		pedido.setCriacao(Calendar.getInstance().getTime());
+		addItem(pedido, 2);
+		pedidoService.criar(pedido);
+		
+		assertThat(pedidoService.isPedidoExiste("3298453555"), is(equalTo(true)));
+		assertThat(pedidoService.isPedidoExiste("3498453555"), is(equalTo(false)));
 	}
 }

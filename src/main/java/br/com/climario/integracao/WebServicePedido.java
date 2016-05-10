@@ -28,14 +28,42 @@ public class WebServicePedido {
 	
 	private IPedidoService pedidoService = ServiceLocator.getInstance().getPedidoService();
 	
+	public enum Code {
+		
+		PEDIDO_EXISTE(100, "Pedido já cadastrado.");
+		
+		private int code;
+		
+		private String message;
+		
+		private Code(int code, String message) {
+			this.code = code;
+			this.message = message;
+		}
+		
+		public int getCode() {
+			return code;
+		}
+		
+		public String getMessage() {
+			return message;
+		}
+	}
+	
 	@Path("enviar")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
 	public Pedido enviar(Pedido pedido) {
 		
+		_logger.info("processando pedido: " + pedido.getNumero());
+		
+		if(pedidoService.isPedidoExiste(pedido.getNumero())){
+			throw new WebApplicationException(Response.status(Status.PRECONDITION_FAILED).entity(Code.PEDIDO_EXISTE).build());
+		}
+		
 		try {
-			_logger.info("processando pedido: " + pedido.getNumero());
+			
 			if(!pedidoService.isClienteExiste(pedido.getCliente().getCodigo())) {
 				pedido.setCliente(pedidoService.criarCliente(pedido.getCliente()));
 			}
@@ -44,8 +72,6 @@ public class WebServicePedido {
 			}
 			
 			pedidoService.criar(pedido);
-			
-			//pedido.setId(p.getId());
 			return pedido; 
 		}
 		catch(RuntimeException e) {

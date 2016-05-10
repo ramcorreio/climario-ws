@@ -1,22 +1,30 @@
 package br.com.climario.integracao;
 
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.Status;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -24,6 +32,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import br.com.climario.dominio.Cliente;
 import br.com.climario.dominio.Pedido;
+import br.com.climario.integracao.WebServicePedido.Code;
 import br.com.climario.service.impl.PedidoServiceImplTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -61,9 +70,38 @@ public class WebServicePedidoTest extends JerseyTest {
         PedidoServiceImplTest.addItem(p, 2);
         
         final Pedido rtw = target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(p), Pedido.class);
-        MatcherAssert.assertThat(rtw, Matchers.notNullValue());
-        MatcherAssert.assertThat(rtw.getId(), Matchers.notNullValue());
-        MatcherAssert.assertThat(rtw.getNumero(), Matchers.is(Matchers.equalTo(p.getNumero())));
+        assertThat(rtw, notNullValue());
+        assertThat(rtw.getId(), notNullValue());
+        assertThat(rtw.getNumero(), is(equalTo(p.getNumero())));
+    }
+    
+    @Test
+    public void putPedidoDuplicado() {
+        
+    	Cliente c = new Cliente();
+    	c.setCodigo("90283129830912");
+    	c.setNome("Teste Ws");
+    	
+        Pedido p = new Pedido();
+        p.setNumero("93824098");
+        p.setCriacao(Calendar.getInstance().getTime());
+        p.setCliente(c);
+        PedidoServiceImplTest.addItem(p, 2);
+        
+        final Pedido rtw = target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(p), Pedido.class);
+        assertThat(rtw, notNullValue());
+        assertThat(rtw.getId(), notNullValue());
+        assertThat(rtw.getNumero(), is(equalTo(p.getNumero())));
+        
+        try {
+        	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(p), Pedido.class);
+        	Assert.fail();
+        }
+        catch(WebApplicationException e) {
+        	
+        	assertThat(e.getResponse().getStatus(), is(equalTo(Status.PRECONDITION_FAILED.getStatusCode())));
+        	assertThat(e.getResponse().readEntity(Code.class), is(equalTo(Code.PEDIDO_EXISTE)));
+        }
     }
     
     @Test
@@ -75,10 +113,10 @@ public class WebServicePedidoTest extends JerseyTest {
         
     	Pedido rtw = target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input), Pedido.class);
     	            
-    	MatcherAssert.assertThat(rtw, Matchers.notNullValue());
-        MatcherAssert.assertThat(rtw.getId(), Matchers.notNullValue());
-        MatcherAssert.assertThat(rtw.getNumero(), Matchers.is(Matchers.equalTo("93824094")));
-        MatcherAssert.assertThat(rtw.getCriacao(), Matchers.equalTo(DateAdapter.dateFormat.parse("2016-03-18 00:00:00")));
+    	assertThat(rtw, notNullValue());
+        assertThat(rtw.getId(), notNullValue());
+        assertThat(rtw.getNumero(), is(equalTo("93824094")));
+        assertThat(rtw.getCriacao(), is(equalTo(DateAdapter.dateFormat.parse("2016-03-18 00:00:00"))));
     }
     
     @Test
@@ -97,7 +135,7 @@ public class WebServicePedidoTest extends JerseyTest {
     	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input3), Pedido.class);
     	
     	List<Pedido> pedidos = target().path("pedido-ws").path("pedidos").queryParam("idCliente", "90283129830912").request(MediaType.APPLICATION_JSON).get(new GenericType<List<Pedido>>() {});
-    	MatcherAssert.assertThat(pedidos.size(), Matchers.greaterThan(2));
+    	assertThat(pedidos.size(), greaterThan(2));
     	
     }
 }
