@@ -13,16 +13,33 @@
 			<meta name="apple-mobile-web-app-capable" content="yes" />
 		</f:facet>
 		
-		<!-- <h:outputStylesheet library="css" name="style.css" /> -->
+		<h:outputStylesheet library="css" name="base.css" />
+		<h:outputStylesheet library="css" name="responsive.css" />
+		<h:outputStylesheet library="css" name="main.css" />
+		<h:outputStylesheet library="css" name="formularios.css" />
+		
+		<h:outputStylesheet library="css" name="default.css" />
 
 		<ui:insert name="head" />
 
 		<title><ui:insert name="title">Clima Rio</ui:insert></title>
 	</h:head>
 
-	<f:view contentType="text/html">
-		<h:body>
-			<ui:insert name="content"/>
+	<f:view contentType="text/html">		
+		<h:body styleClass="#{bodyClass}">
+		
+			<div class="header100">
+				<ui:include src="header.xhtml"/>
+        	</div>
+
+        	<div class="content100">
+            	<ui:insert name="content"/>
+    		</div>
+
+        	<div class="footer100">
+        		<ui:include src="footer.xhtml"/>
+        	</div>
+			
 		</h:body>
 	</f:view>
 </html>

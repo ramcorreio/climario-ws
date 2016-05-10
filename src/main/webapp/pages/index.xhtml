@@ -4,9 +4,58 @@
    	xmlns:ui="http://java.sun.com/jsf/facelets"
    	xmlns:p="http://primefaces.org/ui"
    	template="/WEB-INF/layout/template.xhtml">
+   	
+   	
+   	<ui:param name="bodyClass" value="home"/>
                
 	<ui:define name="content">
-		Teste
+		
+		<div id="openModal" class="modalDialog">
+			
+		    <div>	<a href="#close" title="Close" class="close">X</a>
+		
+		        <h1 style="margin-bottom:-15px;">Não sei o número do pedido</h1>
+		
+		        <p>Preencha os dados abaixo que em breve entraremos em contato com você.</p>
+		        <article class="col-md-12 center retirapadding">
+		    		<div class="col-md-4 col-sm-4 mudatmfont estilofonte1">CPF/CNPJ</div>
+		    		<div class="col-md-6 col-sm-8"><p:inputText styleClass="camponovo"/> </div>
+		    	</article>
+		    	<article class="col-md-12 center" style="margin-top:55px;">
+		    		<div class="col-md-4 col-sm-4 mudatmfont estilofonte1">E-mail</div>
+		    		<div class="col-md-6 col-sm-8">INPUT</div>
+		    	</article>
+		    	<article class="col-md-12 center" style="margin-top:55px;">
+		    		<div class="col-md-4 col-sm-4 mudatmfont estilofonte1">DDD+Telefone</div>
+		    		<div class="col-md-6 col-sm-8">INPUT></div>    		
+		    	</article>
+		    	<article class="col-md-10 center" style="margin-top:75px;">
+		    		<div class="col-md-6 col-sm-6"></div>    		
+		    		<div class="col-md-4 col-sm-4 btmargin"><a href="#" class="btn_consultar">Solicitar</a></div>
+		    	</article>
+		    </div>
+		</div>
+		
+		<form>
+			<div class="container">
+			    <section id="content_home">
+			    	<article class="col-md-12 center espaco2">
+			    		<div class="col-md-5 col-sm-3 mudatmfont estilofonte1">CPF/CNPJ</div>
+			    		<div class="col-md-6 col-sm-9"><p:inputText styleClass="camponovo" maxlength="14"/></div>
+			    	</article>
+			    	<article class="col-md-12 center espaco">
+			    		<div class="col-md-5 col-sm-3 mudatmfont estilofonte1">Número do Pedido</div>
+			    		<div class="col-md-6 col-sm-9"><p:inputText styleClass="camponovo" maxlength="15"/></div>
+			    	</article>
+			    	<article class="col-md-12 center espaco3">
+			    		<div class="col-md-6 col-sm-6"><div class="pedidolink"><a href="#openModal">Não sei o número do pedido</a></div></div>
+			    		<div class="col-md-5 col-sm-5"><p:commandButton value="Consultar" action="#{pedidoView.consultar}"/></div>
+			    	</article>			
+			    </section>    
+			</div>
+		</form>
+		
+		
 	</ui:define>
 	
 </ui:composition>

@@ -1,0 +1,90 @@
+/*FORMULARIO SKINS ============================*/
+.skin {
+	background-image: url("../media/img/form-fields.png");
+	background-repeat: no-repeat;
+}
+
+/*select*/
+.styleCombobox {
+	background-position: right -20px;
+	width: 100%;
+	height: 42px;
+	border: 1px solid #ccc;
+}
+
+.styleCombobox select {
+	width: 100%;
+	height: 35px;
+}
+
+.styleCombobox span.skin {
+	display: block;
+	background-position: -482px -247px;
+	line-height: 40px;
+	position: absolute;
+	font-size: 14px;
+	text-indent: 10px;
+}
+
+.style_radio {
+	background: url('../media/img/form-fields.png') no-repeat -41px -1px;
+	width: 18px;
+	height: 18px;
+	display: inline-block;
+}
+
+.style_checkbox {
+	background: url('../media/img/form-fields.png') no-repeat -1px -1px;
+	width: 18px;
+	height: 18px;
+	display: inline-block;
+}
+
+.input_radioChecked {
+	background-position: -61px -1px;
+}
+
+.input_checkboxChecked {
+	background-position: -21px -1px;
+}
+
+
+/*input file*/
+.styleFile {
+	position: relative;
+	background-position: right -720px;
+	float: left;
+	cursor: pointer;
+}
+
+.styleFile span.skin {
+	position: absolute;
+	display: block;
+	background-position: -482px -247px;
+	padding-left: 8px;
+	line-height: 44px;
+	text-align: left;
+}
+
+.styleFileDisabled {
+	background-position: right -720px;
+}
+
+.styleFileDisabled span.skin {
+	background-position: -477px -87px;
+}
+
+.styleFile,.styleFile span.skin {
+	width: 100%;
+	height: 44px;
+}
+
+.styleFile input {
+	width: auto;
+	margin: 0px;
+}
+
+.skin input[type=checkbox] {
+    width: 18px;
+    height: 18px;
+}

@@ -1,0 +1,314 @@
+.secundarias h2 {
+	font-weight: bold;
+	font-size: 24px;
+	margin-bottom: 15px;
+}
+
+/* CONFIRMAÇÃO */
+.titulo_confirmacao{
+	font-size:36px!important;
+	font-family: 'source_sans_probold';
+	margin-top:50px;
+	color:#2ab6c5;
+	text-align:center;
+}
+
+.texto_confirmacao{
+	font-size:20px!important;
+	color:#0d62a9;
+	font-family: 'source_sans_prolight';
+	text-align:center;
+}
+
+.altura_confirmacao{
+	min-height:530px;
+}
+
+.wrapper_confirmacao{margin:auto; width:110px; margin-top:80px;}
+
+/* SOBRE */
+
+.sobre h3 {
+	font-weight: bold;
+	font-size: 18px;
+	color: #333;
+	margin-top: 30px;
+}
+
+/* SERVICOS */
+
+.servicos .content100 ul li {
+	margin-bottom: 30px;
+}
+
+/* PORTFOLIO */
+
+.portfolio .content100 ul li {
+	position: relative;
+	margin-bottom: 20px;
+}
+
+.portfolio .content100 ul li a {
+	display: block;
+	color: #666;
+}
+
+.portfolio .content100 ul li a h3 {
+	color: #333;
+	font-weight: bold;
+	font-size: 18px;
+}
+
+.portfolio .content100 ul li a p {
+	color: #666;
+	font-size: 14px;
+}
+
+.portfolio .content100 ul li a .segura-img {
+	position: relative;
+}
+
+.portfolio .content100 ul li a .ver-fotos {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	background: rgba(0,0,0,.6);
+	padding: 5px 15px;
+	text-align: right;
+	color: #fff;
+	font-weight: bold;
+	margin: 0;
+	opacity: 0;
+	transition: opacity .5s;
+	padding: 15px;
+}
+
+.portfolio .content100 ul li a:hover .ver-fotos {
+	opacity: 1;
+}
+
+
+/* LISTA NOTICIAS */
+
+.listagem .segura-noticia ul a li{
+	margin-top: 20px;
+}
+
+.listagem .segura-noticia li.prop{
+	background: #ffffff;
+	border-bottom: 1px solid #ccc;
+	border-radius: 3px;
+	padding: 10px 5px;
+	-webkit-border-radius: 3px;
+}
+
+.listagem .segura-noticia li.prop:hover{
+	background: rgba(238,238,238,0.3);
+	-webkit-transition-duration: 1s;
+	transition-duration: 1s;
+}
+
+.listagem .segura-noticia li.prop p{
+	line-height: 15px;
+	color: #333333;
+}
+
+.listagem .segura-noticia li.prop h3{
+	color: #000000;
+	font-site: 20px;
+}
+
+.listagem .segura-noticia li.prop h6{
+	color: #a2a2a2;
+	font-site: 13px;
+}
+
+.listagem .segura-noticia li.prop time{
+	font-size: 11px;
+	color: #333333;
+}
+
+
+/* PÁGINA NOTICIAS */
+
+.conteudo-listagem .segura-noticia p {
+	margin-top: 20px;
+	word-wrap: break-word;
+	text-align: justify;
+}
+
+.conteudo-listagem .segura-noticia .publicado {
+	font-weight: bold;
+	color: #999;
+	font-size: 12px;
+}
+
+.conteudo-listagem .segura-noticia .publicado strong {
+	color: #000;
+}
+
+.conteudo-listagem .segura-noticia .comentarios {
+	color: #000;
+	text-decoration: none;
+	font-size: 12px;
+	margin-top: 10px;
+	display: block;
+}
+
+.conteudo-listagem .segura-noticia .comentarios:hover {
+	color: #666;
+}
+
+.conteudo-listagem .segura-noticia .comentarios .icon {
+	background: url('../media/img/sprite.png') no-repeat -57px -34px;
+	width: 18px;
+	height: 18px;
+	display: inline-block;
+	vertical-align: -3px;
+	margin-right: 5px;
+}
+
+.conteudo-listagem .segura-noticia .compartilhe {
+	text-align: right;
+}
+
+.conteudo-listagem .segura-noticia .compartilhe p {
+	font-size: 12px;
+	display: inline-block;
+	vertical-align: 7px;
+	margin-top: 5px;
+	margin-right: 5px;
+}
+
+.conteudo-listagem .segura-noticia .compartilhe ul,
+.conteudo-listagem .segura-noticia .compartilhe ul li {
+	display: inline-block;
+}
+
+.conteudo-listagem .segura-noticia .compartilhe ul li a {
+	width: 24px;
+	height: 24px;
+	display: inline-block;
+}
+
+.conteudo-listagem .segura-noticia .compartilhe ul li a span {
+	width: 24px;
+	height: 24px;
+	display: block;
+	background: url('../media/img/sprite.png') no-repeat;
+	-webkit-transition: opacity 0.5s ease-out;
+	-moz-transition: opacity 0.5s ease-out;
+	-ms-transition: opacity 0.5s ease-out;
+	-o-transition: opacity 0.5s ease-out;
+	transition: opacity 0.5s ease-out;
+}
+
+.conteudo-listagem .segura-noticia .compartilhe ul li a span:hover {
+	opacity: 0.5;
+	filter:alpha(opacity=50);
+}
+
+.conteudo-listagem .segura-noticia .compartilhe ul li a .at15t_facebook {
+	background-position: -1px -1px;
+}
+
+.conteudo-listagem .segura-noticia .compartilhe ul li a .at15t_twitter {
+	background-position: -26px -1px;
+}
+
+.conteudo-listagem .segura-noticia .compartilhe ul li a .at15t_google_plusone_share {
+	background-position: -51px -1px;
+}
+
+.conteudo-listagem .segura-noticia .compartilhe ul li a .at15t_compact {
+	background: url('../media/img/sprite.png') no-repeat -76px -6px;
+	width: 16px;
+	height: 16px;
+}
+
+.conteudo-listagem .segura-noticia .compartilhe ul li .addthis_button_compact {
+	vertical-align: 3px;
+}
+
+.conteudo-listagem .opcoes hr:first-child {
+	margin-top: 0;
+}
+
+.conteudo-listagem .opcoes h3 {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.conteudo-listagem .opcoes ul li {
+	display: block;
+	margin-bottom: 3px;
+}
+
+.conteudo-listagem .opcoes a {
+	color: #333;
+	display: inline-block;
+	margin-left: 10px;
+}
+
+/* CONTATO */
+
+.contato iframe {
+	border: none;
+}
+
+.contato h3 {
+	font-size: 18px;
+	font-weight: bold;
+	color: #333;
+}
+
+.contato .segura-form .left {
+	padding-left: 0;
+}
+
+/* RESUMO DO PEDIDO */
+
+/* ANIMAÇÕES */
+
+h1.ops{
+	font-size: 35px;
+	text-align: center;
+}
+
+h1.ops .sad{
+	position: relative;
+	height: 50px;
+	animation-name: sad;
+    animation: sad 1s;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: 3s;
+    animation-delay: 1.5s;
+    animation-fill-mode: forwards;
+    -webkit-animation-name: sad;
+    -webkit-animation: sad 1s;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: 3s;
+    -webkit-animation-direction: normal;
+    -webkit-animation-delay: 1.5s;
+    -webkit-animation-fill-mode: forwards;
+}
+
+@-webkit-keyframes sad {
+    0%   {-webkit-transform: rotate(0deg);}
+    25%  {-webkit-transform: rotate(25deg);}
+    50%  {-webkit-transform: rotate(50deg);}
+    75%  {-webkit-transform: rotate(75deg);}
+    100% {-webkit-transform: rotate(90deg);}
+}
+
+/* Standard syntax */
+@keyframes sad {
+    0%   {transform: rotate(0deg);}
+    25%  {transform: rotate(25deg);}
+    50%  {transform: rotate(50deg);}
+    75%  {transform: rotate(75deg);}
+    100% {transform: rotate(90deg);}
+}
+
