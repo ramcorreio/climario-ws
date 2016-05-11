@@ -44,8 +44,8 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService {
 	public boolean isPedidoClienteExiste(String codigo, String numero) {
 		
 		TypedQuery<Pedido> query = createNamedQuery("Pedido.cliente.existe", Pedido.class);
-		query.setParameter("numero", codigo);
-		query.setParameter("codigo", numero);
+		query.setParameter("numero", numero);
+		query.setParameter("codigo", codigo);
 		return !query.getResultList().isEmpty();
 	}
 	
