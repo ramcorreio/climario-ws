@@ -26,8 +26,8 @@
 
 		<javax.servlet.version>3.0.1</javax.servlet.version>
 		<javax.mail.version>1.4.7</javax.mail.version>
-		<jsf.version>2.2.11</jsf.version>
-		<primefaces.version>5.2</primefaces.version>
+		<jsf.version>2.2.12</jsf.version>
+		<primefaces.version>5.3</primefaces.version>
 		<spring.version>4.2.5.RELEASE</spring.version>
 		<spring.security.version>4.0.4.RELEASE</spring.security.version>
 

@@ -1,10 +1,9 @@
-<ui:composition
-	xmlns:f="http://java.sun.com/jsf/core"
-   	xmlns:h="http://java.sun.com/jsf/html"
-   	xmlns:ui="http://java.sun.com/jsf/facelets"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
    	xmlns:p="http://primefaces.org/ui"
    	template="/WEB-INF/layout/template.xhtml">
-   	
    	
    	<ui:param name="bodyClass" value="home"/>
                
@@ -36,24 +35,31 @@
 		    </div>
 		</div>
 		
-		<form>
-			<div class="container">
-			    <section id="content_home">
-			    	<article class="col-md-12 center espaco2">
-			    		<div class="col-md-5 col-sm-3 mudatmfont estilofonte1">CPF/CNPJ</div>
-			    		<div class="col-md-6 col-sm-9"><p:inputText styleClass="camponovo" maxlength="14"/></div>
-			    	</article>
-			    	<article class="col-md-12 center espaco">
-			    		<div class="col-md-5 col-sm-3 mudatmfont estilofonte1">Número do Pedido</div>
-			    		<div class="col-md-6 col-sm-9"><p:inputText styleClass="camponovo" maxlength="15"/></div>
-			    	</article>
-			    	<article class="col-md-12 center espaco3">
-			    		<div class="col-md-6 col-sm-6"><div class="pedidolink"><a href="#openModal">Não sei o número do pedido</a></div></div>
-			    		<div class="col-md-5 col-sm-5"><p:commandButton value="Consultar" action="#{pedidoView.consultar}"/></div>
-			    	</article>			
-			    </section>    
-			</div>
-		</form>
+		<div class="container">
+			<section id="content_home">
+				<p:messages id="messages" globalOnly="true" />
+		    	<article class="col-md-12 center espaco2">
+		    		<div class="col-md-5 col-sm-3 mudatmfont estilofonte1">CPF/CNPJ</div>
+		    		<div class="col-md-6 col-sm-9">
+		    			<p:inputText id="cpfCnpj" styleClass="camponovo" maxlength="14" required="true" requiredMessage="É necessário informar o CPF/CNPJ." value="#{pedidoView.numero}"/>
+		    			<p:message for="cpfCnpj" />
+		    		</div>
+		    	</article>
+		    	<article class="col-md-12 center espaco">
+		    		<div class="col-md-5 col-sm-3 mudatmfont estilofonte1">Número do Pedido</div>
+		    		<div class="col-md-6 col-sm-9">
+		    			<p:inputText id="nuPedido" styleClass="camponovo" maxlength="15" required="true" requiredMessage="É necessário informar o número do pedido."/>
+		    			<p:message for="nuPedido" />
+		    		</div>
+		    	</article>
+		    	<article class="col-md-12 center espaco3">
+		    		<div class="col-md-6 col-sm-6"><div class="pedidolink"><a href="#openModal">Não sei o número do pedido</a></div></div>
+		    		<div class="col-md-5 col-sm-5">
+		    			<p:commandButton styleClass="btn_consultar" value="Consultar" actionListener="#{pedidoView.consultar}" update="@form"/>
+		    		</div>
+		    	</article>			
+		    </section>    
+		</div>
 		
 		
 	</ui:define>

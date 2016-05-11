@@ -28,6 +28,7 @@ import br.com.climario.integracao.DateAdapter;
 @NamedQueries({ 
     @NamedQuery(name = "Pedido.por.cliente", query = "select p from Pedido p where p.cliente.codigo = :codigo"),
     @NamedQuery(name = "Pedido.existe", query = "select p from Pedido p where p.numero = :numero"),
+    @NamedQuery(name = "Pedido.cliente.existe", query = "select p from Pedido p where p.numero = :numero and p.cliente.codigo = :codigo"),
 })
 public class Pedido {
 	

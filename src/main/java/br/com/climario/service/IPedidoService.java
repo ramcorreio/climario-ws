@@ -13,6 +13,8 @@ public interface IPedidoService {
 	
 	public Cliente criarCliente(Cliente cliente);
 
+	public boolean isPedidoClienteExiste(String codigo, String numero);
+	
 	public boolean isClienteExiste(String codigo);
 	
 	public boolean isPedidoExiste(String numero);

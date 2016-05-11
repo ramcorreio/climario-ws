@@ -260,4 +260,26 @@ public class PedidoServiceImplTest {
 		assertThat(pedidoService.isPedidoExiste("3298453555"), is(equalTo(true)));
 		assertThat(pedidoService.isPedidoExiste("3498453555"), is(equalTo(false)));
 	}
+	
+	@Test
+	public void pedidoCpfExiste() {
+		
+		Cliente c = new Cliente();
+		c.setNome("Cliente de Teste Pedido");
+		c.setCodigo("08828359713");
+		c = pedidoService.criarCliente(c);		
+
+		Pedido pedido = new Pedido();
+		pedido.setCliente(c);
+		pedido.setNumero("3298453523984");
+		pedido.setCriacao(Calendar.getInstance().getTime());
+		addItem(pedido, 2);
+		pedidoService.criar(pedido);
+		
+		assertThat(pedidoService.isPedidoExiste("3298453523984"), is(equalTo(true)));
+		assertThat(pedidoService.isPedidoExiste("3298453523984"), is(equalTo(false)));
+		assertThat(pedidoService.isClienteExiste("08828359713"), is(equalTo(true)));
+		assertThat(pedidoService.isPedidoClienteExiste("08828359713", "3298453523984"), is(equalTo(true)));
+		assertThat(pedidoService.isPedidoClienteExiste("08828359713", "4905820934923"), is(equalTo(false)));
+	}
 }
