@@ -79,6 +79,19 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService {
 	}
 	
 	@Override
+	public Pedido recuperarPedido(String numero) {
+		
+		TypedQuery<Pedido> query = createNamedQuery("Pedido.existe", Pedido.class);
+		query.setParameter("numero", numero);
+		try {
+			return query.getSingleResult();
+		}
+		catch(NoResultException e){
+			throw new RuntimeException("Pediod não encontrado.", e);
+		}
+	}
+	
+	@Override
 	public List<Pedido> listarPedidosPorCliente(String codigo) {
 		
 		if(codigo == null){

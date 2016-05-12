@@ -1,12 +1,16 @@
 package br.com.climario.dominio;
 
+import java.io.Serializable;
+
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Embeddable
-public class ItemPedido {
+public class ItemPedido implements Serializable {
+
+	private static final long serialVersionUID = -3879211934699443946L;
 
 	@NotNull
 	private String codigo;
@@ -51,6 +55,10 @@ public class ItemPedido {
 
 	public void setPrecoUnitario(Double precoUnitario) {
 		this.precoUnitario = precoUnitario;
+	}
+	
+	public Double getTotal() {
+		return getPrecoUnitario() * getQtd();
 	}
 
 }

@@ -20,5 +20,7 @@ public interface IPedidoService {
 	public boolean isPedidoExiste(String numero);
 	
 	public Cliente recuperarCliente(String codigo);
+	
+	public Pedido recuperarPedido(String numero);
 
 }

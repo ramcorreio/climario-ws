@@ -1,5 +1,6 @@
 package br.com.climario.dominio;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,8 +31,10 @@ import br.com.climario.integracao.DateAdapter;
     @NamedQuery(name = "Pedido.existe", query = "select p from Pedido p where p.numero = :numero"),
     @NamedQuery(name = "Pedido.cliente.existe", query = "select p from Pedido p where p.numero = :numero and p.cliente.codigo = :codigo"),
 })
-public class Pedido {
+public class Pedido implements Serializable {
 	
+	private static final long serialVersionUID = 2808817848074903456L;
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -47,6 +50,10 @@ public class Pedido {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@NotNull
 	private Cliente cliente;
+	
+	private String filial;
+	
+	private Double valorFrete = 0d;
 	
 	@ElementCollection(fetch=FetchType.EAGER)
 	@CollectionTable(uniqueConstraints= @UniqueConstraint(columnNames={"pedido_id","codigo"}))
@@ -84,6 +91,22 @@ public class Pedido {
 	
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
+	}
+	
+	public String getFilial() {
+		return filial;
+	}
+	
+	public void setFilial(String filial) {
+		this.filial = filial;
+	}
+	
+	public Double getValorFrete() {
+		return valorFrete;
+	}
+	
+	public void setValorFrete(Double valorFrete) {
+		this.valorFrete = valorFrete;
 	}
 	
 	public Set<ItemPedido> getItens() {

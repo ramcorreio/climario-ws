@@ -1,5 +1,7 @@
 package br.com.climario.dominio;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,7 +17,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Cliente.existe", query = "select c from Cliente c where codigo = :codigo")
 })
 @XmlRootElement
-public class Cliente {
+public class Cliente implements Serializable {
+
+	private static final long serialVersionUID = 909283118822489309L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
