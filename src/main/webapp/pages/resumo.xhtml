@@ -71,7 +71,7 @@
 			    <div class="col-md-2 col-sm-6 espaco10 retirapadding">
 			    	<div class="col-md-12 col-sm-12 center divcinza"><div class="centraliza">
 			    		<h:outputText value="#{item.precoUnitario}">
-							<f:convertNumber type="currency"/>
+							<f:convertNumber locale="pt_BR" type="currency"/>
 						</h:outputText>
 			    		
 			    	</div></div>
@@ -80,7 +80,7 @@
 			    	<div class="col-md-12 col-sm-12 divcinza">
 			    		<div class="centraliza">
 				    		<h:outputText value="#{item.total}">
-								<f:convertNumber type="currency"/>
+								<f:convertNumber locale="pt_BR" type="currency"/>
 							</h:outputText>
 			    		</div>
 			    	</div>
@@ -93,13 +93,19 @@
 			    	<div class="col-md-7 col-sm-6 espaco11"><div class="adireita">Desconto</div></div>
 			    	<div class="col-md-5 col-sm-6 espaco11"><div class="centraliza">-</div></div>
 			    	<div class="col-md-7 col-sm-6"><div class="adireita">Valor de Frete</div></div>
-			    	<div class="col-md-5 col-sm-6"><div class="centraliza">R$ 100,00</div></div>
+			    	<div class="col-md-5 col-sm-6">
+			    		<div class="centraliza">
+			    			<h:outputText value="#{pedidoView.pedido.valorFrete}">
+								<f:convertNumber locale="pt_BR" type="currency"/>
+							</h:outputText>
+			    		</div>
+			    	</div>
 			    	<div class="col-md-12 col-sm-12 center espaco8valor"></div>
 			    	<div class="col-md-7 col-sm-6"><div class="adireita">Valor Total do Pedido</div></div>
 			    	<div class="col-md-5 col-sm-6">
 			    		<div class="centraliza valortotal">
 				    		<h:outputText value="#{pedidoView.totalPedido}">
-								<f:convertNumber type="currency"/>
+								<f:convertNumber locale="pt_BR" type="currency"/>
 							</h:outputText>
 			    		</div>
 			    	</div>
@@ -113,7 +119,7 @@
 		    	</div>
 		    	<div class="col-md-5 col-sm-12 espaco12">
 		    		<div class="adireita fcentraliza">
-		    			<p:commandButton styleClass="btn3" value="Finalizar pedido com Pagseguro"/>
+		    			<p:commandButton styleClass="btn3" value="Finalizar pedido com Pagseguro" actionListener="#{pedidoView.checkout}" />
 		    		</div>
 		    	</div>
 		    </div>
