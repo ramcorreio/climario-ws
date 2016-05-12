@@ -1,10 +1,10 @@
 package br.com.climario.ui;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -17,6 +17,8 @@ import br.com.climario.dominio.ItemPedido;
 import br.com.climario.dominio.Pedido;
 import br.com.climario.service.IPedidoService;
 import br.com.climario.service.impl.ServiceLocator;
+import br.com.uol.pagseguro.domain.PaymentRequest;
+import br.com.uol.pagseguro.domain.checkout.Checkout;
 
 @ManagedBean
 @ViewScoped
@@ -57,14 +59,27 @@ public class PedidoView implements Serializable {
 		}
 	}
 	
+	public void checkout(ActionEvent actionEvent) {
+		
+		System.out.println(actionEvent);
+		Checkout checkout = new Checkout();
+		System.out.println(checkout);
+		//checkout.addItem("id", "ddd", 1, new BigDecimal(3), 0l, new BigDecimal(0));
+				
+		/*PaymentRequest p = new PaymentRequest();
+		p.addItem(, description, quantity, amount, weight, shippingCost);*/
+		//Checkout checkout = new Checkout();  
+
+	}
+	
 	public void init() {
 		if(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().containsKey("id")) {
 			numero = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
 			pedido = pedidoService.recuperarPedido(numero);
 		}
-		else {
+		/*else {
 			Util.redirect(Util.getContextRoot());
-		}
+		}*/
 	}
 	
 	public class ItemWrap {
