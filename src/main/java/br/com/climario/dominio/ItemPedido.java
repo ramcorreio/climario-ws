@@ -56,9 +56,4 @@ public class ItemPedido implements Serializable {
 	public void setPrecoUnitario(Double precoUnitario) {
 		this.precoUnitario = precoUnitario;
 	}
-	
-	public Double getTotal() {
-		return getPrecoUnitario() * getQtd();
-	}
-
 }

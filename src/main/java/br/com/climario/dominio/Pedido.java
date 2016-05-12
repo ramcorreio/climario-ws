@@ -27,9 +27,9 @@ import br.com.climario.integracao.DateAdapter;
 
 @Entity
 @NamedQueries({ 
-    @NamedQuery(name = "Pedido.por.cliente", query = "select p from Pedido p where p.cliente.codigo = :codigo"),
+    @NamedQuery(name = "Pedido.por.cliente", query = "select p from Pedido p where p.cliente.cpfCnpj = :cpfCnpj"),
     @NamedQuery(name = "Pedido.existe", query = "select p from Pedido p where p.numero = :numero"),
-    @NamedQuery(name = "Pedido.cliente.existe", query = "select p from Pedido p where p.numero = :numero and p.cliente.codigo = :codigo"),
+    @NamedQuery(name = "Pedido.cliente.existe", query = "select p from Pedido p where p.numero = :numero and p.cliente.cpfCnpj = :cpfCnpj"),
 })
 public class Pedido implements Serializable {
 	
@@ -51,9 +51,16 @@ public class Pedido implements Serializable {
 	@NotNull
 	private Cliente cliente;
 	
+	@NotNull
 	private String filial;
 	
 	private Double valorFrete = 0d;
+	
+	@NotNull
+	private String planoPagamento;
+	
+	@NotNull
+	private String cobranca;
 	
 	@ElementCollection(fetch=FetchType.EAGER)
 	@CollectionTable(uniqueConstraints= @UniqueConstraint(columnNames={"pedido_id","codigo"}))
@@ -107,6 +114,22 @@ public class Pedido implements Serializable {
 	
 	public void setValorFrete(Double valorFrete) {
 		this.valorFrete = valorFrete;
+	}
+	
+	public String getPlanoPagamento() {
+		return planoPagamento;
+	}
+	
+	public void setPlanoPagamento(String planoPagamento) {
+		this.planoPagamento = planoPagamento;
+	}
+	
+	public String getCobranca() {
+		return cobranca;
+	}
+	
+	public void setCobranca(String cobranca) {
+		this.cobranca = cobranca;
 	}
 	
 	public Set<ItemPedido> getItens() {

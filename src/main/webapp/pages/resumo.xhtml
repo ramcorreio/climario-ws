@@ -7,6 +7,11 @@
    	
    	<ui:param name="bodyClass" value="secundarias contato"/>
    	
+   	<f:metadata>
+    	<f:viewParam name="data" value="#{viewParamPush.data}" />
+    	<f:event type="preRenderView" listener="#{pedidoView.init}" />
+	</f:metadata>
+   	
    	<ui:define name="content">
    	
    		<div class="container altura_confirmacao"> 
@@ -19,6 +24,25 @@
     			</span></div>
     			<div class="col-md-4 col-sm-3">Filial<br/><span class="numeropedido20">#{pedidoView.pedido.filial}</span></div>
     		</div>
+    		
+    		<div class="col-md-12 col-sm-12 center espaco6">
+		    	<div class="col-md-4 col-sm-4">Nome do Cliente(cód.)<br/><span class="numeropedido20">#{pedidoView.pedido.cliente.nome}(#{pedidoView.pedido.cliente.codigo})</span></div>
+		    	<div class="col-md-4 col-sm-3">CPF/CNPJ do cliente<br/><span class="numeropedido20">#{pedidoView.pedido.cliente.cpfCnpj}</span></div>
+		    	<div class="col-md-4 col-sm-5">E-mail do cliente<br/><span class="numeropedido20">#{pedidoView.pedido.cliente.email}</span></div>    	
+		    </div>  
+		 
+		    <div class="col-md-12 col-sm-12 center espaco7">
+		    	<div class="col-md-4 col-sm-4">Endereço do cliente<br/>
+		    		<div class="numeropedido20sline">#{pedidoView.pedido.cliente.logradouro}<br/>#{pedidoView.pedido.cliente.bairro} - #{pedidoView.pedido.cliente.cidade} - #{pedidoView.pedido.cliente.estado}<br/>CEP 24240-070</div>
+		    	</div>
+		    	<div class="col-md-4 col-sm-3">Nome do RCA (cód.)<br/><span class="numeropedido20">#{pedidoView.pedido.cliente.nomeRca}(#{pedidoView.pedido.cliente.codigoRca})</span></div>
+		    	<div class="col-md-4 col-sm-5">E-mail do RCA<br/><span class="numeropedido20">#{pedidoView.pedido.cliente.emailRca}</span></div>    	
+		    </div> 
+		    
+		    <div class="col-md-12 col-sm-12 center espaco9">
+		    	<div class="col-md-4 col-sm-6">Descrição do plano de pagamento<br/><div class="numeropedido20sline">#{pedidoView.pedido.planoPagamento}</div></div>
+		    	<div class="col-md-4 col-sm-6">Descrição da cobrança<br/><div class="numeropedido20sline">#{pedidoView.pedido.cobranca}</div></div>
+		    </div> 
     		
    		    <div class="col-md-12 col-sm-12 center espaco8"></div>
    		    
@@ -87,7 +111,11 @@
 		    	<div class="col-md-4 col-sm-9 espaco12">
 		    		<h:graphicImage library="media" name="img/pagseguro_img.jpg" alt="Pagseguro"/>
 		    	</div>
-		    	<div class="col-md-5 col-sm-12 espaco12"><div class="adireita fcentraliza"><a class="btn3" href="#">Finalizar pedido com Pagseguro</a></div></div>
+		    	<div class="col-md-5 col-sm-12 espaco12">
+		    		<div class="adireita fcentraliza">
+		    			<p:commandButton styleClass="btn3" value="Finalizar pedido com Pagseguro"/>
+		    		</div>
+		    	</div>
 		    </div>
 		    
     	</div>

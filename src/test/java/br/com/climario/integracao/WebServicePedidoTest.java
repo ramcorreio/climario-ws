@@ -62,11 +62,25 @@ public class WebServicePedidoTest extends JerseyTest {
     	Cliente c = new Cliente();
     	c.setCodigo("90283129830912");
     	c.setNome("Teste Ws");
+    	c.setCpfCnpj("748237489274298");
+    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setLogradouro("Rua A");
+    	c.setNumero("100");
+    	c.setComplemento("casa");
+    	c.setBairro("Santa Rosa");
+    	c.setCidade("Niterói");
+    	c.setEstado("RJ");
+    	c.setEmailRca("racrca@hfhfhfh.com");
+    	c.setCodigoRca("8934724238");
+    	c.setNomeRca("Nome RCA");
     	
         Pedido p = new Pedido();
         p.setNumero("93824093");
         p.setCriacao(Calendar.getInstance().getTime());
         p.setCliente(c);
+        p.setCobranca("Cobrasim");
+        p.setPlanoPagamento("Plano 1");
+        p.setFilial("Niteroi");
         PedidoServiceImplTest.addItem(p, 2);
         
         final Pedido rtw = target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(p), Pedido.class);
@@ -76,16 +90,30 @@ public class WebServicePedidoTest extends JerseyTest {
     }
     
     @Test
-    public void putPedidoDuplicado() {
-        
+    public void putPedidoDuplicado() {        
+    	
     	Cliente c = new Cliente();
     	c.setCodigo("90283129830912");
     	c.setNome("Teste Ws");
+    	c.setCpfCnpj("748237489274298");
+    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setLogradouro("Rua A");
+    	c.setNumero("100");
+    	c.setComplemento("casa");
+    	c.setBairro("Santa Rosa");
+    	c.setCidade("Niterói");
+    	c.setEstado("RJ");
+    	c.setEmailRca("racrca@hfhfhfh.com");
+    	c.setCodigoRca("8934724238");
+    	c.setNomeRca("Nome RCA");
     	
         Pedido p = new Pedido();
         p.setNumero("93824098");
         p.setCriacao(Calendar.getInstance().getTime());
         p.setCliente(c);
+        p.setCobranca("Cobrasim");
+        p.setPlanoPagamento("Plano 1");
+        p.setFilial("Niteroi");
         PedidoServiceImplTest.addItem(p, 2);
         
         final Pedido rtw = target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(p), Pedido.class);
@@ -107,9 +135,30 @@ public class WebServicePedidoTest extends JerseyTest {
     @Test
     public void putPedidoText() throws UnknownHostException, IOException, ParseException {
         
-    	//String input = "{\"numero\":\"93824094\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"}}";
-    	String input = "{\"numero\":\"93824094\",\"criacao\":\"2016-03-18 00:00:00\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"},\"itens\":[{\"codigo\":\"2\",\"descricao\":\"Descrição 2\",\"qtd\":8,\"precoUnitario\":1.9320663346223177},{\"codigo\":\"1\",\"descricao\":\"Descrição 1\",\"qtd\":6,\"precoUnitario\":8.83666440420624}]}";
-    	//String input = "{\"numero\":\"93824094\",\"criacao\":\"2016-03-18 00:00:00\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"}}";
+    	String input = "{"
+    			+ "\"numero\":\"93824094\","
+    			+ "\"criacao\":\"2016-03-18 00:00:00\","
+    			+ "\"cliente\":{"
+    				+ "\"codigo\":\"90283129830912\","
+    				+ "\"nome\":\"Teste Ws\","
+    				+ "\"cpfCnpj\":\"748237489274298\","
+    				+ "\"email\":\"roororor@hfhfhfh.com\","
+    				+ "\"logradouro\":\"Rua A\","
+    				+ "\"numero\":\"100\","
+    				+ "\"complemento\":\"casa\","
+    				+ "\"bairro\":\"Santa Rosa\","
+    				+ "\"cidade\":\"Niterói\","
+    				+ "\"estado\":\"RJ\","
+    				+ "\"emailRca\":\"racrca@hfhfhfh.com\","
+    				+ "\"codigoRca\":\"8934724238\","
+    				+ "\"nomeRca\":\"Nome RCA\""
+    			+ "},"
+    			+ "\"filial\":\"Niteroi\","
+    			+ "\"valorFrete\":0.0,"
+    			+ "\"planoPagamento\":\"Plano 1\","
+    			+ "\"cobranca\":\"Cobrasim\","
+    			+ "\"itens\": [{\"codigo\":\"2\",\"descricao\":\"Descrição 2\",\"qtd\":8,\"precoUnitario\":1.9320663346223177},{\"codigo\":\"5\",\"descricao\":\"Descrição 3\",\"qtd\":2,\"precoUnitario\":200.2}]"
+    		+"}";
         
     	Pedido rtw = target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input), Pedido.class);
     	            
@@ -122,19 +171,85 @@ public class WebServicePedidoTest extends JerseyTest {
     @Test
     public void getPedidoPorCliente() throws UnknownHostException, IOException {
         
-    	String input1 = "{\"numero\":\"93824095\",\"criacao\":\"2016-03-18 00:00:00\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"},\"itens\":[{\"codigo\":\"2\",\"descricao\":\"Descrição 2\",\"qtd\":6,\"precoUnitario\":1.9320663346223177},{\"codigo\":\"1\",\"descricao\":\"Descrição 1\",\"qtd\":2,\"precoUnitario\":8.83666440420624}]}";
-    	//String input1 = "{\"numero\":\"93824095\",\"criacao\":\"2016-03-18 00:00:00\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"}}";
+    	String input1 = "{"
+    			+ "\"numero\":\"93824095\","
+    			+ "\"criacao\":\"2016-03-18 00:00:00\","
+    			+ "\"cliente\":{"
+    				+ "\"codigo\":\"90283129830912\","
+    				+ "\"nome\":\"Teste Ws\","
+    				+ "\"cpfCnpj\":\"748237489274298\","
+    				+ "\"email\":\"roororor@hfhfhfh.com\","
+    				+ "\"logradouro\":\"Rua A\","
+    				+ "\"numero\":\"100\","
+    				+ "\"complemento\":\"casa\","
+    				+ "\"bairro\":\"Santa Rosa\","
+    				+ "\"cidade\":\"Niterói\","
+    				+ "\"estado\":\"RJ\","
+    				+ "\"emailRca\":\"racrca@hfhfhfh.com\","
+    				+ "\"codigoRca\":\"8934724238\","
+    				+ "\"nomeRca\":\"Nome RCA\""
+    			+ "},"
+    			+ "\"filial\":\"Niteroi\","
+    			+ "\"valorFrete\":0.0,"
+    			+ "\"planoPagamento\":\"Plano 1\","
+    			+ "\"cobranca\":\"Cobrasim\","
+    			+ "\"itens\": [{\"codigo\":\"2\",\"descricao\":\"Descrição 2\",\"qtd\":8,\"precoUnitario\":1.9320663346223177},{\"codigo\":\"5\",\"descricao\":\"Descrição 3\",\"qtd\":2,\"precoUnitario\":200.2}]"
+    		+"}";
     	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input1), Pedido.class);
     	
-    	String input2 = "{\"numero\":\"93824096\",\"criacao\":\"2016-03-18 00:00:00\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"},\"itens\":[{\"codigo\":\"2\",\"descricao\":\"Descrição 2\",\"qtd\":2,\"precoUnitario\":1.9320663346223177},{\"codigo\":\"1\",\"descricao\":\"Descrição 1\",\"qtd\":3,\"precoUnitario\":8.83666440420624}]}";
-    	//String input2 = "{\"numero\":\"93824096\",\"criacao\":\"2016-03-18 00:00:00\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"}}";
+    	String input2 = "{"
+    			+ "\"numero\":\"93824096\","
+    			+ "\"criacao\":\"2016-03-18 00:00:00\","
+    			+ "\"cliente\":{"
+    				+ "\"codigo\":\"90283129830912\","
+    				+ "\"nome\":\"Teste Ws\","
+    				+ "\"cpfCnpj\":\"748237489274298\","
+    				+ "\"email\":\"roororor@hfhfhfh.com\","
+    				+ "\"logradouro\":\"Rua A\","
+    				+ "\"numero\":\"100\","
+    				+ "\"complemento\":\"casa\","
+    				+ "\"bairro\":\"Santa Rosa\","
+    				+ "\"cidade\":\"Niterói\","
+    				+ "\"estado\":\"RJ\","
+    				+ "\"emailRca\":\"racrca@hfhfhfh.com\","
+    				+ "\"codigoRca\":\"8934724238\","
+    				+ "\"nomeRca\":\"Nome RCA\""
+    			+ "},"
+    			+ "\"filial\":\"Niteroi\","
+    			+ "\"valorFrete\":0.0,"
+    			+ "\"planoPagamento\":\"Plano 1\","
+    			+ "\"cobranca\":\"Cobrasim\","
+    			+ "\"itens\": [{\"codigo\":\"2\",\"descricao\":\"Descrição 2\",\"qtd\":8,\"precoUnitario\":1.9320663346223177},{\"codigo\":\"5\",\"descricao\":\"Descrição 3\",\"qtd\":2,\"precoUnitario\":200.2}]"
+    		+"}";
     	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input2), Pedido.class);
     	
-    	String input3 = "{\"numero\":\"93824097\",\"criacao\":\"2016-03-18 00:00:00\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"},\"itens\":[{\"codigo\":\"2\",\"descricao\":\"Descrição 2\",\"qtd\":1,\"precoUnitario\":1.9320663346223177},{\"codigo\":\"1\",\"descricao\":\"Descrição 1\",\"qtd\":1,\"precoUnitario\":8.83666440420624}]}";
-    	//String input3 = "{\"numero\":\"93824097\",\"criacao\":\"2016-03-18 00:00:00\",\"cliente\":{\"codigo\":\"90283129830912\",\"nome\":\"Teste Ws\"}}";
+    	String input3 = "{"
+    			+ "\"numero\":\"93824097\","
+    			+ "\"criacao\":\"2016-03-18 00:00:00\","
+    			+ "\"cliente\":{"
+    				+ "\"codigo\":\"90283129830912\","
+    				+ "\"nome\":\"Teste Ws\","
+    				+ "\"cpfCnpj\":\"748237489274298\","
+    				+ "\"email\":\"roororor@hfhfhfh.com\","
+    				+ "\"logradouro\":\"Rua A\","
+    				+ "\"numero\":\"100\","
+    				+ "\"complemento\":\"casa\","
+    				+ "\"bairro\":\"Santa Rosa\","
+    				+ "\"cidade\":\"Niterói\","
+    				+ "\"estado\":\"RJ\","
+    				+ "\"emailRca\":\"racrca@hfhfhfh.com\","
+    				+ "\"codigoRca\":\"8934724238\","
+    				+ "\"nomeRca\":\"Nome RCA\""
+    			+ "},"
+    			+ "\"filial\":\"Niteroi\","
+    			+ "\"valorFrete\":0.0,"
+    			+ "\"planoPagamento\":\"Plano 1\","
+    			+ "\"cobranca\":\"Cobrasim\","
+    			+ "\"itens\": [{\"codigo\":\"2\",\"descricao\":\"Descrição 2\",\"qtd\":8,\"precoUnitario\":1.9320663346223177},{\"codigo\":\"5\",\"descricao\":\"Descrição 3\",\"qtd\":2,\"precoUnitario\":200.2}]"
+    		+"}";
     	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input3), Pedido.class);
     	
-    	List<Pedido> pedidos = target().path("pedido-ws").path("pedidos").queryParam("idCliente", "90283129830912").request(MediaType.APPLICATION_JSON).get(new GenericType<List<Pedido>>() {});
+    	List<Pedido> pedidos = target().path("pedido-ws").path("pedidos").queryParam("idCliente", "748237489274298").request(MediaType.APPLICATION_JSON).get(new GenericType<List<Pedido>>() {});
     	assertThat(pedidos.size(), greaterThan(2));
     	
     }

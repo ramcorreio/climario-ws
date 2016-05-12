@@ -34,26 +34,40 @@ public class PedidoServiceImplTest {
 	
 	@Test
 	public void criarPedido() {
-		
+
 		Cliente c = new Cliente();
-		c.setNome("Cliente de Teste");
-		c.setCodigo("07828359705");
+    	c.setCodigo("07828359705");
+    	c.setNome("Teste Ws");
+    	c.setCpfCnpj("07828359705");
+    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setLogradouro("Rua A");
+    	c.setNumero("100");
+    	c.setComplemento("casa");
+    	c.setBairro("Santa Rosa");
+    	c.setCidade("Niterói");
+    	c.setEstado("RJ");
+    	c.setEmailRca("racrca@hfhfhfh.com");
+    	c.setCodigoRca("8934724238");
+    	c.setNomeRca("Nome RCA");
 		c = pedidoService.criarCliente(c);		
+
+		Pedido p = new Pedido();
+        p.setNumero("3298432");
+        p.setCriacao(Calendar.getInstance().getTime());
+        p.setCliente(c);
+        p.setCobranca("Cobrasim");
+        p.setPlanoPagamento("Plano 1");
+        p.setFilial("Niteroi");
+        addItem(p, 2);
 		
-		Pedido pedido = new Pedido();
-		pedido.setCliente(c);
-		pedido.setNumero("3298432");
-		pedido.setCriacao(Calendar.getInstance().getTime());
-		addItem(pedido, 2);
-		
-		pedido = pedidoService.criar(pedido);
-		assertThat(pedido.getId(), notNullValue());
-		assertThat(pedido.getId(), greaterThan(0l));
-		assertThat(pedido.getNumero(), is(equalTo("3298432")));
-		assertThat(pedido.getCliente().getId(), notNullValue());
-		assertThat(pedido.getCliente().getId(), greaterThan(0l));
-		assertThat(pedido.getItens().size(), greaterThan(0));
-		assertThat(pedido.getItens().size(), is(equalTo(2)));
+		p = pedidoService.criar(p);
+		assertThat(p.getId(), notNullValue());
+		assertThat(p.getId(), greaterThan(0l));
+		assertThat(p.getNumero(), is(equalTo("3298432")));
+		assertThat(p.getCliente().getId(), notNullValue());
+		assertThat(p.getCliente().getId(), greaterThan(0l));
+		assertThat(p.getItens().size(), greaterThan(0));
+		assertThat(p.getItens().size(), is(equalTo(2)));
 	}
 
 	public static void addItem(Pedido pedido, int qtd) {
@@ -101,25 +115,38 @@ public class PedidoServiceImplTest {
 	public void criarPedidoComItens() {
 		
 		Cliente c = new Cliente();
-		c.setNome("Cliente de Teste");
-		c.setCodigo("07828359712");
-		c = pedidoService.criarCliente(c);
+    	c.setCodigo("07828359712");
+    	c.setNome("Cliente de Teste");
+    	c.setCpfCnpj("07828359712");
+    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setLogradouro("Rua A");
+    	c.setNumero("100");
+    	c.setComplemento("casa");
+    	c.setBairro("Santa Rosa");
+    	c.setCidade("Niterói");
+    	c.setEstado("RJ");
+    	c.setEmailRca("racrca@hfhfhfh.com");
+    	c.setCodigoRca("8934724238");
+    	c.setNomeRca("Nome RCA");
+		c = pedidoService.criarCliente(c);		
+
+		Pedido p = new Pedido();
+		p.setNumero("3298442");
+        p.setCriacao(Calendar.getInstance().getTime());
+        p.setCliente(c);
+        p.setCobranca("Cobrasim");
+        p.setPlanoPagamento("Plano 1");
+        p.setFilial("Niteroi");
+        addItem(p, 5);
 		
-		
-		Pedido pedido = new Pedido();
-		pedido.setCliente(c);
-		pedido.setNumero("3298442");
-		pedido.setCriacao(Calendar.getInstance().getTime());
-		addItem(pedido, 5);
-		
-		pedido = pedidoService.criar(pedido);
-		assertThat(pedido.getId(), notNullValue());
-		assertThat(pedido.getId(), greaterThan(0l));
-		assertThat(pedido.getNumero(), is(equalTo("3298442")));
-		assertThat(pedido.getCliente().getId(), notNullValue());
-		assertThat(pedido.getCliente().getId(), greaterThan(0l));
-		assertThat(pedido.getItens().size(), greaterThan(0));
-		assertThat(pedido.getItens().size(), is(equalTo(5)));
+		p = pedidoService.criar(p);
+		assertThat(p.getId(), notNullValue());
+		assertThat(p.getId(), greaterThan(0l));
+		assertThat(p.getNumero(), is(equalTo("3298442")));
+		assertThat(p.getCliente().getId(), notNullValue());
+		assertThat(p.getCliente().getId(), greaterThan(0l));
+		assertThat(p.getItens().size(), greaterThan(0));
+		assertThat(p.getItens().size(), is(equalTo(5)));
 		
 	}
 	
@@ -127,47 +154,84 @@ public class PedidoServiceImplTest {
 	public void criarPedidoComItensPrecoNegativo() {
 		
 		Cliente c = new Cliente();
-		c.setNome("Cliente de Teste");
-		c.setCodigo("0782835998798398439");
+    	c.setCodigo("0782835998798398439");
+    	c.setNome("Teste Ws");
+    	c.setCpfCnpj("0782835998798398439");
+    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setLogradouro("Rua A");
+    	c.setNumero("100");
+    	c.setComplemento("casa");
+    	c.setBairro("Santa Rosa");
+    	c.setCidade("Niterói");
+    	c.setEstado("RJ");
+    	c.setEmailRca("racrca@hfhfhfh.com");
+    	c.setCodigoRca("8934724238");
+    	c.setNomeRca("Nome RCA");
 		c = pedidoService.criarCliente(c);
+
+		Pedido p = new Pedido();
+        p.setNumero("3298446");
+        p.setCriacao(Calendar.getInstance().getTime());
+        p.setCliente(c);
+        p.setCobranca("Cobrasim");
+        p.setPlanoPagamento("Plano 1");
+        p.setFilial("Niteroi");
+        addItem(p, 1);
+        p.getItens().iterator().next().setPrecoUnitario(-1d);
 		
-		
-		Pedido pedido = new Pedido();
-		pedido.setCliente(c);
-		pedido.setNumero("3298446");
-		pedido.setCriacao(Calendar.getInstance().getTime());
-		addItem(pedido, 1);
-		pedido.getItens().iterator().next().setPrecoUnitario(-1d);
-		
-		pedido = pedidoService.criar(pedido);
+		p = pedidoService.criar(p);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void criarPedidoComItensQtdZero() {
 		
 		Cliente c = new Cliente();
-		c.setNome("Cliente de Teste");
-		c.setCodigo("8247329483749");
-		c = pedidoService.criarCliente(c);
+    	c.setCodigo("8247329483749");
+    	c.setNome("Teste Ws");
+    	c.setCpfCnpj("748237489274298");
+    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setLogradouro("Rua A");
+    	c.setNumero("100");
+    	c.setComplemento("casa");
+    	c.setBairro("Santa Rosa");
+    	c.setCidade("Niterói");
+    	c.setEstado("RJ");
+    	c.setEmailRca("racrca@hfhfhfh.com");
+    	c.setCodigoRca("8934724238");
+    	c.setNomeRca("Nome RCA");
+    	
+        Pedido p = new Pedido();
+        p.setNumero("3298446");
+        p.setCriacao(Calendar.getInstance().getTime());
+        p.setCliente(c);
+        p.setCobranca("Cobrasim");
+        p.setPlanoPagamento("Plano 1");
+        p.setFilial("Niteroi");
+        addItem(p, 1);
+        
+		p.getItens().iterator().next().setQtd(0);
 		
-		
-		Pedido pedido = new Pedido();
-		pedido.setCliente(c);
-		pedido.setNumero("3298446");
-		pedido.setCriacao(Calendar.getInstance().getTime());
-		addItem(pedido, 1);
-		pedido.getItens().iterator().next().setQtd(0);
-		
-		pedido = pedidoService.criar(pedido);
+		p = pedidoService.criar(p);
 	}
 	
 	@Test
 	public void existeCliente() {
 		
 		Cliente c = new Cliente();
-		c.setNome("Cliente de Teste 2");
 		c.setCodigo("07828359708");
-		c = pedidoService.criarCliente(c);		
+		c.setNome("Cliente de Teste 2");
+    	c.setCpfCnpj("07828359708");
+    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setLogradouro("Rua A");
+    	c.setNumero("100");
+    	c.setComplemento("casa");
+    	c.setBairro("Santa Rosa");
+    	c.setCidade("Niterói");
+    	c.setEstado("RJ");
+    	c.setEmailRca("racrca@hfhfhfh.com");
+    	c.setCodigoRca("8934724238");
+    	c.setNomeRca("Nome RCA");
+		c = pedidoService.criarCliente(c);
 		
 		assertThat(c.getId(), notNullValue());
 		assertThat(c.getId(), greaterThan(0l));
@@ -177,45 +241,77 @@ public class PedidoServiceImplTest {
 	@Test
 	public void recuperarCliente() {
 		
+		
 		Cliente c = new Cliente();
-		c.setNome("Cliente de Teste 2");
 		c.setCodigo("07828359709");
+		c.setNome("Cliente de Teste 2");
+    	c.setCpfCnpj("07828359709");
+    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setLogradouro("Rua A");
+    	c.setNumero("100");
+    	c.setComplemento("casa");
+    	c.setBairro("Santa Rosa");
+    	c.setCidade("Niterói");
+    	c.setEstado("RJ");
+    	c.setEmailRca("racrca@hfhfhfh.com");
+    	c.setCodigoRca("8934724238");
+    	c.setNomeRca("Nome RCA");
 		c = pedidoService.criarCliente(c);
 		
 		assertThat(c.getId(), notNullValue());
 		assertThat(c.getId(), greaterThan(0l));
-		assertThat(pedidoService.isClienteExiste(c.getCodigo()), is(equalTo(true)));
-		assertThat(pedidoService.recuperarCliente(c.getCodigo()), BeanMatchers.theSameAs(c));
+		assertThat(pedidoService.isClienteExiste(c.getCpfCnpj()), is(equalTo(true)));
+		assertThat(pedidoService.recuperarCliente(c.getCpfCnpj()), BeanMatchers.theSameAs(c));
 	}
 	
 	@Test
 	public void pedidosPorCliente() {
 		
 		Cliente c = new Cliente();
-		c.setNome("Cliente de Teste Final");
-		c.setCodigo("07828359711");
+    	c.setCodigo("07828359711");
+    	c.setNome("Cliente de Teste Final");
+    	c.setCpfCnpj("07828359711");
+    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setLogradouro("Rua A");
+    	c.setNumero("100");
+    	c.setComplemento("casa");
+    	c.setBairro("Santa Rosa");
+    	c.setCidade("Niterói");
+    	c.setEstado("RJ");
+    	c.setEmailRca("racrca@hfhfhfh.com");
+    	c.setCodigoRca("8934724238");
+    	c.setNomeRca("Nome RCA");
 		c = pedidoService.criarCliente(c);		
 
 		Pedido pedido1 = new Pedido();
-		pedido1.setCliente(c);
-		pedido1.setNumero("3298453");
-		pedido1.setCriacao(Calendar.getInstance().getTime());
-		addItem(pedido1, 2);
+        pedido1.setNumero("3298453");
+        pedido1.setCriacao(Calendar.getInstance().getTime());
+        pedido1.setCliente(c);
+        pedido1.setCobranca("Cobrasim");
+        pedido1.setPlanoPagamento("Plano 1");
+        pedido1.setFilial("Niteroi");
+        addItem(pedido1, 2);
 		pedidoService.criar(pedido1);
 		
 		
 		Pedido pedido2 = new Pedido();
-		pedido2.setCliente(c);
-		pedido2.setNumero("3298434");
-		pedido2.setCriacao(Calendar.getInstance().getTime());
-		addItem(pedido2, 1);
-		pedidoService.criar(pedido2);
+        pedido2.setNumero("3298434");
+        pedido2.setCriacao(Calendar.getInstance().getTime());
+        pedido2.setCliente(c);
+        pedido2.setCobranca("Cobrasim");
+        pedido2.setPlanoPagamento("Plano 1");
+        pedido2.setFilial("Niteroi");
+        addItem(pedido2, 1);
+        pedidoService.criar(pedido2);
 		
 		
 		Pedido pedido3 = new Pedido();
-		pedido3.setCliente(c);
 		pedido3.setNumero("3298435");
 		pedido3.setCriacao(Calendar.getInstance().getTime());
+		pedido3.setCliente(c);
+		pedido3.setCobranca("Cobrasim");
+		pedido3.setPlanoPagamento("Plano 1");
+		pedido3.setFilial("Niteroi");
 		addItem(pedido3, 4);
 		pedidoService.criar(pedido3);
 		
@@ -246,16 +342,30 @@ public class PedidoServiceImplTest {
 	public void pedidoExiste() {
 		
 		Cliente c = new Cliente();
-		c.setNome("Cliente de Teste Pedido");
 		c.setCodigo("07828359713");
+		c.setNome("Cliente de Teste Pedido");
+    	c.setCpfCnpj("07828359713");
+    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setLogradouro("Rua A");
+    	c.setNumero("100");
+    	c.setComplemento("casa");
+    	c.setBairro("Santa Rosa");
+    	c.setCidade("Niterói");
+    	c.setEstado("RJ");
+    	c.setEmailRca("racrca@hfhfhfh.com");
+    	c.setCodigoRca("8934724238");
+    	c.setNomeRca("Nome RCA");
 		c = pedidoService.criarCliente(c);		
 
-		Pedido pedido = new Pedido();
-		pedido.setCliente(c);
-		pedido.setNumero("3298453555");
-		pedido.setCriacao(Calendar.getInstance().getTime());
-		addItem(pedido, 2);
-		pedidoService.criar(pedido);
+		Pedido p = new Pedido();
+		p.setNumero("3298453555");
+        p.setCriacao(Calendar.getInstance().getTime());
+        p.setCliente(c);
+        p.setCobranca("Cobrasim");
+        p.setPlanoPagamento("Plano 1");
+        p.setFilial("Niteroi");
+        addItem(p, 2);
+        pedidoService.criar(p);
 		
 		assertThat(pedidoService.isPedidoExiste("3298453555"), is(equalTo(true)));
 		assertThat(pedidoService.isPedidoExiste("3498453555"), is(equalTo(false)));
@@ -265,21 +375,35 @@ public class PedidoServiceImplTest {
 	public void pedidoCpfExiste() {
 		
 		Cliente c = new Cliente();
-		c.setNome("Cliente de Teste Pedido");
-		c.setCodigo("08828359713");
+    	c.setCodigo("08828359713");
+    	c.setNome("Teste Ws");
+    	c.setCpfCnpj("748237489274299");
+    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setLogradouro("Rua A");
+    	c.setNumero("100");
+    	c.setComplemento("casa");
+    	c.setBairro("Santa Rosa");
+    	c.setCidade("Niterói");
+    	c.setEstado("RJ");
+    	c.setEmailRca("racrca@hfhfhfh.com");
+    	c.setCodigoRca("8934724238");
+    	c.setNomeRca("Nome RCA");
 		c = pedidoService.criarCliente(c);		
 
-		Pedido pedido = new Pedido();
-		pedido.setCliente(c);
-		pedido.setNumero("3298453523984");
-		pedido.setCriacao(Calendar.getInstance().getTime());
-		addItem(pedido, 2);
-		pedidoService.criar(pedido);
+		Pedido p = new Pedido();
+        p.setNumero("3298453523984");
+        p.setCriacao(Calendar.getInstance().getTime());
+        p.setCliente(c);
+        p.setCobranca("Cobrasim");
+        p.setPlanoPagamento("Plano 1");
+        p.setFilial("Niteroi");
+        addItem(p, 2);
+		pedidoService.criar(p);
 		
 		assertThat(pedidoService.isPedidoExiste("3298453523984"), is(equalTo(true)));
 		assertThat(pedidoService.isPedidoExiste("3298453529832"), is(equalTo(false)));
-		assertThat(pedidoService.isClienteExiste("08828359713"), is(equalTo(true)));
-		assertThat(pedidoService.isPedidoClienteExiste("08828359713", "3298453523984"), is(equalTo(true)));
-		assertThat(pedidoService.isPedidoClienteExiste("08828359713", "4905820934923"), is(equalTo(false)));
+		assertThat(pedidoService.isClienteExiste("748237489274299"), is(equalTo(true)));
+		assertThat(pedidoService.isPedidoClienteExiste("748237489274299", "3298453523984"), is(equalTo(true)));
+		assertThat(pedidoService.isPedidoClienteExiste("748237489274299", "4905820934923"), is(equalTo(false)));
 	}
 }

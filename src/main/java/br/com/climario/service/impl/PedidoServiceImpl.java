@@ -41,19 +41,19 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService {
 	}
 	
 	@Override
-	public boolean isPedidoClienteExiste(String codigo, String numero) {
+	public boolean isPedidoClienteExiste(String cpfCnpj, String numero) {
 		
 		TypedQuery<Pedido> query = createNamedQuery("Pedido.cliente.existe", Pedido.class);
 		query.setParameter("numero", numero);
-		query.setParameter("codigo", codigo);
+		query.setParameter("cpfCnpj", cpfCnpj);
 		return !query.getResultList().isEmpty();
 	}
 	
 	@Override
-	public boolean isClienteExiste(String codigo) {
+	public boolean isClienteExiste(String cpfCnpj) {
 		
 		TypedQuery<Cliente> query = createNamedQuery("Cliente.existe", Cliente.class);
-		query.setParameter("codigo", codigo);
+		query.setParameter("cpfCnpj", cpfCnpj);
 		return !query.getResultList().isEmpty();
 	}
 	
@@ -66,10 +66,10 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService {
 	}
 	
 	@Override
-	public Cliente recuperarCliente(String codigo) {
+	public Cliente recuperarCliente(String cpfCnpj) {
 		
 		TypedQuery<Cliente> query = createNamedQuery("Cliente.existe", Cliente.class);
-		query.setParameter("codigo", codigo);
+		query.setParameter("cpfCnpj", cpfCnpj);
 		try {
 			return query.getSingleResult();
 		}
@@ -92,17 +92,17 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService {
 	}
 	
 	@Override
-	public List<Pedido> listarPedidosPorCliente(String codigo) {
+	public List<Pedido> listarPedidosPorCliente(String cpfCnpj) {
 		
-		if(codigo == null){
-			throw new NullPointerException("codigo");
+		if(cpfCnpj == null){
+			throw new NullPointerException("cnpjCnpj");
 		}
-		else if(codigo.isEmpty()){
-			throw new IllegalArgumentException("codigo");
+		else if(cpfCnpj.isEmpty()){
+			throw new IllegalArgumentException("cnpjCnpj");
 		}
 		
 		TypedQuery<Pedido> query = createNamedQuery("Pedido.por.cliente", Pedido.class);
-		query.setParameter("codigo", codigo);
+		query.setParameter("cpfCnpj", cpfCnpj);
 		return query.getResultList();
 	}
 	

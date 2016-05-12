@@ -1,6 +1,5 @@
 package br.com.climario.integracao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -64,11 +63,11 @@ public class WebServicePedido {
 		
 		try {
 			
-			if(!pedidoService.isClienteExiste(pedido.getCliente().getCodigo())) {
+			if(!pedidoService.isClienteExiste(pedido.getCliente().getCpfCnpj())) {
 				pedido.setCliente(pedidoService.criarCliente(pedido.getCliente()));
 			}
 			else {
-				pedido.setCliente(pedidoService.recuperarCliente(pedido.getCliente().getCodigo()));
+				pedido.setCliente(pedidoService.recuperarCliente(pedido.getCliente().getCpfCnpj()));
 			}
 			
 			pedidoService.criar(pedido);
@@ -88,19 +87,19 @@ public class WebServicePedido {
 		
 		try {
 			
-			List<Pedido> rs = new ArrayList<>();
+			//List<Pedido> rs = new ArrayList<>();
 			List<Pedido>  pedidos = pedidoService.listarPedidosPorCliente(idCliente);
-			for (Pedido pedido : pedidos) {
+			/*for (Pedido pedido : pedidos) {
 				Pedido p = new Pedido();
 				p.setId(pedido.getId());
 				p.setNumero(pedido.getNumero());
 				p.setCriacao(pedido.getCriacao());
 				p.setCliente(pedido.getCliente());
 				rs.add(p);
-			}
+			}*/
 			
 			_logger.info("pedidos encontrados: " + pedidos.size());
-			return rs;
+			return pedidos;
 		}
 		catch(RuntimeException e) {
 			

@@ -2,7 +2,6 @@ package br.com.climario.ui;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -58,8 +57,7 @@ public class PedidoView implements Serializable {
 		}
 	}
 	
-	@PostConstruct
-	public void load(){
+	public void init() {
 		if(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().containsKey("id")) {
 			numero = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
 			pedido = pedidoService.recuperarPedido(numero);
@@ -69,11 +67,41 @@ public class PedidoView implements Serializable {
 		}
 	}
 	
-	public List<ItemPedido> getItens(){
+	public class ItemWrap {
 		
-		List<ItemPedido> itens = new ArrayList<>();
+		private ItemPedido item;
+		
+		public ItemWrap(ItemPedido item) {
+			this.item = item;
+		}
+		
+		public String getCodigo() {
+			return item.getCodigo();
+		}
+
+		public String getDescricao() {
+			return item.getDescricao();
+		}
+
+		public Integer getQtd() {
+			return item.getQtd();
+		}
+		
+		public Double getPrecoUnitario() {
+			return item.getPrecoUnitario();
+		}
+		
+		public Double getTotal() {
+			return item.getPrecoUnitario() * item.getQtd();
+		}
+		
+	}
+	
+	public List<ItemWrap> getItens(){
+		
+		List<ItemWrap> itens = new ArrayList<>();
 		for (ItemPedido itemPedido : pedido.getItens()) {
-			itens.add(itemPedido);
+			itens.add(new ItemWrap(itemPedido));
 		}
 		return itens;
 	}
@@ -81,7 +109,7 @@ public class PedidoView implements Serializable {
 	public Double getTotalPedido(){
 		
 		Double sum = 0d;
-		for (ItemPedido itemPedido : pedido.getItens()) {
+		for (ItemWrap itemPedido : getItens()) {
 			sum += itemPedido.getTotal();
 		}
 		return sum;
