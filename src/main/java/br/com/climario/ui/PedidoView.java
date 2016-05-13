@@ -58,7 +58,7 @@ public class PedidoView implements Serializable {
 
 	private transient IPedidoService pedidoService = ServiceLocator.getInstance().getPedidoService();
 
-	private ResourceBundle bundle = ResourceBundle.getBundle("pagseguro");
+	private transient ResourceBundle bundle = ResourceBundle.getBundle("pagseguro");
 
 	private String numero;
 
@@ -195,7 +195,7 @@ public class PedidoView implements Serializable {
 
         request.setPaymentMode(PaymentMode.DEFAULT);
 
-        request.setReceiverEmail(bundle.getString("credential." + bundle.getString("environment") + ".email"));
+        request.setReceiverEmail(bundle.getString("credential.email"));
 
         request.setCurrency(Currency.BRL);
 
@@ -268,7 +268,7 @@ public class PedidoView implements Serializable {
 
         request.setPaymentMode(PaymentMode.DEFAULT);
 
-        request.setReceiverEmail(bundle.getString("credential." + bundle.getString("environment") + ".email"));
+        request.setReceiverEmail(bundle.getString("credential.email"));
 
         request.setCurrency(Currency.BRL);
 
@@ -367,14 +367,13 @@ public class PedidoView implements Serializable {
 	private AccountCredentials getAccountCredencials() throws PagSeguroServiceException {
 		
 		final AccountCredentials accountCredentials = PagSeguroConfig.getAccountCredentials();
+		accountCredentials.setEmail(bundle.getString("credential.email"));
 		
 		if ("sandbox".equals(bundle.getString("environment"))) {
 			PagSeguroConfig.setSandboxEnvironment();
-			accountCredentials.setEmail(bundle.getString("credential." + bundle.getString("environment") + ".email"));
 			accountCredentials.setSandboxToken(bundle.getString("credential." + bundle.getString("environment") + ".token"));
 		} else {
 			PagSeguroConfig.setProductionEnvironment();
-			accountCredentials.setEmail(bundle.getString("credential." + bundle.getString("environment") + ".email"));
 			accountCredentials.setProductionToken(bundle.getString("credential." + bundle.getString("environment") + ".token"));
 		}
 		
@@ -400,11 +399,13 @@ public class PedidoView implements Serializable {
 
 			System.out.println(accountCredentials.getEmail());
 			System.out.println(accountCredentials.getToken());
-
+			
 			final String sessionId = SessionService.createSession(accountCredentials);
 			System.out.println("Session ID: " + sessionId);
 
-			final String publicKey = "PUB2FB104236F084EF9BB20A3A7C3E82774";
+			final String publicKey = bundle.getString("credential.public");
+			System.out.println("publicKey: " + publicKey);
+			
 			final PaymentMethods paymentMethods = PaymentMethodService.getPaymentMethods(accountCredentials, publicKey);
 			RequestContext.getCurrentInstance().addCallbackParam("sessionId", sessionId);
 

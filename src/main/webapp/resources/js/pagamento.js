@@ -13,7 +13,6 @@ function handleSession(xhr, status, args) {
 	console.log(args.sessionId);
 	PagSeguroDirectPayment.setSessionId(args.sessionId);
 	console.log(PagSeguroDirectPayment.getSenderHash());
-	
 }
 
 function autorizar(xhr, status, args) {
