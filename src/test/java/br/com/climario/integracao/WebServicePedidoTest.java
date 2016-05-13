@@ -70,6 +70,7 @@ public class WebServicePedidoTest extends JerseyTest {
     	c.setBairro("Santa Rosa");
     	c.setCidade("Niterói");
     	c.setEstado("RJ");
+    	c.setCep("39847345");
     	c.setEmailRca("racrca@hfhfhfh.com");
     	c.setCodigoRca("8934724238");
     	c.setNomeRca("Nome RCA");
@@ -103,6 +104,7 @@ public class WebServicePedidoTest extends JerseyTest {
     	c.setBairro("Santa Rosa");
     	c.setCidade("Niterói");
     	c.setEstado("RJ");
+    	c.setCep("39847345");
     	c.setEmailRca("racrca@hfhfhfh.com");
     	c.setCodigoRca("8934724238");
     	c.setNomeRca("Nome RCA");
@@ -149,6 +151,7 @@ public class WebServicePedidoTest extends JerseyTest {
     				+ "\"bairro\":\"Santa Rosa\","
     				+ "\"cidade\":\"Niterói\","
     				+ "\"estado\":\"RJ\","
+    				+ "\"cep\":\"39847345\","
     				+ "\"emailRca\":\"racrca@hfhfhfh.com\","
     				+ "\"codigoRca\":\"8934724238\","
     				+ "\"nomeRca\":\"Nome RCA\""
@@ -185,6 +188,7 @@ public class WebServicePedidoTest extends JerseyTest {
     				+ "\"bairro\":\"Santa Rosa\","
     				+ "\"cidade\":\"Niterói\","
     				+ "\"estado\":\"RJ\","
+    				+ "\"cep\":\"39847345\","
     				+ "\"emailRca\":\"racrca@hfhfhfh.com\","
     				+ "\"codigoRca\":\"8934724238\","
     				+ "\"nomeRca\":\"Nome RCA\""

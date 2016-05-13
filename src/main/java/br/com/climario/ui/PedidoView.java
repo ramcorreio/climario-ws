@@ -342,9 +342,7 @@ public class PedidoView implements Serializable {
 			
 			System.out.println("----------------------");
 			System.out.println("processamento: " + codigo);
-			final AccountCredentials accountCredentials = PagSeguroConfig.getAccountCredentials();
-	        accountCredentials.setEmail(bundle.getString("credential." + bundle.getString("environment") + ".email"));
-			accountCredentials.setSandboxToken(bundle.getString("credential." + bundle.getString("environment") + ".token"));
+			final AccountCredentials accountCredentials = getAccountCredencials();
 	
 	        final Transaction transaction = TransactionService.createTransaction(accountCredentials, request);
 	        pedido.setCodigoAutorizacao(transaction.getCode());
@@ -366,6 +364,23 @@ public class PedidoView implements Serializable {
 		System.out.println();
 	}
 
+	private AccountCredentials getAccountCredencials() throws PagSeguroServiceException {
+		
+		final AccountCredentials accountCredentials = PagSeguroConfig.getAccountCredentials();
+		
+		if ("sandbox".equals(bundle.getString("environment"))) {
+			PagSeguroConfig.setSandboxEnvironment();
+			accountCredentials.setEmail(bundle.getString("credential." + bundle.getString("environment") + ".email"));
+			accountCredentials.setSandboxToken(bundle.getString("credential." + bundle.getString("environment") + ".token"));
+		} else {
+			PagSeguroConfig.setProductionEnvironment();
+			accountCredentials.setEmail(bundle.getString("credential." + bundle.getString("environment") + ".email"));
+			accountCredentials.setProductionToken(bundle.getString("credential." + bundle.getString("environment") + ".token"));
+		}
+		
+		return accountCredentials;
+	}
+
 	public void checkout(ActionEvent actionEvent) {
 
 		System.out.println(actionEvent);
@@ -381,14 +396,7 @@ public class PedidoView implements Serializable {
 
 			System.out.println(bundle.getString("environment"));
 
-			final AccountCredentials accountCredentials = PagSeguroConfig.getAccountCredentials();
-			accountCredentials.setEmail(bundle.getString("credential." + bundle.getString("environment") + ".email"));
-			accountCredentials.setSandboxToken(bundle.getString("credential." + bundle.getString("environment") + ".token"));
-			/*
-			 * credential.email=ramcorreio@yahoo.com.br
-			 * credential.production.token=D926961BA304497B9A337BD8BFE8F0C7
-			 * credential.sandbox.token=D926961BA304497B9A337BD8BFE8F0C7
-			 */
+			final AccountCredentials accountCredentials = getAccountCredencials();
 
 			System.out.println(accountCredentials.getEmail());
 			System.out.println(accountCredentials.getToken());

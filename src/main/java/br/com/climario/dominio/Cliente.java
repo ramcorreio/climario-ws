@@ -55,9 +55,11 @@ public class Cliente implements Serializable {
 	private String cidade;
 
 	@NotNull
+	@Column(length = 2)
 	private String estado;
 	
 	@NotNull
+	@Column(length = 8)
 	private String cep;
 
 	@NotNull

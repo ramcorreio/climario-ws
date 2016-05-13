@@ -3,6 +3,7 @@ package br.com.climario.ui;
 import java.util.Calendar;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ public class PedidoViewTest {
 	}
 	
 	@Test
+	@Ignore
 	public void pagar() {
 		
 		Cliente c = new Cliente();
