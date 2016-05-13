@@ -477,17 +477,20 @@ public class PedidoView implements Serializable {
 	}
 
 	public void init() {
+		
 		if (FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().containsKey("id")) {
 			numero = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
-			pedido = pedidoService.recuperarPedido(numero);
+			try{
+				pedido = pedidoService.recuperarPedido(numero);
+				if(pedido.getCodigoAutorizacao() != null) {
+					Util.redirect(Util.getContextRoot("/pages/confirmacao.jsf"));	
+				}
+			}
+			catch(RuntimeException e) {
 			
-			if(pedido.getCodigoAutorizacao() != null) {
-				Util.redirect(Util.getContextRoot("/pages/confirmacao.jsf"));	
+				System.out.println("Pedido " + numero + " não existe.");
 			}
 		}
-		/*else { 
-			Util.redirect(Util.getContextRoot("confirmacao.jsf")); 
-		}*/
 	}
 
 	public class ItemWrap {

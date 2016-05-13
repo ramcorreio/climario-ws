@@ -13,8 +13,18 @@
 	</f:metadata>
    	
    	<ui:define name="content">
+   	
+   		<c:if test="#{pedidoView.pedido == null}">
+   		<div class="container altura_confirmacao">
+		    <div class="col-md-12">
+		    	<h2 class="titulo_confirmacao">Pedido <span class="numeropedido">#{pedidoView.numero}</span> não localizado.</h2>
+		    	<div class="wrapper_confirmacao"><a href="#{request.contextPath}" class="btn_consultar2">Sair</a></div>
+		    </div>
+		</div>
+   		</c:if>
    		
-   			
+   		
+   		<c:if test="#{pedidoView.pedido != null}">
 		<div class="container altura_confirmacao"> 
 	 		<div class="col-md-12 col-sm-12 center espaco5">
 	 			<div class="col-md-4 col-sm-5">Número do Pedido<br/><span class="numeropedido">#{pedidoView.numero}</span></div>
@@ -170,7 +180,8 @@
 		    	</div>
 		    </div>
 		    
-    	</div>	
+    	</div>
+    	</c:if>
     		               
 	</ui:define>
 </ui:composition>
