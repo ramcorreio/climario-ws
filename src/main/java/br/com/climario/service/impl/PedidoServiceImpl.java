@@ -106,5 +106,12 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService {
 		return query.getResultList();
 	}
 	
-	
+	@Override
+	@Transactional(value="climarioTM", readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	public void atulizarCodigoTransacao(String numero, String transacao) {
+		
+		Pedido p = recuperarPedido(numero);
+		p.setCodigoAutorizacao(transacao);
+		update(p);
+	}
 }

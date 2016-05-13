@@ -38,6 +38,11 @@ public class Pedido implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
+	@Column(nullable = true)
+	private String codigoAutorizacao;
+	
+	private String status;
 
 	@NotNull
 	@Column(unique = true)
@@ -74,6 +79,22 @@ public class Pedido implements Serializable {
 	
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	public String getCodigoAutorizacao() {
+		return codigoAutorizacao;
+	}
+	
+	public void setCodigoAutorizacao(String codigoAutorizacao) {
+		this.codigoAutorizacao = codigoAutorizacao;
+	}
+	
+	public String getStatus() {
+		return status;
+	}
+	
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
 	public String getNumero() {

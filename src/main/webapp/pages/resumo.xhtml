@@ -1,5 +1,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
    	xmlns:h="http://java.sun.com/jsf/html"
    	xmlns:ui="http://java.sun.com/jsf/facelets"
    	xmlns:p="http://primefaces.org/ui"
@@ -8,13 +9,13 @@
    	<ui:param name="bodyClass" value="secundarias contato"/>
    	
    	<f:metadata>
-    	<f:viewParam name="data" value="#{viewParamPush.data}" />
     	<f:event type="preRenderView" listener="#{pedidoView.init}" />
 	</f:metadata>
    	
    	<ui:define name="content">
-   	
-   		<div class="container altura_confirmacao"> 
+   		
+   			
+		<div class="container altura_confirmacao"> 
 	 		<div class="col-md-12 col-sm-12 center espaco5">
 	 			<div class="col-md-4 col-sm-5">Número do Pedido<br/><span class="numeropedido">#{pedidoView.numero}</span></div>
     			<div class="col-md-4 col-sm-4">Data da geração do pedido<br/><span class="numeropedido20">
@@ -112,21 +113,64 @@
 			    </div>
 		    </div>
 		    
-		    <div class="col-md-12 col-sm-12 font_valor retirapadding"> 
+		    <div class="col-md-12 col-sm-12 font_valor retirapadding">
+		    	<div class="col-md-5 col-sm-12 espaco12">
+		    		<p:selectOneRadio value="#{pedidoView.tipo}">
+		    			<f:selectItem itemValue="boleto" itemLabel="Boleto"/>
+		    			<f:selectItem itemValue="cartao" itemLabel="Cartão"/>
+		    			<p:ajax event="change" update="@form" listener="#{pedidoView.handleKeyEvent}" oncomplete="handleSession(xhr, status, args)"/>
+		    		</p:selectOneRadio>
+		    	</div>
+		    </div>
+		    
+		    
+		    <c:if test="#{not empty pedidoView.cards}">
+		    	<div class="col-md-12 col-sm-12 font_valor retirapadding">
+		    		<div class="col-md-3 col-sm-3 espaco12">
+			    		<div class="aesquerda fcentraliza">
+			    			<p:message for="basic" />
+				    		<h:selectOneListbox id="basic" value="#{pedidoView.option}" rendered="#{not empty pedidoView.cards}" required="true" validatorMessage="Escolha um cartão">
+				    			 <f:selectItems value="#{pedidoView.cards}" var="op" itemLabel="#{op.displayName}" itemValue="#{op.name}" />
+							</h:selectOneListbox>
+			    		</div>
+			    	</div>
+			    	<c:if test="#{pedidoView.tipo == 'cartao'}">
+			    	<div class="col-md-9 col-sm-9 espaco12">
+			    		<p:panelGrid columns="3">
+			    			<p:outputLabel value="Número:"/>
+			    			<p:inputMask id="numeroCartao" mask="9999999999999999" value="#{pedidoView.numeroCartao}" required="true" validatorMessage="Informe o número do cartão"/>
+			    			<p:message for="numeroCartao" />
+			    			
+			    			<p:outputLabel value="CVV:" />
+			    			<p:inputMask id="cvv" mask="999" value="#{pedidoView.cvv}" required="true" validatorMessage="Informe o código de segurança"/>
+			    			<p:message for="cvv" />
+			    			
+			    			<p:outputLabel value="Nome:"/>
+			    			<p:inputText id="nome" value="#{pedidoView.nome}" required="true" validatorMessage="Informe o nome conforme o cartão"/>
+			    			<p:message for="nome" />
+			    			
+			    			<p:outputLabel value="Validade:"/>
+			    			<p:inputMask id="validade" mask="99/9999" value="#{pedidoView.validade}" required="true" validatorMessage="Informe a validade do cartão"/>
+			    			<p:message for="validade" />
+			    		</p:panelGrid>
+			    	</div>
+			    	</c:if>
+		    	</div>
+	    	</c:if>
+	    	<div class="col-md-12 col-sm-12 font_valor retirapadding"> 
 		    	<div class="col-md-3 col-sm-3 mudatmfont espaco12">FORMA DE PAGAMENTO:</div>
 		    	<div class="col-md-4 col-sm-9 espaco12">
 		    		<h:graphicImage library="media" name="img/pagseguro_img.jpg" alt="Pagseguro"/>
 		    	</div>
 		    	<div class="col-md-5 col-sm-12 espaco12">
 		    		<div class="adireita fcentraliza">
-		    			<p:commandButton styleClass="btn3" value="Finalizar pedido com Pagseguro" actionListener="#{pedidoView.checkout}" />
+		    			<p:remoteCommand name="processar" actionListener="#{pedidoView.exec}" oncomplete="retornoProcessamento(xhr, status, args)"/>
+		    			<p:commandButton id="finalizar" styleClass="btn3" value="Finalizar pedido com Pagseguro" actionListener="#{pedidoView.validar}" oncomplete="autorizar(xhr, status, args)" update="@form" disabled="#{empty pedidoView.cards}"/>
 		    		</div>
 		    	</div>
 		    </div>
 		    
-    	</div>
+    	</div>	
     		               
 	</ui:define>
 </ui:composition>
-
-    	

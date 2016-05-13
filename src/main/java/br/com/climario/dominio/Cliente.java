@@ -45,6 +45,7 @@ public class Cliente implements Serializable {
 	@NotNull
 	private String numero;
 
+	@NotNull
 	private String complemento;
 
 	@NotNull
@@ -55,6 +56,9 @@ public class Cliente implements Serializable {
 
 	@NotNull
 	private String estado;
+	
+	@NotNull
+	private String cep;
 
 	@NotNull
 	private String emailRca;
@@ -151,6 +155,14 @@ public class Cliente implements Serializable {
 
 	public void setEstado(String estado) {
 		this.estado = estado;
+	}
+	
+	public String getCep() {
+		return cep;
+	}
+	
+	public void setCep(String cep) {
+		this.cep = cep;
 	}
 
 	public String getEmailRca() {

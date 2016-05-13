@@ -17,8 +17,13 @@
 		<h:outputStylesheet library="css" name="responsive.css" />
 		<h:outputStylesheet library="css" name="main.css" />
 		<h:outputStylesheet library="css" name="formularios.css" />
+		<h:outputStylesheet library="css" name="secundarias.css" />
 		
 		<h:outputStylesheet library="css" name="default.css" />
+		
+		<script type="text/javascript" src="https://stc.sandbox.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>
+		
+		<h:outputScript library="js" name="pagamento.js" /> 
 
 		<ui:insert name="head" />
 
@@ -33,7 +38,7 @@
        	</div>
 
        	<div class="content100">
-       		<h:form>
+       		<h:form prependId="false">
        			<ui:insert name="content"/>
        		</h:form>
    		</div>

@@ -1,0 +1,21 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+   	xmlns:ui="http://java.sun.com/jsf/facelets"
+   	xmlns:p="http://primefaces.org/ui"
+   	template="/WEB-INF/layout/template.xhtml">   	
+   	
+   	<ui:param name="bodyClass" value="secundarias contato"/>
+   	
+   	<ui:define name="content">
+   		
+   		<div class="container altura_confirmacao">
+		    <div class="col-md-12">
+		    	<h2 class="titulo_confirmacao">Obrigado, seu pagamento foi realizado com sucesso!</h2>
+		    	<p class="texto_confirmacao">Mais detalhes desta transação serão enviados para o seu e-mail. Esta página já pode ser fechada.</p>
+		    	<div class="wrapper_confirmacao"><a href="#{request.contextPath}" class="btn_consultar2">Sair</a></div>
+		    </div>
+		</div>
+    		               
+	</ui:define>
+</ui:composition>

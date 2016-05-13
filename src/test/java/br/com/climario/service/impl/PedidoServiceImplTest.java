@@ -46,6 +46,7 @@ public class PedidoServiceImplTest {
     	c.setBairro("Santa Rosa");
     	c.setCidade("Niterói");
     	c.setEstado("RJ");
+    	c.setCep("38924923");
     	c.setEmailRca("racrca@hfhfhfh.com");
     	c.setCodigoRca("8934724238");
     	c.setNomeRca("Nome RCA");
@@ -125,6 +126,7 @@ public class PedidoServiceImplTest {
     	c.setBairro("Santa Rosa");
     	c.setCidade("Niterói");
     	c.setEstado("RJ");
+    	c.setCep("38924923");
     	c.setEmailRca("racrca@hfhfhfh.com");
     	c.setCodigoRca("8934724238");
     	c.setNomeRca("Nome RCA");
@@ -164,6 +166,7 @@ public class PedidoServiceImplTest {
     	c.setBairro("Santa Rosa");
     	c.setCidade("Niterói");
     	c.setEstado("RJ");
+    	c.setCep("38924923");
     	c.setEmailRca("racrca@hfhfhfh.com");
     	c.setCodigoRca("8934724238");
     	c.setNomeRca("Nome RCA");
@@ -188,7 +191,7 @@ public class PedidoServiceImplTest {
 		Cliente c = new Cliente();
     	c.setCodigo("8247329483749");
     	c.setNome("Teste Ws");
-    	c.setCpfCnpj("748237489274298");
+    	c.setCpfCnpj("7482374892");
     	c.setEmail("roororor@hfhfhfh.com");
     	c.setLogradouro("Rua A");
     	c.setNumero("100");
@@ -228,6 +231,7 @@ public class PedidoServiceImplTest {
     	c.setBairro("Santa Rosa");
     	c.setCidade("Niterói");
     	c.setEstado("RJ");
+    	c.setCep("38924923");
     	c.setEmailRca("racrca@hfhfhfh.com");
     	c.setCodigoRca("8934724238");
     	c.setNomeRca("Nome RCA");
@@ -253,6 +257,7 @@ public class PedidoServiceImplTest {
     	c.setBairro("Santa Rosa");
     	c.setCidade("Niterói");
     	c.setEstado("RJ");
+    	c.setCep("38924923");
     	c.setEmailRca("racrca@hfhfhfh.com");
     	c.setCodigoRca("8934724238");
     	c.setNomeRca("Nome RCA");
@@ -278,6 +283,7 @@ public class PedidoServiceImplTest {
     	c.setBairro("Santa Rosa");
     	c.setCidade("Niterói");
     	c.setEstado("RJ");
+    	c.setCep("38924923");
     	c.setEmailRca("racrca@hfhfhfh.com");
     	c.setCodigoRca("8934724238");
     	c.setNomeRca("Nome RCA");
@@ -352,6 +358,7 @@ public class PedidoServiceImplTest {
     	c.setBairro("Santa Rosa");
     	c.setCidade("Niterói");
     	c.setEstado("RJ");
+    	c.setCep("38924923");
     	c.setEmailRca("racrca@hfhfhfh.com");
     	c.setCodigoRca("8934724238");
     	c.setNomeRca("Nome RCA");
@@ -385,6 +392,7 @@ public class PedidoServiceImplTest {
     	c.setBairro("Santa Rosa");
     	c.setCidade("Niterói");
     	c.setEstado("RJ");
+    	c.setCep("38924923");
     	c.setEmailRca("racrca@hfhfhfh.com");
     	c.setCodigoRca("8934724238");
     	c.setNomeRca("Nome RCA");
@@ -405,5 +413,47 @@ public class PedidoServiceImplTest {
 		assertThat(pedidoService.isClienteExiste("748237489274299"), is(equalTo(true)));
 		assertThat(pedidoService.isPedidoClienteExiste("748237489274299", "3298453523984"), is(equalTo(true)));
 		assertThat(pedidoService.isPedidoClienteExiste("748237489274299", "4905820934923"), is(equalTo(false)));
+	}
+	
+	@Test
+	public void atulaizarPedido() {
+		
+		Cliente c = new Cliente();
+    	c.setCodigo("09809809834");
+    	c.setNome("Teste Ws");
+    	c.setCpfCnpj("09809809834");
+    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setLogradouro("Rua A");
+    	c.setNumero("100");
+    	c.setComplemento("casa");
+    	c.setBairro("Santa Rosa");
+    	c.setCidade("Niterói");
+    	c.setEstado("RJ");
+    	c.setCep("38924923");
+    	c.setEmailRca("racrca@hfhfhfh.com");
+    	c.setCodigoRca("8934724238");
+    	c.setNomeRca("Nome RCA");
+		c = pedidoService.criarCliente(c);		
+
+		Pedido p = new Pedido();
+        p.setNumero("3298453523989");
+        p.setCriacao(Calendar.getInstance().getTime());
+        p.setCliente(c);
+        p.setCobranca("Cobrasim");
+        p.setPlanoPagamento("Plano 1");
+        p.setFilial("Niteroi");
+        addItem(p, 2);
+		pedidoService.criar(p);
+		
+		assertThat(pedidoService.isPedidoExiste("3298453523989"), is(equalTo(true)));
+		assertThat(pedidoService.isPedidoExiste("3298453523999"), is(equalTo(false)));
+		assertThat(pedidoService.isClienteExiste("09809809834"), is(equalTo(true)));
+		assertThat(pedidoService.isPedidoClienteExiste("09809809834", "3298453523989"), is(equalTo(true)));
+		assertThat(pedidoService.isPedidoClienteExiste("09809809844", "3298453523989"), is(equalTo(false)));
+		
+		String transacao = Long.toString(System.currentTimeMillis());
+		pedidoService.atulizarCodigoTransacao(p.getNumero(), transacao);
+		assertThat(pedidoService.recuperarPedido(p.getNumero()).getCodigoAutorizacao(), is(equalTo(transacao)));
+		
 	}
 }

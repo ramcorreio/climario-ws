@@ -23,4 +23,6 @@ public interface IPedidoService {
 	
 	public Pedido recuperarPedido(String numero);
 
+	public void atulizarCodigoTransacao(String numero, String transacao);
+
 }
