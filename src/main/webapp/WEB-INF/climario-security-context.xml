@@ -1,0 +1,47 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/security
+		http://www.springframework.org/schema/security/spring-security.xsd">
+					
+	<!-- <http pattern="/javax.faces.resource/**" security="none"/>
+	<http pattern="/resources/**" security="none"/>
+	<http pattern="/pages/**" security="none"/>
+	<http pattern="/admin.jsf" security="none"/>
+	<http pattern="/admin/index.jsf" security="none"/>
+	<http pattern="/admin/install.jsf" security="none"/>
+	<http pattern="/api/**" security="none"/> -->
+
+	<http use-expressions="true">
+		<intercept-url pattern="/admin/**" access="isAuthenticated()" />
+		
+		<!-- <intercept-url pattern="/admin**" access="hasAnyRole('ROLE_ADMIN'ROLE_ADMIN" /> -->
+		<form-login login-page="/admin.jsf"/>
+		<!-- <form-login login-page="/admin.jsf" 
+			authentication-failure-url="/admin.jsf?error=1" 
+			login-processing-url="/do_login"
+			default-target-url="/admin/index.jsf"
+			always-use-default-target="true" />
+		<logout invalidate-session="true" delete-cookies="true" logout-success-url="/admin.jsf" /> -->
+		<!-- <csrf disabled="true" /> -->
+	</http>
+	
+	<!-- enable support for Spring Security’s expression-based syntax -->
+	<!-- <global-method-security pre-post-annotations="enabled" /> -->
+
+	<!-- Select users and user_roles from database -->
+	<authentication-manager>
+		<authentication-provider>
+			<!-- <password-encoder ref="bcryptEncoder" /> -->
+			<jdbc-user-service 
+				data-source-ref="climarioDS" 
+				users-by-username-query="SELECT login, senha, true FROM usuario WHERE login = ?"
+				authorities-by-username-query="SELECT login, 'ROLE_ADMIN' FROM usuario WHERE login = ?" />
+	  	</authentication-provider>
+	</authentication-manager>
+		
+	<!-- <beans:bean id="bcryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" /> -->	
+			
+</beans:beans>

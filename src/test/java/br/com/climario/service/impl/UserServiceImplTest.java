@@ -114,4 +114,21 @@ public class UserServiceImplTest {
 		
 		assertThat(usuarioService.listarUsuario(), hasSize(greaterThan(2)));
 	}
+	
+	@Test
+	public void doLogin() {
+		
+		Usuario u = new Usuario();
+		u.setLogin("admin8");
+		u.setSenha("adminsenha");
+		
+		usuarioService.criar(u);
+		assertThat(u.getId(), notNullValue());
+		assertThat(u.getId(), greaterThan(0l));
+		assertThat(u.getLogin(), is(equalTo("admin8")));
+		assertThat(u.getSenha(), is(equalTo("adminsenha")));
+		
+		assertThat(usuarioService.doLogin("admin8", "adminsenha"), is(equalTo(true)));
+		assertThat(usuarioService.doLogin("admin8", "adminsenhaoooo"), is(equalTo(false)));
+	}
 }

@@ -447,7 +447,7 @@ public class PedidoServiceImplTest {
 		pedidoService.criar(p);
 		
 		assertThat(pedidoService.isPedidoExiste("3298453523989"), is(equalTo(true)));
-		assertThat(pedidoService.isPedidoExiste("3298453523999"), is(equalTo(false)));
+		assertThat(pedidoService.isPedidoExiste("32983523423999"), is(equalTo(false)));
 		assertThat(pedidoService.isClienteExiste("09809809834"), is(equalTo(true)));
 		assertThat(pedidoService.isPedidoClienteExiste("09809809834", "3298453523989"), is(equalTo(true)));
 		assertThat(pedidoService.isPedidoClienteExiste("09809809844", "3298453523989"), is(equalTo(false)));

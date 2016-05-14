@@ -130,4 +130,11 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService {
 		p.setStatus(status);
 		update(p);
 	}
+	
+	@Override
+	public List<Pedido> listar() {
+		
+		TypedQuery<Pedido> query = createNamedQuery("Pedido.all", Pedido.class);
+		return query.getResultList();
+	}
 }

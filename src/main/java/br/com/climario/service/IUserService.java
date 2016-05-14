@@ -12,6 +12,8 @@ public interface IUserService {
 	
 	public boolean isExiste(String login);
 	
+	public boolean doLogin(String login, String senha);
+	
 	public List<Usuario> listarUsuario();
 
 }

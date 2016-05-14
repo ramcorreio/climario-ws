@@ -29,7 +29,8 @@ import br.com.climario.integracao.DateAdapter;
 import br.com.uol.pagseguro.enums.TransactionStatus;
 
 @Entity
-@NamedQueries({ 
+@NamedQueries({
+	@NamedQuery(name = "Pedido.all", query = "select p from Pedido p"),
     @NamedQuery(name = "Pedido.por.cliente", query = "select p from Pedido p where p.cliente.cpfCnpj = :cpfCnpj"),
     @NamedQuery(name = "Pedido.existe", query = "select p from Pedido p where p.numero = :numero"),
     @NamedQuery(name = "Pedido.cliente.existe", query = "select p from Pedido p where p.numero = :numero and p.cliente.cpfCnpj = :cpfCnpj"),

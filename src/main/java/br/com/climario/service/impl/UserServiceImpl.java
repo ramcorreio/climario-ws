@@ -2,6 +2,7 @@ package br.com.climario.service.impl;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class UserServiceImpl extends BaseManager implements IUserService {
 	}
 	
 	@Override
+	@Transactional(value="climarioTM", readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public Usuario alterar(Usuario usuario) {
 
 		return update(usuario);
@@ -34,6 +36,21 @@ public class UserServiceImpl extends BaseManager implements IUserService {
 		TypedQuery<Usuario> query = createNamedQuery("Usuario.existe", Usuario.class);
 		query.setParameter("login", login);
 		return !query.getResultList().isEmpty();
+	}
+	
+	@Override
+	public boolean doLogin(String login, String senha) {
+		
+		TypedQuery<Usuario> query = createNamedQuery("Usuario.do.login", Usuario.class);
+		query.setParameter("login", login);
+		query.setParameter("senha", senha);
+		try {
+			Usuario u = query.getSingleResult();
+			return true;
+		}
+		catch(NoResultException e) {
+			return false;
+		}
 	}
 	
 	@Override

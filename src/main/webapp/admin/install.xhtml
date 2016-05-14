@@ -5,6 +5,8 @@
    	xmlns:p="http://primefaces.org/ui"
    	template="/WEB-INF/layout/admin.xhtml">
    	
+   	
+   	
    	<ui:define name="content">
    		<div align="center">
    			<p:messages id="messages" globalOnly="true" />
@@ -28,7 +30,7 @@
    				<p:message for="confirmasenha"/>
    			</p:panelGrid>
    			<br/>
-   			<p:commandButton value="Entrar" validateClient="true" actionListener="#{loginSession.doInstall}" update="@form"/>
+   			<p:commandButton value="Salvar" validateClient="true" actionListener="#{loginSession.doInstall}" update="@form"/>
    		</div>
 	</ui:define>
 </ui:composition>

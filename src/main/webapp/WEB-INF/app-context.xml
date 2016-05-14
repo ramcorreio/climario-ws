@@ -11,7 +11,8 @@
         <constructor-arg value="file:${user.home}/climario.local.properties"/>
     </bean>
     
+    <!-- <import resource="climario-security-context.xml" /> -->
     <import resource="classpath:climario-service-context.xml"/>
- 	<!-- <import resource="classpath:monitore-security-context.xml" /> --> 
+ 	 
 
 </beans>

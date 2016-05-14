@@ -27,5 +27,7 @@ public interface IPedidoService {
 	public void atulizarCodigoTransacao(String numero, String transacao);
 	
 	public void atulizarStatus(String numero, PedidoStatus status);
+	
+	public List<Pedido> listar();
 
 }

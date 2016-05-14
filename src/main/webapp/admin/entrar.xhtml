@@ -11,15 +11,18 @@
    	
    	<ui:define name="content">
    		<div align="center">
-   			<p:panelGrid columns="2">
+   			<p:messages id="messages" globalOnly="true" />
+   			<p:panelGrid columns="3">
    				<p:outputLabel value="Login:"/>
-   				<p:inputText id="login"/>
+   				<p:inputText id="login" required="true" requiredMessage="Informar login"/>
+   				<p:message for="login"/>
    				
    				<p:outputLabel value="Senha:"/>
-   				<p:password id="senha" />
+   				<p:password id="senha" required="true" requiredMessage="Informar senha"/>
+   				<p:message for="senha"/>
    			</p:panelGrid>
    			<br/>
-   			<p:commandButton value="Entrar" actionListener="#{loginSession.doLogin}"/>
+   			<p:commandButton value="Entrar" validateClient="true" actionListener="#{loginSession.doLogin}" update="@form"/>
    		</div>
 	</ui:define>
 </ui:composition>

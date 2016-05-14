@@ -88,6 +88,17 @@
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	
+	<!-- <filter>
+		<display-name>loginFilter</display-name>
+        <filter-name>loginFilter</filter-name>
+        <filter-class>br.com.climario.integracao.LoginFilter</filter-class>
+     </filter>
+
+     <filter-mapping>
+		<filter-name>loginFilter</filter-name>
+		<url-pattern>/admin/*</url-pattern>
+     </filter-mapping> -->
 
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>

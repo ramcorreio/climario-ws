@@ -12,7 +12,9 @@ import javax.validation.constraints.NotNull;
 @Entity
 @NamedQueries({
 	@NamedQuery(name = "Usuario.all", query = "select u from Usuario u order by login"),
-	@NamedQuery(name = "Usuario.existe", query = "select u from Usuario u where u.login = :login")
+	@NamedQuery(name = "Usuario.existe", query = "select u from Usuario u where u.login = :login"),
+	@NamedQuery(name = "Usuario.do.login", query = "select u from Usuario u where u.login = :login and u.senha = :senha")
+	
 })
 public class Usuario {
 

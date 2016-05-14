@@ -6,27 +6,35 @@
    	xmlns:p="http://primefaces.org/ui">
 
 	<h:head>
+		<h:outputStylesheet library="css" name="admin.css" />
+	
 		<ui:insert name="head" />
 
 		<title><ui:insert name="title">Clima Rio Admin</ui:insert></title>
 	</h:head>
 
+	<f:metadata>
+    	<f:event type="preRenderView" listener="#{loginSession.checkLogin}" />
+	</f:metadata>
 			
 	<h:body styleClass="#{bodyClass}">
-	
-		<div class="header100">
-			<ui:include src="header.xhtml"/>
-       	</div>
+		<p:layout fullPage="true">
+			<p:layoutUnit position="center" styleClass="ui-layout-center-outside">
+				<div class="header100">
+					<ui:include src="header.xhtml"/>
+		       	</div>
+		       	<ui:insert name="menu"/>
+		       	<div class="content100">
+		       		<h:form prependId="false">
+		       			<ui:insert name="content"/>
+		       		</h:form>
+		   		</div>
 
-       	<div class="content100">
-       		<h:form prependId="false">
-       			<ui:insert name="content"/>
-       		</h:form>
-   		</div>
-
-       	<div class="footer100">
-       		<ui:include src="footer.xhtml"/>
-       	</div>
+			</p:layoutUnit>
+			<p:layoutUnit position="south" size="130">
+				<ui:include src="footer.xhtml"/>
+			</p:layoutUnit>
+		</p:layout>
 		
 	</h:body>
 </html>
