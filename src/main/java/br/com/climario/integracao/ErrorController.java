@@ -16,7 +16,7 @@ public class ErrorController extends HttpServlet {
 
 		Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
 		request.setAttribute("statusCode", statusCode);
-
+		
 		switch (statusCode) {
 			case HttpServletResponse.SC_NOT_FOUND:
 	

@@ -22,6 +22,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import br.com.climario.dominio.Cliente;
 import br.com.climario.dominio.ItemPedido;
 import br.com.climario.dominio.Pedido;
+import br.com.climario.dominio.Pedido.PedidoStatus;
 import br.com.climario.service.IPedidoService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -454,6 +455,47 @@ public class PedidoServiceImplTest {
 		String transacao = Long.toString(System.currentTimeMillis());
 		pedidoService.atulizarCodigoTransacao(p.getNumero(), transacao);
 		assertThat(pedidoService.recuperarPedido(p.getNumero()).getCodigoAutorizacao(), is(equalTo(transacao)));
+		
+	}
+	
+	@Test
+	public void atulaizarStatusPedido() {
+		
+		Cliente c = new Cliente();
+    	c.setCodigo("09809809444");
+    	c.setNome("Teste Ws");
+    	c.setCpfCnpj("09809809444");
+    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setLogradouro("Rua A");
+    	c.setNumero("100");
+    	c.setComplemento("casa");
+    	c.setBairro("Santa Rosa");
+    	c.setCidade("Niterói");
+    	c.setEstado("RJ");
+    	c.setCep("38924923");
+    	c.setEmailRca("racrca@hfhfhfh.com");
+    	c.setCodigoRca("8934724238");
+    	c.setNomeRca("Nome RCA");
+		c = pedidoService.criarCliente(c);		
+
+		Pedido p = new Pedido();
+        p.setNumero("3298453523999");
+        p.setCriacao(Calendar.getInstance().getTime());
+        p.setCliente(c);
+        p.setCobranca("Cobrasim");
+        p.setPlanoPagamento("Plano 1");
+        p.setFilial("Niteroi");
+        addItem(p, 2);
+		pedidoService.criar(p);
+		
+		assertThat(pedidoService.isPedidoExiste("3298453523999"), is(equalTo(true)));
+		assertThat(pedidoService.isPedidoExiste("3298453523789"), is(equalTo(false)));
+		assertThat(pedidoService.isClienteExiste("09809809444"), is(equalTo(true)));
+		assertThat(pedidoService.isPedidoClienteExiste("09809809444", "3298453523999"), is(equalTo(true)));
+		assertThat(pedidoService.isPedidoClienteExiste("09809809444", "3298453523989"), is(equalTo(false)));
+		
+		pedidoService.atulizarStatus(p.getNumero(), PedidoStatus.PAGO);
+		assertThat(pedidoService.recuperarPedido(p.getNumero()).getStatus(), is(equalTo(PedidoStatus.PAGO)));
 		
 	}
 }

@@ -58,7 +58,7 @@ public class PedidoView implements Serializable {
 
 	private transient IPedidoService pedidoService = ServiceLocator.getInstance().getPedidoService();
 
-	private transient ResourceBundle bundle = ResourceBundle.getBundle("pagseguro");
+	private static transient ResourceBundle bundle = ResourceBundle.getBundle("pagseguro");
 
 	private String numero;
 
@@ -162,6 +162,11 @@ public class PedidoView implements Serializable {
 	public void setPedido(Pedido pedido) {
 		this.pedido = pedido;
 	}
+	
+	public boolean isExistePedido() {
+		
+		return pedido != null; 
+	}
 
 	public void consultar(ActionEvent actionEvent) {
 
@@ -199,7 +204,7 @@ public class PedidoView implements Serializable {
 
         request.setCurrency(Currency.BRL);
 
-        //request.setNotificationURL("http://www.meusite.com.br/notification");
+        //request.setNotificationURL(Util.getContextRoot("/status"));
 
         request.setReference(pedido.getNumero());
 
@@ -272,7 +277,7 @@ public class PedidoView implements Serializable {
 
         request.setCurrency(Currency.BRL);
 
-        //request.setNotificationURL("http://www.meusite.com.br/notification");
+        //request.setNotificationURL(Util.getContextRoot("/status"));
 
         request.setReference(pedido.getNumero());
 
@@ -364,7 +369,7 @@ public class PedidoView implements Serializable {
 		System.out.println();
 	}
 
-	private AccountCredentials getAccountCredencials() throws PagSeguroServiceException {
+	public static AccountCredentials getAccountCredencials() throws PagSeguroServiceException {
 		
 		final AccountCredentials accountCredentials = PagSeguroConfig.getAccountCredentials();
 		accountCredentials.setEmail(bundle.getString("credential.email"));

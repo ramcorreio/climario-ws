@@ -7,181 +7,184 @@
    	template="/WEB-INF/layout/template.xhtml">   	
    	
    	<ui:param name="bodyClass" value="secundarias contato"/>
+   	<ui:param name="label" value="Finalizar Pedido"/>
    	
    	<f:metadata>
     	<f:event type="preRenderView" listener="#{pedidoView.init}" />
 	</f:metadata>
    	
    	<ui:define name="content">
+   		
+   		
+   		<p:panel rendered="#{!pedidoView.existePedido}">
+   			<div class="container altura_confirmacao">
+			    <div class="col-md-12">
+			    	<h2 class="titulo_confirmacao">Pedido <span class="numeropedido">#{pedidoView.numero}</span> não localizado.</h2>
+			    	<div class="wrapper_confirmacao"><a href="#{request.contextPath}" class="btn_consultar2">Sair</a></div>
+			    </div>
+			</div>
+   		</p:panel>	
    	
-   		<c:if test="#{pedidoView.pedido == null}">
-   		<div class="container altura_confirmacao">
-		    <div class="col-md-12">
-		    	<h2 class="titulo_confirmacao">Pedido <span class="numeropedido">#{pedidoView.numero}</span> não localizado.</h2>
-		    	<div class="wrapper_confirmacao"><a href="#{request.contextPath}" class="btn_consultar2">Sair</a></div>
-		    </div>
-		</div>
-   		</c:if>
-   		
-   		
-   		<c:if test="#{pedidoView.pedido != null}">
-		<div class="container altura_confirmacao"> 
-	 		<div class="col-md-12 col-sm-12 center espaco5">
-	 			<div class="col-md-4 col-sm-5">Número do Pedido<br/><span class="numeropedido">#{pedidoView.numero}</span></div>
-    			<div class="col-md-4 col-sm-4">Data da geração do pedido<br/><span class="numeropedido20">
-    				<h:outputText value="#{pedidoView.pedido.criacao}">
-						<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
-					</h:outputText>
-    			</span></div>
-    			<div class="col-md-4 col-sm-3">Filial<br/><span class="numeropedido20">#{pedidoView.pedido.filial}</span></div>
-    		</div>
-    		
-    		<div class="col-md-12 col-sm-12 center espaco6">
-		    	<div class="col-md-4 col-sm-4">Nome do Cliente(cód.)<br/><span class="numeropedido20">#{pedidoView.pedido.cliente.nome}(#{pedidoView.pedido.cliente.codigo})</span></div>
-		    	<div class="col-md-4 col-sm-3">CPF/CNPJ do cliente<br/><span class="numeropedido20">#{pedidoView.pedido.cliente.cpfCnpj}</span></div>
-		    	<div class="col-md-4 col-sm-5">E-mail do cliente<br/><span class="numeropedido20">#{pedidoView.pedido.cliente.email}</span></div>    	
-		    </div>  
-		 
-		    <div class="col-md-12 col-sm-12 center espaco7">
-		    	<div class="col-md-4 col-sm-4">Endereço do cliente<br/>
-		    		<div class="numeropedido20sline">#{pedidoView.pedido.cliente.logradouro}<br/>#{pedidoView.pedido.cliente.bairro} - #{pedidoView.pedido.cliente.cidade} - #{pedidoView.pedido.cliente.estado}<br/>CEP 24240-070</div>
-		    	</div>
-		    	<div class="col-md-4 col-sm-3">Nome do RCA (cód.)<br/><span class="numeropedido20">#{pedidoView.pedido.cliente.nomeRca}(#{pedidoView.pedido.cliente.codigoRca})</span></div>
-		    	<div class="col-md-4 col-sm-5">E-mail do RCA<br/><span class="numeropedido20">#{pedidoView.pedido.cliente.emailRca}</span></div>    	
-		    </div> 
-		    
-		    <div class="col-md-12 col-sm-12 center espaco9">
-		    	<div class="col-md-4 col-sm-6">Descrição do plano de pagamento<br/><div class="numeropedido20sline">#{pedidoView.pedido.planoPagamento}</div></div>
-		    	<div class="col-md-4 col-sm-6">Descrição da cobrança<br/><div class="numeropedido20sline">#{pedidoView.pedido.cobranca}</div></div>
-		    </div> 
-    		
-   		    <div class="col-md-12 col-sm-12 center espaco8"></div>
-   		    
-  		    <div class="col-md-6 col-sm-9 espaco10 retirapadding">
-		    	<div class="col-md-12 col-sm-12 center mudatmfont2">Código e descrição do produto</div>
-		    </div>
-		    <div class="col-md-2 col-sm-3 espaco10 retirapadding">
-		    	<div class="col-md-12 col-sm-12 center mudatmfont2"><div class="centraliza">Quantidade</div></div>
-		    </div>
-		    <div class="col-md-2 col-sm-6 espaco10 retirapadding">
-		    	<div class="col-md-12 col-sm-12 center mudatmfont2"><div class="centraliza">Preço Unitário</div></div>
-		    </div>
-		    <div class="col-md-2 col-sm-6 espaco10 retirapadding">
-		    	<div class="col-md-12 col-sm-12 mudatmfont2"><div class="centraliza">Subtotal</div></div>
-		    </div>
-   		    
-   		    <ui:repeat var="item" value="#{pedidoView.itens}">
-		             
-				<div class="col-md-6 col-sm-9 espaco10 retirapadding">
-			    	<div class="col-md-1 col-sm-2 divcinza">#{item.codigo} </div>
-			    	<div class="col-md-11 col-sm-10 divcinza">#{item.descricao}</div>
+   		<p:panel rendered="#{pedidoView.existePedido}">
+   			
+   			<div class="container altura_confirmacao"> 
+		 		<div class="col-md-12 col-sm-12 center espaco5">
+		 			<div class="col-md-4 col-sm-5">Número do Pedido<br/><span class="numeropedido">#{pedidoView.numero}</span></div>
+	    			<div class="col-md-4 col-sm-4">Data da geração do pedido<br/><span class="numeropedido20">
+	    				<h:outputText value="#{pedidoView.pedido.criacao}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+						</h:outputText>
+	    			</span></div>
+	    			<div class="col-md-4 col-sm-3">Filial<br/><span class="numeropedido20">#{pedidoView.pedido.filial}</span></div>
+	    		</div>
+	    		
+	    		<div class="col-md-12 col-sm-12 center espaco6">
+			    	<div class="col-md-4 col-sm-4">Nome do Cliente(cód.)<br/><span class="numeropedido20">#{pedidoView.pedido.cliente.nome}(#{pedidoView.pedido.cliente.codigo})</span></div>
+			    	<div class="col-md-4 col-sm-3">CPF/CNPJ do cliente<br/><span class="numeropedido20">#{pedidoView.pedido.cliente.cpfCnpj}</span></div>
+			    	<div class="col-md-4 col-sm-5">E-mail do cliente<br/><span class="numeropedido20">#{pedidoView.pedido.cliente.email}</span></div>    	
+			    </div>  
+			 
+			    <div class="col-md-12 col-sm-12 center espaco7">
+			    	<div class="col-md-4 col-sm-4">Endereço do cliente<br/>
+			    		<div class="numeropedido20sline">#{pedidoView.pedido.cliente.logradouro}<br/>#{pedidoView.pedido.cliente.bairro} - #{pedidoView.pedido.cliente.cidade} - #{pedidoView.pedido.cliente.estado}<br/>CEP 24240-070</div>
+			    	</div>
+			    	<div class="col-md-4 col-sm-3">Nome do RCA (cód.)<br/><span class="numeropedido20">#{pedidoView.pedido.cliente.nomeRca}(#{pedidoView.pedido.cliente.codigoRca})</span></div>
+			    	<div class="col-md-4 col-sm-5">E-mail do RCA<br/><span class="numeropedido20">#{pedidoView.pedido.cliente.emailRca}</span></div>    	
+			    </div> 
+			    
+			    <div class="col-md-12 col-sm-12 center espaco9">
+			    	<div class="col-md-4 col-sm-6">Descrição do plano de pagamento<br/><div class="numeropedido20sline">#{pedidoView.pedido.planoPagamento}</div></div>
+			    	<div class="col-md-4 col-sm-6">Descrição da cobrança<br/><div class="numeropedido20sline">#{pedidoView.pedido.cobranca}</div></div>
+			    </div> 
+	    		
+	   		    <div class="col-md-12 col-sm-12 center espaco8"></div>
+	   		    
+	  		    <div class="col-md-6 col-sm-9 espaco10 retirapadding">
+			    	<div class="col-md-12 col-sm-12 center mudatmfont2">Código e descrição do produto</div>
 			    </div>
 			    <div class="col-md-2 col-sm-3 espaco10 retirapadding">
-			    	<div class="col-md-12 col-sm-12 center divcinza"><div class="centraliza">#{item.qtd}</div></div>
+			    	<div class="col-md-12 col-sm-12 center mudatmfont2"><div class="centraliza">Quantidade</div></div>
 			    </div>
 			    <div class="col-md-2 col-sm-6 espaco10 retirapadding">
-			    	<div class="col-md-12 col-sm-12 center divcinza"><div class="centraliza">
-			    		<h:outputText value="#{item.precoUnitario}">
-							<f:convertNumber locale="pt_BR" type="currency"/>
-						</h:outputText>
-			    		
-			    	</div></div>
+			    	<div class="col-md-12 col-sm-12 center mudatmfont2"><div class="centraliza">Preço Unitário</div></div>
 			    </div>
 			    <div class="col-md-2 col-sm-6 espaco10 retirapadding">
-			    	<div class="col-md-12 col-sm-12 divcinza">
-			    		<div class="centraliza">
-				    		<h:outputText value="#{item.total}">
+			    	<div class="col-md-12 col-sm-12 mudatmfont2"><div class="centraliza">Subtotal</div></div>
+			    </div>
+	   		    
+	   		    <ui:repeat var="item" value="#{pedidoView.itens}">
+			             
+					<div class="col-md-6 col-sm-9 espaco10 retirapadding">
+				    	<div class="col-md-1 col-sm-2 divcinza">#{item.codigo} </div>
+				    	<div class="col-md-11 col-sm-10 divcinza">#{item.descricao}</div>
+				    </div>
+				    <div class="col-md-2 col-sm-3 espaco10 retirapadding">
+				    	<div class="col-md-12 col-sm-12 center divcinza"><div class="centraliza">#{item.qtd}</div></div>
+				    </div>
+				    <div class="col-md-2 col-sm-6 espaco10 retirapadding">
+				    	<div class="col-md-12 col-sm-12 center divcinza"><div class="centraliza">
+				    		<h:outputText value="#{item.precoUnitario}">
 								<f:convertNumber locale="pt_BR" type="currency"/>
 							</h:outputText>
+				    		
+				    	</div></div>
+				    </div>
+				    <div class="col-md-2 col-sm-6 espaco10 retirapadding">
+				    	<div class="col-md-12 col-sm-12 divcinza">
+				    		<div class="centraliza">
+					    		<h:outputText value="#{item.total}">
+									<f:convertNumber locale="pt_BR" type="currency"/>
+								</h:outputText>
+				    		</div>
+				    	</div>
+				    </div>
+				   
+				</ui:repeat>		   
+			    
+			    <div class="col-md-12 col-sm-12 font_valor retirapadding">    
+				    <div class="col-md-5 col-sm-12 retirapadding" style="float:right!important;">
+				    	<div class="col-md-7 col-sm-6 espaco11"><div class="adireita">Desconto</div></div>
+				    	<div class="col-md-5 col-sm-6 espaco11"><div class="centraliza">-</div></div>
+				    	<div class="col-md-7 col-sm-6"><div class="adireita">Valor de Frete</div></div>
+				    	<div class="col-md-5 col-sm-6">
+				    		<div class="centraliza">
+				    			<h:outputText value="#{pedidoView.pedido.valorFrete}">
+									<f:convertNumber locale="pt_BR" type="currency"/>
+								</h:outputText>
+				    		</div>
+				    	</div>
+				    	<div class="col-md-12 col-sm-12 center espaco8valor"></div>
+				    	<div class="col-md-7 col-sm-6"><div class="adireita">Valor Total do Pedido</div></div>
+				    	<div class="col-md-5 col-sm-6">
+				    		<div class="centraliza valortotal">
+					    		<h:outputText value="#{pedidoView.totalPedido}">
+									<f:convertNumber locale="pt_BR" type="currency"/>
+								</h:outputText>
+				    		</div>
+				    	</div>
+				    </div>
+			    </div>
+			    
+			    <div class="col-md-12 col-sm-12 font_valor retirapadding">
+			    	<div class="col-md-5 col-sm-12 espaco12">
+			    		<p:selectOneRadio value="#{pedidoView.tipo}">
+			    			<f:selectItem itemValue="boleto" itemLabel="Boleto"/>
+			    			<f:selectItem itemValue="cartao" itemLabel="Cartão"/>
+			    			<p:ajax event="change" update="@form" listener="#{pedidoView.handleKeyEvent}" oncomplete="handleSession(xhr, status, args)"/>
+			    		</p:selectOneRadio>
+			    	</div>
+			    </div>
+			    
+			    
+			    <c:if test="#{not empty pedidoView.cards}">
+			    	<div class="col-md-12 col-sm-12 font_valor retirapadding">
+			    		<div class="col-md-3 col-sm-3 espaco12">
+				    		<div class="aesquerda fcentraliza">
+				    			<p:message for="basic" />
+					    		<h:selectOneListbox id="basic" value="#{pedidoView.option}" rendered="#{not empty pedidoView.cards}" required="true" validatorMessage="Escolha um cartão">
+					    			 <f:selectItems value="#{pedidoView.cards}" var="op" itemLabel="#{op.displayName}" itemValue="#{op.name}" />
+								</h:selectOneListbox>
+				    		</div>
+				    	</div>
+				    	<c:if test="#{pedidoView.tipo == 'cartao'}">
+				    	<div class="col-md-9 col-sm-9 espaco12">
+				    		<p:panelGrid columns="3">
+				    			<p:outputLabel value="Número:"/>
+				    			<p:inputMask id="numeroCartao" mask="9999999999999999" value="#{pedidoView.numeroCartao}" required="true" validatorMessage="Informe o número do cartão"/>
+				    			<p:message for="numeroCartao" />
+				    			
+				    			<p:outputLabel value="CVV:" />
+				    			<p:inputMask id="cvv" mask="999" value="#{pedidoView.cvv}" required="true" validatorMessage="Informe o código de segurança"/>
+				    			<p:message for="cvv" />
+				    			
+				    			<p:outputLabel value="Nome:"/>
+				    			<p:inputText id="nome" value="#{pedidoView.nome}" required="true" validatorMessage="Informe o nome conforme o cartão"/>
+				    			<p:message for="nome" />
+				    			
+				    			<p:outputLabel value="Validade:"/>
+				    			<p:inputMask id="validade" mask="99/9999" value="#{pedidoView.validade}" required="true" validatorMessage="Informe a validade do cartão"/>
+				    			<p:message for="validade" />
+				    		</p:panelGrid>
+				    	</div>
+				    	</c:if>
+			    	</div>
+		    	</c:if>
+		    	<div class="col-md-12 col-sm-12 font_valor retirapadding"> 
+			    	<div class="col-md-3 col-sm-3 mudatmfont espaco12">FORMA DE PAGAMENTO:</div>
+			    	<div class="col-md-4 col-sm-9 espaco12">
+			    		<h:graphicImage library="media" name="img/pagseguro_img.jpg" alt="Pagseguro"/>
+			    	</div>
+			    	<div class="col-md-5 col-sm-12 espaco12">
+			    		<div class="adireita fcentraliza">
+			    			<p:remoteCommand name="processar" actionListener="#{pedidoView.exec}" oncomplete="retornoProcessamento(xhr, status, args)"/>
+			    			<p:commandButton id="finalizar" styleClass="btn3" value="Finalizar pedido com Pagseguro" actionListener="#{pedidoView.validar}" oncomplete="autorizar(xhr, status, args)" update="@form" disabled="#{empty pedidoView.cards}"/>
 			    		</div>
 			    	</div>
 			    </div>
-			   
-			</ui:repeat>		   
-		    
-		    <div class="col-md-12 col-sm-12 font_valor retirapadding">    
-			    <div class="col-md-5 col-sm-12 retirapadding" style="float:right!important;">
-			    	<div class="col-md-7 col-sm-6 espaco11"><div class="adireita">Desconto</div></div>
-			    	<div class="col-md-5 col-sm-6 espaco11"><div class="centraliza">-</div></div>
-			    	<div class="col-md-7 col-sm-6"><div class="adireita">Valor de Frete</div></div>
-			    	<div class="col-md-5 col-sm-6">
-			    		<div class="centraliza">
-			    			<h:outputText value="#{pedidoView.pedido.valorFrete}">
-								<f:convertNumber locale="pt_BR" type="currency"/>
-							</h:outputText>
-			    		</div>
-			    	</div>
-			    	<div class="col-md-12 col-sm-12 center espaco8valor"></div>
-			    	<div class="col-md-7 col-sm-6"><div class="adireita">Valor Total do Pedido</div></div>
-			    	<div class="col-md-5 col-sm-6">
-			    		<div class="centraliza valortotal">
-				    		<h:outputText value="#{pedidoView.totalPedido}">
-								<f:convertNumber locale="pt_BR" type="currency"/>
-							</h:outputText>
-			    		</div>
-			    	</div>
-			    </div>
-		    </div>
-		    
-		    <div class="col-md-12 col-sm-12 font_valor retirapadding">
-		    	<div class="col-md-5 col-sm-12 espaco12">
-		    		<p:selectOneRadio value="#{pedidoView.tipo}">
-		    			<f:selectItem itemValue="boleto" itemLabel="Boleto"/>
-		    			<f:selectItem itemValue="cartao" itemLabel="Cartão"/>
-		    			<p:ajax event="change" update="@form" listener="#{pedidoView.handleKeyEvent}" oncomplete="handleSession(xhr, status, args)"/>
-		    		</p:selectOneRadio>
-		    	</div>
-		    </div>
-		    
-		    
-		    <c:if test="#{not empty pedidoView.cards}">
-		    	<div class="col-md-12 col-sm-12 font_valor retirapadding">
-		    		<div class="col-md-3 col-sm-3 espaco12">
-			    		<div class="aesquerda fcentraliza">
-			    			<p:message for="basic" />
-				    		<h:selectOneListbox id="basic" value="#{pedidoView.option}" rendered="#{not empty pedidoView.cards}" required="true" validatorMessage="Escolha um cartão">
-				    			 <f:selectItems value="#{pedidoView.cards}" var="op" itemLabel="#{op.displayName}" itemValue="#{op.name}" />
-							</h:selectOneListbox>
-			    		</div>
-			    	</div>
-			    	<c:if test="#{pedidoView.tipo == 'cartao'}">
-			    	<div class="col-md-9 col-sm-9 espaco12">
-			    		<p:panelGrid columns="3">
-			    			<p:outputLabel value="Número:"/>
-			    			<p:inputMask id="numeroCartao" mask="9999999999999999" value="#{pedidoView.numeroCartao}" required="true" validatorMessage="Informe o número do cartão"/>
-			    			<p:message for="numeroCartao" />
-			    			
-			    			<p:outputLabel value="CVV:" />
-			    			<p:inputMask id="cvv" mask="999" value="#{pedidoView.cvv}" required="true" validatorMessage="Informe o código de segurança"/>
-			    			<p:message for="cvv" />
-			    			
-			    			<p:outputLabel value="Nome:"/>
-			    			<p:inputText id="nome" value="#{pedidoView.nome}" required="true" validatorMessage="Informe o nome conforme o cartão"/>
-			    			<p:message for="nome" />
-			    			
-			    			<p:outputLabel value="Validade:"/>
-			    			<p:inputMask id="validade" mask="99/9999" value="#{pedidoView.validade}" required="true" validatorMessage="Informe a validade do cartão"/>
-			    			<p:message for="validade" />
-			    		</p:panelGrid>
-			    	</div>
-			    	</c:if>
-		    	</div>
-	    	</c:if>
-	    	<div class="col-md-12 col-sm-12 font_valor retirapadding"> 
-		    	<div class="col-md-3 col-sm-3 mudatmfont espaco12">FORMA DE PAGAMENTO:</div>
-		    	<div class="col-md-4 col-sm-9 espaco12">
-		    		<h:graphicImage library="media" name="img/pagseguro_img.jpg" alt="Pagseguro"/>
-		    	</div>
-		    	<div class="col-md-5 col-sm-12 espaco12">
-		    		<div class="adireita fcentraliza">
-		    			<p:remoteCommand name="processar" actionListener="#{pedidoView.exec}" oncomplete="retornoProcessamento(xhr, status, args)"/>
-		    			<p:commandButton id="finalizar" styleClass="btn3" value="Finalizar pedido com Pagseguro" actionListener="#{pedidoView.validar}" oncomplete="autorizar(xhr, status, args)" update="@form" disabled="#{empty pedidoView.cards}"/>
-		    		</div>
-		    	</div>
-		    </div>
-		    
-    	</div>
-    	</c:if>
-    		               
+			    
+	    	</div>
+   			
+   		</p:panel>
+   			               
 	</ui:define>
 </ui:composition>

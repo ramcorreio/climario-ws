@@ -9,6 +9,8 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,6 +26,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import br.com.climario.integracao.DateAdapter;
+import br.com.uol.pagseguro.enums.TransactionStatus;
 
 @Entity
 @NamedQueries({ 
@@ -34,6 +37,43 @@ import br.com.climario.integracao.DateAdapter;
 public class Pedido implements Serializable {
 	
 	private static final long serialVersionUID = 2808817848074903456L;
+	
+	public enum PedidoStatus {
+		
+		AGUARDANDO_PAGAMENTO(TransactionStatus.WAITING_PAYMENT),
+		EM_ANALISE(TransactionStatus.IN_ANALYSIS),
+		PAGO(TransactionStatus.PAID),
+		DISPONIVEL(TransactionStatus.AVAILABLE),
+		EM_DISPUTA(TransactionStatus.IN_DISPUTE),
+		DEVOLVIDO(TransactionStatus.REFUNDED),
+		CANCELADO(TransactionStatus.CANCELLED),
+		ESTORNO(TransactionStatus.SELLER_CHARGEBACK),
+		CONSTESTACAO(TransactionStatus.CONTESTATION),
+		DESCONHECIDO(TransactionStatus.UNKNOWN_STATUS);
+		
+		private TransactionStatus status;
+		
+		private PedidoStatus(TransactionStatus status) {
+			this.status = status;
+		}
+		
+		public TransactionStatus getStatus() {
+			return status;
+		}
+		
+		public static PedidoStatus getTIpo(TransactionStatus status) {
+			
+			for (PedidoStatus pedidoStatus : PedidoStatus.values()) {
+				
+				if(pedidoStatus.status.equals(status)) {
+					return pedidoStatus;
+				}
+			}
+			
+			return DESCONHECIDO;
+
+		}
+	}
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +82,8 @@ public class Pedido implements Serializable {
 	@Column(nullable = true)
 	private String codigoAutorizacao;
 	
-	private String status;
+	@Enumerated(EnumType.STRING)
+	private PedidoStatus status;
 
 	@NotNull
 	@Column(unique = true)
@@ -67,6 +108,13 @@ public class Pedido implements Serializable {
 	@NotNull
 	private String cobranca;
 	
+	@NotNull
+	@Column(updatable = false)
+	private Date criado;
+	
+	@NotNull
+	private Date atualizado;
+	
 	@ElementCollection(fetch=FetchType.EAGER)
 	@CollectionTable(uniqueConstraints= @UniqueConstraint(columnNames={"pedido_id","codigo"}))
     @NotEmpty()
@@ -89,11 +137,11 @@ public class Pedido implements Serializable {
 		this.codigoAutorizacao = codigoAutorizacao;
 	}
 	
-	public String getStatus() {
+	public PedidoStatus getStatus() {
 		return status;
 	}
 	
-	public void setStatus(String status) {
+	public void setStatus(PedidoStatus status) {
 		this.status = status;
 	}
 	
@@ -159,5 +207,21 @@ public class Pedido implements Serializable {
 	
 	public void setItens(Set<ItemPedido> itens) {
 		this.itens = itens;
+	}
+
+	public Date getCriado() {
+		return criado;
+	}
+
+	public void setCriado(Date criado) {
+		this.criado = criado;
+	}
+
+	public Date getAtualizado() {
+		return atualizado;
+	}
+
+	public void setAtualizado(Date atualizado) {
+		this.atualizado = atualizado;
 	}
 }

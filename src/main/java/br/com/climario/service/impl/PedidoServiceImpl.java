@@ -1,5 +1,6 @@
 package br.com.climario.service.impl;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.climario.dominio.Cliente;
 import br.com.climario.dominio.ItemPedido;
 import br.com.climario.dominio.Pedido;
+import br.com.climario.dominio.Pedido.PedidoStatus;
 import br.com.climario.persistence.BaseManager;
 import br.com.climario.service.IPedidoService;
 
@@ -28,6 +30,10 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService {
 				throw new IllegalArgumentException("item: " + item.getCodigo());
 			}
 		}
+		
+		pedido.setCriado(Calendar.getInstance().getTime());
+		pedido.setAtualizado(pedido.getCriacao());
+		pedido.setStatus(PedidoStatus.AGUARDANDO_PAGAMENTO);
 		
 		create(pedido);
 		return pedido;
@@ -112,6 +118,16 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService {
 		
 		Pedido p = recuperarPedido(numero);
 		p.setCodigoAutorizacao(transacao);
+		update(p);
+	}
+	
+	@Override
+	@Transactional(value="climarioTM", readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	public void atulizarStatus(String numero, PedidoStatus status) {
+		
+		Pedido p = recuperarPedido(numero);
+		p.setAtualizado(Calendar.getInstance().getTime());
+		p.setStatus(status);
 		update(p);
 	}
 }

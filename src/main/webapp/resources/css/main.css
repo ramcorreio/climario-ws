@@ -325,7 +325,7 @@ footer p {
 }
 
 .btn3 {
-  background: #115d9b;
+  background: #115d9b !important;
   background-image: -webkit-linear-gradient(top, #115d9b, #0d487c);
   background-image: -moz-linear-gradient(top, #115d9b, #0d487c);
   background-image: -ms-linear-gradient(top, #115d9b, #0d487c);
@@ -348,16 +348,17 @@ footer p {
 }
 
 .btn3:hover {
-  background: #3cb0fd;
-  color: #ffffff!important;
+	
+  background: #3cb0fd!important;
+  color: #ffffff !important;
   font-family: 'source_sans_proregular'; 
-  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db) !important;
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db) !important;
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db) !important;
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db) !important;
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db) !important;
   text-decoration: none;
-}
+} 
 
 .pedidolink{
 	color:#0f528b!important;
