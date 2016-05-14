@@ -1,0 +1,45 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+   	xmlns:p="http://primefaces.org/ui"
+   	template="/WEB-INF/layout/admin.xhtml">
+   	
+   	<ui:define name="menu">
+   		<ui:include src="menu.xhtml"/>
+   	</ui:define>
+   	<!-- selection="#{tagManagedBean.tag.tag}" selectionMode="single" -->
+   	
+   	<ui:define name="content">
+   		<p:dataTable
+   			id="pedidos" 
+  			value="#{pedidoAdmView.pedidos}"
+  			var="pedido" 
+  			rowKey="#{pedido.id}"  
+  			paginator="true" rows="25"
+            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+            emptyMessage="Não existem pedidos cadastrados"
+            rowsPerPageTemplate="25,50,100"
+            currentPageReportTemplate="({currentPage} de {totalPages})">
+            
+            	<p:column headerText="Id" width="50">
+  					<h:outputText value="#{pedido.id}" />
+  				</p:column>
+  				<p:column headerText="Número" width="100">
+  					<h:outputText value="#{pedido.numero}" />
+  				</p:column>
+  				<p:column headerText="CPF/CNPJ">
+  					<h:outputText value="#{pedido.cliente.cpfCnpj}" />
+  				</p:column>
+  				<p:column headerText="Cliente Nome">
+  					<h:outputText value="#{pedido.cliente.nome}" />
+  				</p:column>
+  				<p:column headerText="Código Transação">
+  					<h:outputText value="#{pedido.codigoAutorizacao}" />
+  				</p:column>
+  				<p:column headerText="Status">
+  					<h:outputText value="#{pedido.status}" />
+  				</p:column>
+  		</p:dataTable>
+	</ui:define>
+</ui:composition>

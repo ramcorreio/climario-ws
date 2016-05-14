@@ -1,0 +1,7 @@
+/* .ui-widget .ui-widget {
+    font-size: .8em !important;
+}*/
+.ui-widget {
+    font-family: Arial,sans-serif;
+    font-size: 0.95em !important;
+}
