@@ -7,6 +7,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.ActionEvent;
+
+import org.primefaces.component.inputtext.InputText;
 
 import br.com.climario.dominio.Pedido;
 import br.com.climario.service.IPedidoService;
@@ -34,6 +37,30 @@ public class PedidoAdmView implements Serializable {
 	public void init() {
 		
 		pedidos.addAll(pedidoService.listar());
+	}
+	
+	public void limpar(ActionEvent actionEvent) {
+		
+		pedidos.clear();
+		pedidos.addAll(pedidoService.listar());
+		InputText inputText = (InputText) actionEvent.getComponent().findComponent("numero");
+		inputText.resetValue();
+	}
+	
+	public void buscar(ActionEvent actionEvent) {
+		
+		InputText inputText = (InputText) actionEvent.getComponent().findComponent("numero");
+		
+		if(inputText.getValue() != null && !inputText.getValue().toString().isEmpty()) {
+			pedidos.clear();
+			pedidos.add(pedidoService.recuperarPedido(inputText.getValue().toString()));	
+		}
+	}
+	
+	
+	public Double getTotal(Pedido p) {
+		
+		return PedidoView.getTotalPedido(p);
 	}
 
 }

@@ -30,7 +30,7 @@ import br.com.uol.pagseguro.enums.TransactionStatus;
 
 @Entity
 @NamedQueries({
-	@NamedQuery(name = "Pedido.all", query = "select p from Pedido p"),
+	@NamedQuery(name = "Pedido.all", query = "select p from Pedido p order by p.criado desc"),
     @NamedQuery(name = "Pedido.por.cliente", query = "select p from Pedido p where p.cliente.cpfCnpj = :cpfCnpj"),
     @NamedQuery(name = "Pedido.existe", query = "select p from Pedido p where p.numero = :numero"),
     @NamedQuery(name = "Pedido.cliente.existe", query = "select p from Pedido p where p.numero = :numero and p.cliente.cpfCnpj = :cpfCnpj"),
@@ -90,6 +90,9 @@ public class Pedido implements Serializable {
 	@Column(unique = true)
 	private String numero;
 	
+	/**
+	 * Este campo registra a data de criação do pedido nos sistema do cliente
+	 */
 	@NotNull
 	@XmlJavaTypeAdapter(DateAdapter.class)
 	private Date criacao;
@@ -109,6 +112,9 @@ public class Pedido implements Serializable {
 	@NotNull
 	private String cobranca;
 	
+	/**
+	 * Este campo registra a data de criação do pedido neste sistema
+	 */
 	@NotNull
 	@Column(updatable = false)
 	private Date criado;

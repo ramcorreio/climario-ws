@@ -498,7 +498,7 @@ public class PedidoView implements Serializable {
 		}
 	}
 
-	public class ItemWrap {
+	public static class ItemWrap {
 
 		private ItemPedido item;
 
@@ -527,11 +527,16 @@ public class PedidoView implements Serializable {
 		}
 
 	}
-
+	
 	public List<ItemWrap> getItens() {
 
+		return getItens(pedido);
+	}
+
+	public static List<ItemWrap> getItens(Pedido p) {
+
 		List<ItemWrap> itens = new ArrayList<>();
-		for (ItemPedido itemPedido : pedido.getItens()) {
+		for (ItemPedido itemPedido : p.getItens()) {
 			itens.add(new ItemWrap(itemPedido));
 		}
 		return itens;
@@ -539,10 +544,15 @@ public class PedidoView implements Serializable {
 
 	public Double getTotalPedido() {
 
+		return getTotalPedido(pedido);
+	}
+	
+	public static Double getTotalPedido(Pedido p) {
+
 		Double sum = 0d;
-		for (ItemWrap itemPedido : getItens()) {
+		for (ItemWrap itemPedido : getItens(p)) {
 			sum += itemPedido.getTotal();
 		}
-		return sum + pedido.getValorFrete();
+		return sum + p.getValorFrete();
 	}
 }

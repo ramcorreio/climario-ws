@@ -11,12 +11,21 @@
    	<!-- selection="#{tagManagedBean.tag.tag}" selectionMode="single" -->
    	
    	<ui:define name="content">
+   		
+   		<p:panelGrid columns="4">
+   			<p:outputLabel value="Número" />
+   			<p:inputText id="numero" maxlength="20" />
+   			<p:commandButton value="Buscar" actionListener="#{pedidoAdmView.buscar}" update="@form"/>
+   			<p:commandButton value="Limpar" actionListener="#{pedidoAdmView.limpar}" update="@form"/>
+   		</p:panelGrid>
+   		
+   	
    		<p:dataTable
    			id="pedidos" 
   			value="#{pedidoAdmView.pedidos}"
   			var="pedido" 
   			rowKey="#{pedido.id}"  
-  			paginator="true" rows="25"
+  			paginator="true" rows="50"
             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
             emptyMessage="Não existem pedidos cadastrados"
             rowsPerPageTemplate="25,50,100"
@@ -37,8 +46,18 @@
   				<p:column headerText="Código Transação">
   					<h:outputText value="#{pedido.codigoAutorizacao}" />
   				</p:column>
-  				<p:column headerText="Status">
+  				<p:column headerText="Status" width="210">
   					<h:outputText value="#{pedido.status}" />
+  				</p:column>
+  				<p:column headerText="Total" width="120">
+  					<h:outputText value="#{pedidoAdmView.getTotal(pedido)}">
+						<f:convertNumber locale="pt_BR" type="currency"/>
+					</h:outputText>
+  				</p:column>
+  				<p:column headerText="Date" width="120">
+  					<h:outputText value="#{pedido.criacao}">
+  						<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo"/>
+  					</h:outputText>
   				</p:column>
   		</p:dataTable>
 	</ui:define>
