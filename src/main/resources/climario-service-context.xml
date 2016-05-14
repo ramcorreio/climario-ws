@@ -9,6 +9,10 @@
 	<bean name="pedidoService" class="br.com.climario.service.impl.PedidoServiceImpl">
 	   <property name="entityManager" ref="climarioEM"/>
     </bean>
+    
+    <bean name="usuarioService" class="br.com.climario.service.impl.UserServiceImpl">
+	   <property name="entityManager" ref="climarioEM"/>
+    </bean>
 
 	<bean class="br.com.climario.service.impl.ServiceLocator" factory-method="getInstance"/>	
 

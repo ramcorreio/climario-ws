@@ -1,8 +1,11 @@
 package br.com.climario.ui;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -27,6 +30,20 @@ public class Util {
 
 	public static final int PADDING_LEFT = 1;
 	public static final int PADDING_RIGHT = 2;
+	
+	
+	public static String criptografarString(String input) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		
+		MessageDigest algorithm = MessageDigest.getInstance("SHA-256");
+		byte messageDigest[] = algorithm.digest(input.getBytes("UTF-8"));
+		 
+		StringBuilder hexString = new StringBuilder();
+		for (byte b : messageDigest) {
+		  hexString.append(String.format("%02X", 0xFF & b));
+		}
+
+		return hexString.toString();
+	}
 
 	public static void successMsg(String msg) {
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(msg));

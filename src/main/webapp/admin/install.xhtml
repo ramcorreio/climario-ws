@@ -1,0 +1,24 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+   	xmlns:p="http://primefaces.org/ui"
+   	template="/WEB-INF/layout/admin.xhtml">
+   	
+   	<ui:define name="content">
+   		<div align="center">
+   			<p:panelGrid columns="2">
+   				<p:outputLabel value="Login:"/>
+   				<p:inputText id="login"/>
+   				
+   				<p:outputLabel value="Senha:"/>
+   				<p:password id="senha" />
+   				
+   				<p:outputLabel value="Confirmar Senha:"/>
+   				<p:password id="confirmasenha" />
+   			</p:panelGrid>
+   			<br/>
+   			<p:commandButton value="Entrar" actionListener="#{loginSession.doInstall}"/>
+   		</div>
+	</ui:define>
+</ui:composition>
