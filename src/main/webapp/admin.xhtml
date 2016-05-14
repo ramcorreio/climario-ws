@@ -5,6 +5,10 @@
    	xmlns:p="http://primefaces.org/ui"
    	template="/WEB-INF/layout/admin.xhtml">
    	
+   	<f:metadata>
+    	<f:event type="preRenderView" listener="#{loginSession.initLogin}" />
+	</f:metadata>
+   	
    	<ui:define name="content">
    		<div align="center">
    			<p:panelGrid columns="2">

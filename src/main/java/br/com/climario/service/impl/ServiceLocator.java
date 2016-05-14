@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import br.com.climario.service.IPedidoService;
+import br.com.climario.service.IUserService;
 
 /**
  * Classe responsável por disponibilizar o serviços de acesso a base de dados É
@@ -35,5 +36,10 @@ public class ServiceLocator {
 	public IPedidoService getPedidoService() {
 
 		return (IPedidoService) applicationContext.getBean("pedidoService");
+	}
+	
+	public IUserService getUserService() {
+
+		return (IUserService) applicationContext.getBean("usuarioService");
 	}
 }

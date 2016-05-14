@@ -7,18 +7,28 @@
    	
    	<ui:define name="content">
    		<div align="center">
-   			<p:panelGrid columns="2">
+   			<p:messages id="messages" globalOnly="true" />
+   			<p:panelGrid columns="3">
    				<p:outputLabel value="Login:"/>
-   				<p:inputText id="login"/>
+   				<p:inputText id="login"  label="Login" maxlength="10" required="true" requiredMessage="Informe o login">
+   					<f:validateLength minimum="3" maximum="10" />
+   				</p:inputText>
+   				<p:message for="login"/>
    				
    				<p:outputLabel value="Senha:"/>
-   				<p:password id="senha" />
+   				<p:password id="senha" label="Senha" maxlength="10" required="true" requiredMessage="Informe a senha">
+   					<f:validateLength minimum="3" maximum="10" />
+   				</p:password>
+   				<p:message for="senha"/>
    				
    				<p:outputLabel value="Confirmar Senha:"/>
-   				<p:password id="confirmasenha" />
+   				<p:password id="confirmasenha" label="Confirmar Senha" maxlength="10" required="true" requiredMessage="Repita a senha">
+   					<f:validateLength minimum="3" maximum="10" />
+   				</p:password>
+   				<p:message for="confirmasenha"/>
    			</p:panelGrid>
    			<br/>
-   			<p:commandButton value="Entrar" actionListener="#{loginSession.doInstall}"/>
+   			<p:commandButton value="Entrar" validateClient="true" actionListener="#{loginSession.doInstall}" update="@form"/>
    		</div>
 	</ui:define>
 </ui:composition>
