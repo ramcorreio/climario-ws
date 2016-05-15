@@ -1,5 +1,6 @@
 package br.com.climario.service.impl;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
 
@@ -19,7 +20,10 @@ import br.com.climario.service.IPedidoService;
 
 @Service
 @Transactional(value="climarioTM", readOnly = true)
-public class PedidoServiceImpl extends BaseManager implements IPedidoService {
+public class PedidoServiceImpl extends BaseManager implements IPedidoService, Serializable {
+	
+
+	private static final long serialVersionUID = 6720815186839783215L;
 
 	@Transactional(value="climarioTM", readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public Pedido criar(Pedido pedido) {

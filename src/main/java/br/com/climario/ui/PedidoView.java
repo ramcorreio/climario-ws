@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -19,6 +18,7 @@ import javax.faces.event.ActionEvent;
 import org.primefaces.component.inputtext.InputText;
 import org.primefaces.context.RequestContext;
 
+import br.com.climario.dominio.Cliente;
 import br.com.climario.dominio.ItemPedido;
 import br.com.climario.dominio.Pedido;
 import br.com.climario.service.IPedidoService;
@@ -58,9 +58,9 @@ public class PedidoView implements Serializable {
 
 	private transient IPedidoService pedidoService = ServiceLocator.getInstance().getPedidoService();
 
-	private static transient ResourceBundle bundle = ResourceBundle.getBundle("pagseguro");
-
 	private String numero;
+	
+	private String telefone;
 
 	private Pedido pedido;
 
@@ -81,6 +81,14 @@ public class PedidoView implements Serializable {
 	private String validade;
 	
 	private String tipo;
+	
+	public String getTelefone() {
+		return telefone;
+	}
+	
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
 	
 	public String getTipo() {
 		return tipo;
@@ -200,7 +208,7 @@ public class PedidoView implements Serializable {
 
         request.setPaymentMode(PaymentMode.DEFAULT);
 
-        request.setReceiverEmail(bundle.getString("credential.email"));
+        request.setReceiverEmail(Util.getString("credential.email"));
 
         request.setCurrency(Currency.BRL);
 
@@ -273,7 +281,7 @@ public class PedidoView implements Serializable {
 
         request.setPaymentMode(PaymentMode.DEFAULT);
 
-        request.setReceiverEmail(bundle.getString("credential.email"));
+        request.setReceiverEmail(Util.getString("credential.email"));
 
         request.setCurrency(Currency.BRL);
 
@@ -372,14 +380,14 @@ public class PedidoView implements Serializable {
 	public static AccountCredentials getAccountCredencials() throws PagSeguroServiceException {
 		
 		final AccountCredentials accountCredentials = PagSeguroConfig.getAccountCredentials();
-		accountCredentials.setEmail(bundle.getString("credential.email"));
+		accountCredentials.setEmail(Util.getString("credential.email"));
 		
-		if ("sandbox".equals(bundle.getString("environment"))) {
+		if ("sandbox".equals(Util.getString("environment"))) {
 			PagSeguroConfig.setSandboxEnvironment();
-			accountCredentials.setSandboxToken(bundle.getString("credential." + bundle.getString("environment") + ".token"));
+			accountCredentials.setSandboxToken(Util.getString("credential." + Util.getString("environment") + ".token"));
 		} else {
 			PagSeguroConfig.setProductionEnvironment();
-			accountCredentials.setProductionToken(bundle.getString("credential." + bundle.getString("environment") + ".token"));
+			accountCredentials.setProductionToken(Util.getString("credential." + Util.getString("environment") + ".token"));
 		}
 		
 		return accountCredentials;
@@ -392,13 +400,13 @@ public class PedidoView implements Serializable {
 
 		try {
 
-			if (bundle.getString("environment").equals("sandbox")) {
+			if (Util.getString("environment").equals("sandbox")) {
 				PagSeguroConfig.setSandboxEnvironment();
 			} else {
 				PagSeguroConfig.setProductionEnvironment();
 			}
 
-			System.out.println(bundle.getString("environment"));
+			System.out.println(Util.getString("environment"));
 
 			final AccountCredentials accountCredentials = getAccountCredencials();
 
@@ -408,7 +416,7 @@ public class PedidoView implements Serializable {
 			final String sessionId = SessionService.createSession(accountCredentials);
 			System.out.println("Session ID: " + sessionId);
 
-			final String publicKey = bundle.getString("credential.public");
+			final String publicKey = Util.getString("credential.public");
 			System.out.println("publicKey: " + publicKey);
 			
 			final PaymentMethods paymentMethods = PaymentMethodService.getPaymentMethods(accountCredentials, publicKey);
@@ -554,5 +562,31 @@ public class PedidoView implements Serializable {
 			sum += itemPedido.getTotal();
 		}
 		return sum + p.getValorFrete();
+	}
+	
+	public void solicitar(ActionEvent actionEvent) {
+		
+		InputText cpfCnpj = (InputText) actionEvent.getComponent().findComponent("cpfCnpj");
+		InputText nuPedido = (InputText) actionEvent.getComponent().findComponent("nuPedido");
+		InputText telefone = (InputText) actionEvent.getComponent().findComponent("telefone");
+		
+		if(!pedidoService.isPedidoClienteExiste(cpfCnpj.getValue().toString(), nuPedido.getValue().toString())){
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pedido não cadastrado!", "Erro!"));
+		}
+		else {
+			Pedido p = pedidoService.recuperarPedido(nuPedido.getValue().toString());
+			Cliente c = p.getCliente();
+			
+			//Cliente c = pedidoService.recuperarCliente(cpfCnpj.getValue().toString());
+			Object[] args = new Object[]{c.getNome(), c.getCpfCnpj(), telefone.getValue()};
+			
+			String txtCliente = Util.getString("texto.solicitacao.info", args);
+			Util.sendMail(p.getCliente().getEmail(), "Solicitar Pedido", txtCliente);
+			
+			String txtClima = Util.getString("texto.solicitacao", args);
+			Util.sendMail(Util.getString("email.sender.account"), "Solicitar Pedido", txtClima);
+			Util.redirect(Util.getContextRoot());
+		}
+		
 	}
 }

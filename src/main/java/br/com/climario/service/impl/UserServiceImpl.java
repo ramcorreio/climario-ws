@@ -1,5 +1,6 @@
 package br.com.climario.service.impl;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -15,7 +16,9 @@ import br.com.climario.service.IUserService;
 
 @Service
 @Transactional(value="climarioTM", readOnly = true)
-public class UserServiceImpl extends BaseManager implements IUserService {
+public class UserServiceImpl extends BaseManager implements IUserService, Serializable {
+
+	private static final long serialVersionUID = -874701018458951553L;
 
 	@Override
 	@Transactional(value="climarioTM", readOnly = false, propagation = Propagation.REQUIRES_NEW)

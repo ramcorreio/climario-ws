@@ -18,19 +18,28 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import javax.activation.DataHandler;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class Util {
 
-	public static final int PADDING_LEFT = 1;
-	public static final int PADDING_RIGHT = 2;
-	
+	private static transient ResourceBundle bundle = ResourceBundle.getBundle("pagseguro", new UTF8Control());	
 	
 	public static String criptografarString(String input) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		
@@ -211,7 +220,7 @@ public class Util {
 		return c;
 	}
 	
-	public static String PaddingWithZero(String string, Integer size, int position) {
+	/*public static String PaddingWithZero(String string, Integer size, int position) {
 		String stringAux = new String(string);
 		if(position == Util.PADDING_LEFT){
 			while(stringAux.length() < size){
@@ -224,7 +233,7 @@ public class Util {
 			}
 		}
 		return stringAux;
-	}
+	}*/
 	
 	public static String bigDecimalToString(Double amountTemp) {
 		return amountTemp.toString().replaceAll("\\.", ",");
@@ -306,5 +315,123 @@ public class Util {
 		}
 		
 		return prop;
+	}
+	
+	public static String getString(String key) {
+		
+		return bundle.getString(key);
+	}
+	
+	public static String getString(String key, Object ...args) {
+		
+		return MessageFormat.format(getString(key), args);
+	}
+	
+	public static void main(String[] args) {
+		sendMail("ramcorreio@yahoo.com.br", "Assunto", "CORPO EMAIL", null);
+	}
+	
+	public static Boolean sendMail(String emailTo, String subject, String txt){
+    	return sendMail(emailTo, subject, txt, null);
+    }
+    
+    public static Boolean sendMail(String emailTo, String subtitle, String txt, AnexoEmail anexo) {
+    	
+		Boolean rs = true;
+		// Recipient's email ID needs to be mentioned.
+		String to = emailTo;
+
+		// Sender's email ID needs to be mentioned
+		// String from = "";
+		// String from =
+		// configService.findValueByKey(Constants.CONFIG_SYSTEM_MAIL);
+		final String from = getString("email.sender.account");
+		final String fromName = getString("email.sender.label");
+		//final String password = Constants.EMAIL_B2B_CONTATO_PASS;
+		//final String mailBody = "";
+
+		// Assuming you are sending email from localhost
+		// String host = "";
+		// String host =
+		// configService.findValueByKey(Constants.CONFIG_SMTP_HOST);
+		String host = "localhost";
+
+		// Get system properties
+		Properties properties = System.getProperties();
+
+		// Setup mail server
+		properties.setProperty("mail.transport.protocol", "smtp");
+		properties.setProperty("mail.smtp.host", host);
+		
+		// Create a default MimeMessage object.
+		//MimeMessage message = new MimeMessage(Session.getDefaultInstance(properties));
+		
+		//if(!host.equals("localhost"))
+		/*properties.put("mail.smtp.auth", "true");
+		properties.put("mail.smtp.starttls.enable", "true");
+		properties.put("mail.smtp.host", "smtp.gmail.com");
+		properties.put("mail.smtp.port", "587");*/
+
+		/*Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(from, password);
+			}
+		});*/
+			
+		// Get the default Session object.
+		Session session = Session.getDefaultInstance(properties);
+		session.setDebug(true);
+
+		try {
+			
+			Message message = new MimeMessage(session);
+			message.addHeader("Content-Type", "text/html");
+			message.addHeader("charset", "utf-8");
+
+			// Set From: header field of the header.
+			message.setFrom(new InternetAddress(from, fromName));
+
+			// Set To: header field of the header.
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+
+			// Set Subject: header field
+			message.setSubject(subtitle);
+
+			// Now set the actual message
+			// message.setText(txt);
+			//message.setContent(mailBody.replaceFirst("\\[=TXT=]", txt), "text/html; charset=utf-8");
+			
+			if(anexo == null){
+				message.setContent(txt, "text/html; charset=utf-8");
+			}else{
+				Multipart multipart = new MimeMultipart();
+			    MimeBodyPart messageBodyPart = new MimeBodyPart();
+			    messageBodyPart.setText(txt, "utf-8", "html");
+			    multipart.addBodyPart(messageBodyPart);
+	
+			    MimeBodyPart attachmentBodyPart = new MimeBodyPart();
+			    ByteArrayDataSource ds = new ByteArrayDataSource(anexo.getArquivo(), anexo.getContentType().getBaseType()); 
+			    attachmentBodyPart.setDataHandler(new DataHandler(ds));
+			    attachmentBodyPart.setFileName(anexo.getNomeArquivo());
+			    multipart.addBodyPart(attachmentBodyPart);
+			    message.setContent(multipart);
+			}
+		    
+			//message.setContent(txt, "text/html");
+
+			// Send message
+			Transport.send(message);
+			System.out.println("envio ok para " + message);
+		} catch (MessagingException mex) {
+			rs = false;
+			System.out.println("erro de envio");
+			mex.printStackTrace();
+		}
+		catch (Exception e) {
+			rs = false;
+			System.out.println("erro de envio");
+			e.printStackTrace();
+		}
+		return rs;
 	}
 }
