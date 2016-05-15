@@ -3,9 +3,9 @@ function retornoProcessamento(xhr, status, args) {
 	console.log(args.erro);
 	console.log(args.messagem);
 	
-	if(args.erro){
+	/*if(args.erro){
 		alert("Falha no processamento do pedido.\n erro: " + args.codigo)
-	}
+	}*/
 }
 
 function handleSession(xhr, status, args) {

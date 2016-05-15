@@ -141,28 +141,54 @@
 			    		<div class="col-md-3 col-sm-3 espaco12">
 				    		<div class="aesquerda fcentraliza">
 				    			<p:message for="basic" />
-					    		<h:selectOneListbox id="basic" value="#{pedidoView.option}" rendered="#{not empty pedidoView.cards}" required="true" validatorMessage="Escolha um cartão">
-					    			 <f:selectItems value="#{pedidoView.cards}" var="op" itemLabel="#{op.displayName}" itemValue="#{op.name}" />
-								</h:selectOneListbox>
+					    		<p:selectOneListbox 
+					    			id="basic" 
+					    			value="#{pedidoView.option}" 
+					    			required="true" 
+					    			validatorMessage="Escolha um cartão"
+					    			label="Bandeira Cartão">
+					    			
+					    			<f:selectItems value="#{pedidoView.cards}" var="op" itemLabel="#{op.displayName}" itemValue="#{op.name}" />
+					    			
+					    			<p:ajax event="change" listener="#{pedidoView.changeParcela}" update="@form" />
+								</p:selectOneListbox>
 				    		</div>
 				    	</div>
 				    	<c:if test="#{pedidoView.tipo == 'cartao'}">
 				    	<div class="col-md-9 col-sm-9 espaco12">
-				    		<p:panelGrid columns="3">
+				    		<p:panelGrid columns="3" style="width: 100%">
+				    			<p:outputLabel value="Parcelas:"/>
+				    			<p:selectOneListbox 
+					    			id="parcelas" 
+					    			required="true" 
+					    			value="#{pedidoView.numParcelas}"
+					    			validatorMessage="Escolha o número de parcelas"
+					    			style="width: 100%"
+					    			label="Parcelas">
+					    			
+					    			<f:selectItems 
+					    				value="#{pedidoView.parcelas}" 
+					    				var="parcela" 
+					    				itemLabel="#{parcela.quantity}x - Total: (#{pedidoView.getTotalAmount(parcela.totalAmount)})" 
+					    				itemValue="#{parcela.quantity}"/>
+					    			
+								</p:selectOneListbox>
+								<p:message for="parcelas" />
+				    		
 				    			<p:outputLabel value="Número:"/>
-				    			<p:inputMask id="numeroCartao" mask="9999999999999999" value="#{pedidoView.numeroCartao}" required="true" validatorMessage="Informe o número do cartão"/>
+				    			<p:inputMask id="numeroCartao" label="Número Cartão" mask="9999999999999999" value="#{pedidoView.numeroCartao}" required="true" validatorMessage="Informe o número do cartão"/>
 				    			<p:message for="numeroCartao" />
 				    			
 				    			<p:outputLabel value="CVV:" />
-				    			<p:inputMask id="cvv" mask="999" value="#{pedidoView.cvv}" required="true" validatorMessage="Informe o código de segurança"/>
+				    			<p:inputMask id="cvv" label="CVV" mask="999" value="#{pedidoView.cvv}" required="true" validatorMessage="Informe o código de segurança"/>
 				    			<p:message for="cvv" />
 				    			
 				    			<p:outputLabel value="Nome:"/>
-				    			<p:inputText id="nome" value="#{pedidoView.nome}" required="true" validatorMessage="Informe o nome conforme o cartão"/>
+				    			<p:inputText id="nome" label="Nome" value="#{pedidoView.nome}" required="true" validatorMessage="Informe o nome conforme o cartão"/>
 				    			<p:message for="nome" />
 				    			
 				    			<p:outputLabel value="Validade:"/>
-				    			<p:inputMask id="validade" mask="99/9999" value="#{pedidoView.validade}" required="true" validatorMessage="Informe a validade do cartão"/>
+				    			<p:inputMask id="validade" label="Validade" mask="99/9999" value="#{pedidoView.validade}" required="true" validatorMessage="Informe a validade do cartão"/>
 				    			<p:message for="validade" />
 				    		</p:panelGrid>
 				    	</div>

@@ -48,7 +48,7 @@ public class UserServiceImpl extends BaseManager implements IUserService, Serial
 		query.setParameter("login", login);
 		query.setParameter("senha", senha);
 		try {
-			Usuario u = query.getSingleResult();
+			query.getSingleResult();
 			return true;
 		}
 		catch(NoResultException e) {

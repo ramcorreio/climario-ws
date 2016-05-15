@@ -32,10 +32,11 @@ import br.com.uol.pagseguro.domain.Sender;
 import br.com.uol.pagseguro.domain.SenderDocument;
 import br.com.uol.pagseguro.domain.Transaction;
 import br.com.uol.pagseguro.domain.direct.Holder;
-import br.com.uol.pagseguro.domain.direct.Installment;
 import br.com.uol.pagseguro.domain.direct.checkout.BoletoCheckout;
 import br.com.uol.pagseguro.domain.direct.checkout.Checkout;
 import br.com.uol.pagseguro.domain.direct.checkout.CreditCardCheckout;
+import br.com.uol.pagseguro.domain.installment.Installment;
+import br.com.uol.pagseguro.domain.installment.Installments;
 import br.com.uol.pagseguro.domain.paymentmethod.PaymentMethod;
 import br.com.uol.pagseguro.domain.paymentmethod.PaymentMethods;
 import br.com.uol.pagseguro.enums.Currency;
@@ -46,6 +47,7 @@ import br.com.uol.pagseguro.enums.PaymentMode;
 import br.com.uol.pagseguro.enums.ShippingType;
 import br.com.uol.pagseguro.exception.PagSeguroServiceException;
 import br.com.uol.pagseguro.properties.PagSeguroConfig;
+import br.com.uol.pagseguro.service.InstallmentService;
 import br.com.uol.pagseguro.service.PaymentMethodService;
 import br.com.uol.pagseguro.service.SessionService;
 import br.com.uol.pagseguro.service.TransactionService;
@@ -68,6 +70,10 @@ public class PedidoView implements Serializable {
 
 	private List<PaymentMethod> cards = new ArrayList<>();
 	
+	private List<Installment> parcelas = new ArrayList<>();
+	
+	private Integer numParcelas = 1;
+	
 	private DecimalFormat format = new DecimalFormat("0.00", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 	
 	private String token;
@@ -81,6 +87,14 @@ public class PedidoView implements Serializable {
 	private String validade;
 	
 	private String tipo;
+	
+	public Integer getNumParcelas() {
+		return numParcelas;
+	}
+	
+	public void setNumParcelas(Integer numParcelas) {
+		this.numParcelas = numParcelas;
+	}
 	
 	public String getTelefone() {
 		return telefone;
@@ -166,6 +180,10 @@ public class PedidoView implements Serializable {
 	public List<PaymentMethod> getCards() {
 		return cards;
 	}
+	
+	public List<Installment> getParcelas() {
+		return parcelas;
+	}
 
 	public void setPedido(Pedido pedido) {
 		this.pedido = pedido;
@@ -184,6 +202,38 @@ public class PedidoView implements Serializable {
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pedido " + numero + " não encontrado", "Erro!"));
 		} else {
 			Util.redirect(Util.getContextRoot("/pages/resumo.jsf?id=" + numero));
+		}
+	}
+	
+	public void escolherCartao() {
+		
+	}
+	
+	public String getTotalAmount(BigDecimal totalAmount) {
+	
+		//return DecimalFormat.getCurrencyInstance(new Locale("pt_BR")).format(totalAmount.doubleValue());
+		return DecimalFormat.getCurrencyInstance().format(totalAmount.doubleValue());
+	}
+	
+	public void changeParcela() {
+		
+		System.out.println(option);
+		
+		String cardBrand = option.toLowerCase();
+		
+		try {
+			final AccountCredentials accountCredentials = getAccountCredencials();
+			Installments installments = InstallmentService.getInstallments(accountCredentials, new BigDecimal(format.format(getTotalPedido())), option.toLowerCase());
+			
+			parcelas.clear();
+			for (Installment installment : installments.get(cardBrand)) {
+				System.out.println(installment);
+				parcelas.add(installment);
+			}
+		
+		} catch (PagSeguroServiceException e) {
+
+			System.err.println(e.getMessage());
 		}
 	}
 	
@@ -212,7 +262,7 @@ public class PedidoView implements Serializable {
 
         request.setCurrency(Currency.BRL);
 
-        //request.setNotificationURL(Util.getContextRoot("/status"));
+        request.setNotificationURL(Util.getContextRoot("/status"));
 
         request.setReference(pedido.getNumero());
 
@@ -246,25 +296,6 @@ public class PedidoView implements Serializable {
 	                item.getQtd(), //
 	                new BigDecimal(val)));	 
 		}
-
-        /*request.setCreditCardToken(map.get("token").toString());
-
-        request.setInstallment(new Installment(1, new BigDecimal(format.format(getTotalPedido()))));
-
-        request.setHolder(new Holder(pedido.getCliente().getNome(), //
-        		new Phone("99", "99999999"), //
-                new Document(pedido.getCliente().getCpfCnpj().length() == 11 ? DocumentType.CPF : DocumentType.CNPJ, pedido.getCliente().getCpfCnpj()), //
-                "01/01/1900"));
-
-        request.setBillingAddress(new Address("BRA", //
-        		pedido.getCliente().getEstado(), //
-        		pedido.getCliente().getCidade(), //
-        		pedido.getCliente().getBairro(), //
-        		pedido.getCliente().getCep(), //
-        		pedido.getCliente().getLogradouro(), //
-        		pedido.getCliente().getNumero(), //
-        		pedido.getCliente().getComplemento()));*/
-        
         
         transation(request);
 		
@@ -284,8 +315,8 @@ public class PedidoView implements Serializable {
         request.setReceiverEmail(Util.getString("credential.email"));
 
         request.setCurrency(Currency.BRL);
-
-        //request.setNotificationURL(Util.getContextRoot("/status"));
+        
+        request.setNotificationURL(Util.getContextRoot("/status"));
 
         request.setReference(pedido.getNumero());
 
@@ -321,8 +352,10 @@ public class PedidoView implements Serializable {
 		}
 
         request.setCreditCardToken(map.get("token").toString());
+        
+        Installment installment = parcelas.get(numParcelas - 1);
 
-        request.setInstallment(new Installment(1, new BigDecimal(format.format(getTotalPedido()))));
+        request.setInstallment(new br.com.uol.pagseguro.domain.direct.Installment(installment.getQuantity(), new BigDecimal(format.format(installment.getAmount()))));
 
         request.setHolder(new Holder(pedido.getCliente().getNome(), //
         		new Phone("99", "99999999"), //
@@ -372,7 +405,11 @@ public class PedidoView implements Serializable {
 			
 			RequestContext.getCurrentInstance().addCallbackParam("codigo", codigo);
 	        System.err.println("codigo ==> " + e.getMessage());
+	        
+	        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Pedido não processadno", "Falha no processamento do pedido. Erro: " + codigo);
+	        RequestContext.getCurrentInstance().showMessageInDialog(message);
 	    }
+		
 		System.out.println();
 		System.out.println();
 	}
