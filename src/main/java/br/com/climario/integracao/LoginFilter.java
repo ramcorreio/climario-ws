@@ -23,6 +23,7 @@ public class LoginFilter implements Filter {
         final HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         boolean isLoginPage = httpRequest.getRequestURI().contains("entrar.jsf");
+        boolean isInstallPage = httpRequest.getRequestURI().contains("install.jsf");
         System.out.println("Acessando a " + httpRequest.getRequestURI());
         System.out.println("Login: " + isLoginPage);
         
@@ -32,21 +33,24 @@ public class LoginFilter implements Filter {
 
         System.out.println(httpRequest.getSession().getAttribute(BEAN_NAME));
         LoginSession session = (LoginSession) httpRequest.getSession().getAttribute(BEAN_NAME);
-        if(!isLoginPage && session == null) {
-                
-                httpResponse.sendRedirect(httpRequest.getContextPath() + "/admin/entrar.jsf");
-        }
-        /*else if(isLoginPage && session != null && !session.isLogged()){
-        	
-        	httpResponse.sendRedirect(httpRequest.getContextPath() + "/admin/entrar.jsf");
-    	}*/
-        else if(isLoginPage && session != null && session.isLogged()) 
-        {
-                httpResponse.sendRedirect(httpRequest.getContextPath() + "/admin/index.jsf");
+        
+        if(isInstallPage) {
+        	chain.doFilter(request, response);
         }
         else {
+        
+        	if(!isLoginPage && (session == null || session != null && !session.isLogged())) {
+            	
+            	httpResponse.sendRedirect(httpRequest.getContextPath() + "/admin/entrar.jsf");
+            }
+            else if(isLoginPage && session != null && session.isLogged()) {
+            	
+            	httpResponse.sendRedirect(httpRequest.getContextPath() + "/admin/index.jsf");
+            }
+            else {
                 
-                chain.doFilter(request, response);
+            	chain.doFilter(request, response);
+            }
         }
     }
     

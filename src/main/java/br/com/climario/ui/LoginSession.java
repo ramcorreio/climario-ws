@@ -34,14 +34,10 @@ public class LoginSession implements Serializable {
 		return logged;
 	}
 
-	public void checkLogin() {
+	/*public void checkLogin() {
 		System.out.println("checkLogin...");
 		
 		ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
-		
-		/*if(logged && !FacesContext.getCurrentInstance().getExternalContext().getRequestServletPath().contains("index.jsf")) {
-			Util.redirect(Util.getContextRoot("/admin/index.jsf"));
-		}*/
 		
 		if(!ctx.getRequestServletPath().contains("install.jsf")) {
 			if(!logged && !ctx.getRequestServletPath().contains("entrar.jsf")) {
@@ -54,12 +50,14 @@ public class LoginSession implements Serializable {
 		}
 		//else if(!FacesContext.getCurrentInstance().getExternalContext().getRequestServletPath().contains("entrar.jsf")) {
 		
-	}
+	}*/
 	
 	public void initInstall() {
-		/*if(!userService.listarUsuario().isEmpty()) {
+		System.out.println("initInstall...");
+		
+		if(!userService.listarUsuario().isEmpty()) {
 			Util.redirect(Util.getContextRoot("/admin/entrar.jsf"));			
-		}*/
+		}
 	}
 	
 	public void initLogin() {
