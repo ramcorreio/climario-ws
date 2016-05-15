@@ -115,6 +115,9 @@ public class PedidoView implements Serializable {
 	public void handleKeyEvent() {
         System.out.println(tipo);
         checkout(null);
+        if(!cards.isEmpty()) {
+        	option = cards.get(0).getName();
+        }
     }
 	
 	public String getToken() {
@@ -433,7 +436,6 @@ public class PedidoView implements Serializable {
 	public void checkout(ActionEvent actionEvent) {
 
 		System.out.println(actionEvent);
-		// PaymentRequest paymentRequest = new PaymentRequest();
 
 		try {
 
