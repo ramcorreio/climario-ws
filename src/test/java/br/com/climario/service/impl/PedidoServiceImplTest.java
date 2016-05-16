@@ -22,6 +22,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import br.com.climario.dominio.Cliente;
 import br.com.climario.dominio.ItemPedido;
 import br.com.climario.dominio.Pedido;
+import br.com.climario.dominio.Pedido.Pagagamento;
 import br.com.climario.dominio.Pedido.PedidoStatus;
 import br.com.climario.service.IPedidoService;
 
@@ -453,9 +454,11 @@ public class PedidoServiceImplTest {
 		assertThat(pedidoService.isPedidoClienteExiste("09809809844", "3298453523989"), is(equalTo(false)));
 		
 		String transacao = Long.toString(System.currentTimeMillis());
-		pedidoService.atulizarCodigoTransacao(p.getNumero(), transacao);
-		assertThat(pedidoService.recuperarPedido(p.getNumero()).getCodigoAutorizacao(), is(equalTo(transacao)));
-		
+		pedidoService.atulizarCodigoTransacao(p.getNumero(), Pagagamento.BOLETO, transacao, null);
+		p = pedidoService.recuperarPedido(p.getNumero());
+		assertThat(p.getCodigoAutorizacao(), is(equalTo(transacao)));
+		assertThat(p.getPagamento(), is(equalTo(Pagagamento.BOLETO)));
+		assertThat(p.getLink(), nullValue());
 	}
 	
 	@Test

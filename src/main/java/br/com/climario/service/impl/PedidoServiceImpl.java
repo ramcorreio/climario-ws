@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.climario.dominio.Cliente;
 import br.com.climario.dominio.ItemPedido;
 import br.com.climario.dominio.Pedido;
+import br.com.climario.dominio.Pedido.Pagagamento;
 import br.com.climario.dominio.Pedido.PedidoStatus;
 import br.com.climario.persistence.BaseManager;
 import br.com.climario.service.IPedidoService;
@@ -118,10 +119,12 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService, Se
 	
 	@Override
 	@Transactional(value="climarioTM", readOnly = false, propagation = Propagation.REQUIRES_NEW)
-	public void atulizarCodigoTransacao(String numero, String transacao) {
+	public void atulizarCodigoTransacao(String numero, Pagagamento pagagamento, String transacao, String link) {
 		
 		Pedido p = recuperarPedido(numero);
 		p.setCodigoAutorizacao(transacao);
+		p.setPagamento(pagagamento);
+		p.setLink(link);
 		update(p);
 	}
 	

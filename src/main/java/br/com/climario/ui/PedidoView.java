@@ -12,8 +12,10 @@ import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.servlet.http.HttpSession;
 
 import org.primefaces.component.inputtext.InputText;
 import org.primefaces.context.RequestContext;
@@ -21,6 +23,7 @@ import org.primefaces.context.RequestContext;
 import br.com.climario.dominio.Cliente;
 import br.com.climario.dominio.ItemPedido;
 import br.com.climario.dominio.Pedido;
+import br.com.climario.dominio.Pedido.Pagagamento;
 import br.com.climario.service.IPedidoService;
 import br.com.climario.service.impl.ServiceLocator;
 import br.com.uol.pagseguro.domain.AccountCredentials;
@@ -56,9 +59,13 @@ import br.com.uol.pagseguro.service.TransactionService;
 @ViewScoped
 public class PedidoView implements Serializable {
 
+	private static final String NUMERO = "numero";
+
 	private static final long serialVersionUID = -3297581325023937731L;
 
 	private transient IPedidoService pedidoService = ServiceLocator.getInstance().getPedidoService();
+	
+	private HttpSession session;
 
 	private String numero;
 	
@@ -115,9 +122,6 @@ public class PedidoView implements Serializable {
 	public void handleKeyEvent() {
         System.out.println(tipo);
         checkout(null);
-        if(!cards.isEmpty()) {
-        	option = cards.get(0).getName();
-        }
     }
 	
 	public String getToken() {
@@ -201,10 +205,11 @@ public class PedidoView implements Serializable {
 
 		InputText cpfCnpj = (InputText) actionEvent.getComponent().getParent().findComponent("cpfCnpj");
 		if (!pedidoService.isPedidoClienteExiste(cpfCnpj.getValue().toString(), numero)) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pedido " + numero + " não encontrado", "Erro!"));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pedido " + numero + " não encontrado", "Erro!"));
 		} else {
-			Util.redirect(Util.getContextRoot("/pages/resumo.jsf?id=" + numero));
+			String id = Util.getSession().getId();
+			Util.getSession().setAttribute(NUMERO, numero);
+			Util.redirect(Util.getContextRoot("/pages/resumo.jsf?id=" + id));
 		}
 	}
 	
@@ -248,6 +253,8 @@ public class PedidoView implements Serializable {
 		else {
 			execCartao();
 		}
+		
+		Util.redirect(Util.getContextRoot("/pages/confirmacao.jsf?id=" + session.getId()));
 	}
 	
 	public void execBoleto() {
@@ -300,8 +307,7 @@ public class PedidoView implements Serializable {
 	                new BigDecimal(val)));	 
 		}
         
-        transation(request);
-		
+        transation(request, Pagagamento.BOLETO);
 	}
 	
 	public void execCartao() {
@@ -375,7 +381,7 @@ public class PedidoView implements Serializable {
         		pedido.getCliente().getComplemento()));
         
         
-        transation(request);
+        transation(request, Pagagamento.CARTAO);
 	}
 	
 	public void validar(ActionEvent actionEvent){
@@ -384,22 +390,29 @@ public class PedidoView implements Serializable {
 		RequestContext.getCurrentInstance().addCallbackParam("tipo", tipo);
 	}
 	
-	private void transation(Checkout request) {
+	private Transaction transation(Checkout request, Pagagamento pagagamento) {
 	
 		String codigo = Long.toString(System.currentTimeMillis());
+		Transaction transaction = null; 
 		try {
 			
 			System.out.println("----------------------");
 			System.out.println("processamento: " + codigo);
 			final AccountCredentials accountCredentials = getAccountCredencials();
 	
-	        final Transaction transaction = TransactionService.createTransaction(accountCredentials, request);
+	        transaction = TransactionService.createTransaction(accountCredentials, request);
 	        pedido.setCodigoAutorizacao(transaction.getCode());
-	        pedidoService.atulizarCodigoTransacao(pedido.getNumero(), transaction.getCode());
+	        if(Pagagamento.BOLETO.equals(pagagamento)) {
+	        	pedidoService.atulizarCodigoTransacao(pedido.getNumero(), pagagamento, transaction.getCode(), transaction.getPaymentLink());
+	        }
+	        else {
+	        	pedidoService.atulizarCodigoTransacao(pedido.getNumero(), pagagamento, transaction.getCode(), null);
+	        }
+	        
+	        RequestContext.getCurrentInstance().addCallbackParam("link", transaction.getPaymentLink());
 	
 	        if (transaction != null) {
 	            System.out.println("Transaction Code - Default Mode: " + transaction.getCode());
-	            Util.redirect(Util.getContextRoot("/pages/confirmacao.jsf"));
 	        }
 	        RequestContext.getCurrentInstance().addCallbackParam("erro", false);
 		} catch (PagSeguroServiceException e) {
@@ -415,6 +428,7 @@ public class PedidoView implements Serializable {
 		
 		System.out.println();
 		System.out.println();
+		return transaction;
 	}
 
 	public static AccountCredentials getAccountCredencials() throws PagSeguroServiceException {
@@ -470,6 +484,13 @@ public class PedidoView implements Serializable {
 
 				cards.add(paymentMethod);
 			}
+			
+			
+			if("boleto".equals(tipo) && !cards.isEmpty()) {
+				option = cards.get(0).getName();
+			}
+			
+			
 
 		} catch (PagSeguroServiceException e) {
 
@@ -530,12 +551,17 @@ public class PedidoView implements Serializable {
 
 	public void init() {
 		
-		if (FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().containsKey("id")) {
-			numero = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
+		session = Util.getSession();
+		if(session.getAttribute(NUMERO) == null) {
+			Util.redirect(Util.getContextRoot());
+		}
+		else {
 			try{
+				numero = session.getAttribute(NUMERO).toString();
 				pedido = pedidoService.recuperarPedido(numero);
-				if(pedido.getCodigoAutorizacao() != null) {
-					Util.redirect(Util.getContextRoot("/pages/confirmacao.jsf"));	
+				ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+				if(pedido.getCodigoAutorizacao() != null && !context.getRequestServletPath().contains("confirmacao.jsf")) {
+					Util.redirect(Util.getContextRoot("/pages/confirmacao.jsf?id=" + session.getId()));	
 				}
 			}
 			catch(RuntimeException e) {
@@ -543,6 +569,23 @@ public class PedidoView implements Serializable {
 				System.out.println("Pedido " + numero + " não existe.");
 			}
 		}
+		
+		
+		/*if (FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().containsKey("id")) {
+			
+			ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+			numero = context.getRequestParameterMap().get("id");
+			try{
+				pedido = pedidoService.recuperarPedido(numero);
+				if(pedido.getCodigoAutorizacao() != null && !context.getRequestServletPath().contains("confirmacao.jsf")) {
+					Util.redirect(Util.getContextRoot("/pages/confirmacao.jsf?id=" + numero));	
+				}
+			}
+			catch(RuntimeException e) {
+			
+				System.out.println("Pedido " + numero + " não existe.");
+			}
+		}*/
 	}
 
 	public static class ItemWrap {

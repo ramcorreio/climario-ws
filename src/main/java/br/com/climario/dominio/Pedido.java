@@ -39,6 +39,11 @@ public class Pedido implements Serializable {
 	
 	private static final long serialVersionUID = 2808817848074903456L;
 	
+	public enum Pagagamento {
+		
+		BOLETO, CARTAO;
+	}
+	
 	public enum PedidoStatus {
 		
 		AGUARDANDO_PAGAMENTO(TransactionStatus.WAITING_PAYMENT),
@@ -111,6 +116,12 @@ public class Pedido implements Serializable {
 	
 	@NotNull
 	private String cobranca;
+	
+	@Enumerated(EnumType.STRING)
+	private Pagagamento pagamento;
+	
+	@Column(length = 2048)
+	private String link;
 	
 	/**
 	 * Este campo registra a data de criação do pedido neste sistema
@@ -214,6 +225,22 @@ public class Pedido implements Serializable {
 	
 	public void setItens(Set<ItemPedido> itens) {
 		this.itens = itens;
+	}
+	
+	public Pagagamento getPagamento() {
+		return pagamento;
+	}
+	
+	public void setPagamento(Pagagamento pagamento) {
+		this.pagamento = pagamento;
+	}
+	
+	public String getLink() {
+		return link;
+	}
+	
+	public void setLink(String link) {
+		this.link = link;
 	}
 
 	public Date getCriado() {

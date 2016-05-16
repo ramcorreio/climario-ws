@@ -82,8 +82,12 @@ public class Util {
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, msg, detail));
 	}
 	
+	public static HttpSession getSession(boolean create) {
+		return (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(create);
+	}
+	
 	public static HttpSession getSession() {
-		return (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+		return getSession(true);
 	}
 	
 	public static <T> T getSession(String key, Class<T> type) {
@@ -98,12 +102,9 @@ public class Util {
 	}
 	
 	public static String getContextRoot() {
+		
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		/*String url = request.getHeader("Host").toString() + request.getContextPath().toString();
-		if(url.indexOf("10.21.7.9") >= 0){
-			return "localhost:8080"+request.getContextPath().toString();
-		}*/
-		return "http://"+request.getHeader("Host").toString() + request.getContextPath().toString();
+		return "http://" + request.getHeader("Host").toString() + request.getContextPath().toString();
 	}
 	
 	public static String getContextRoot(String pathToAdd) {

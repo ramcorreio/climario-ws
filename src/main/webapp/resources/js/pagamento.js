@@ -2,6 +2,7 @@
 function retornoProcessamento(xhr, status, args) {
 	console.log(args.erro);
 	console.log(args.messagem);
+	console.log(args.link);
 	
 	/*if(args.erro){
 		alert("Falha no processamento do pedido.\n erro: " + args.codigo)

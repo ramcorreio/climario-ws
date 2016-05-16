@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.com.climario.dominio.Cliente;
 import br.com.climario.dominio.Pedido;
+import br.com.climario.dominio.Pedido.Pagagamento;
 import br.com.climario.dominio.Pedido.PedidoStatus;
 
 public interface IPedidoService {
@@ -24,7 +25,7 @@ public interface IPedidoService {
 	
 	public Pedido recuperarPedido(String numero);
 
-	public void atulizarCodigoTransacao(String numero, String transacao);
+	public void atulizarCodigoTransacao(String numero, Pagagamento pagagamento, String transacao, String link);
 	
 	public void atulizarStatus(String numero, PedidoStatus status);
 	
