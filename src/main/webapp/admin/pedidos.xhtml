@@ -37,11 +37,14 @@
   				<p:column headerText="Número" width="100">
   					<h:outputText value="#{pedido.numero}" />
   				</p:column>
-  				<p:column headerText="CPF/CNPJ">
+  				<p:column headerText="CPF/CNPJ"  width="120">
   					<h:outputText value="#{pedido.cliente.cpfCnpj}" />
   				</p:column>
   				<p:column headerText="Cliente Nome">
   					<h:outputText value="#{pedido.cliente.nome}" />
+  				</p:column>
+  				<p:column headerText="Filial">
+  					<h:outputText value="#{pedido.filial}" />
   				</p:column>
   				<p:column headerText="Código Transação">
   					<h:outputText value="#{pedido.codigoAutorizacao}" />
