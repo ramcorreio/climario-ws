@@ -286,11 +286,11 @@
 			<scope>system</scope>
 			<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/pagseguro-api-2.5.2.jar</systemPath>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.mail</groupId>
-    		<artifactId>mail</artifactId>
-    		<version>1.4.5</version>
+			<artifactId>mail</artifactId>
+			<version>1.4.5</version>
 		</dependency>
 
 	</dependencies>
@@ -358,28 +358,12 @@
 		</pluginManagement>
 
 		<plugins>
-			<!-- <plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-install-plugin</artifactId>
-				<version>2.4</version>
-				<executions>
-					<execution>
-						<phase>initialize</phase>
-						<goals>
-							<goal>install-file</goal>
-						</goals>
-						<configuration>
-							<dependency>
-								<groupId>pagseguro-api</groupId>
-								<artifactId>pagseguro-api</artifactId>
-								<version>2.5.2</version>
-								<packaging>jar</packaging>
-								<systemPath>${basedir}/lib/pagseguro-api-2.5.2.jar</systemPath>
-							</dependency>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin> -->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-install-plugin</artifactId> 
+				<version>2.4</version> <executions> <execution> <phase>initialize</phase> 
+				<goals> <goal>install-file</goal> </goals> <configuration> <dependency> <groupId>pagseguro-api</groupId> 
+				<artifactId>pagseguro-api</artifactId> <version>2.5.2</version> <packaging>jar</packaging> 
+				<systemPath>${basedir}/lib/pagseguro-api-2.5.2.jar</systemPath> </dependency> 
+				</configuration> </execution> </executions> </plugin> -->
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

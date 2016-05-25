@@ -33,6 +33,12 @@
 			
 	<h:body styleClass="#{bodyClass}">
 	
+		<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+ 
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+			<h:graphicImage library="media" name="img/ajaxloadingbar.gif" alt="Loading"/>
+		</p:dialog>
+	
 		<div class="header100">
 			<ui:include src="header.xhtml"/>
        	</div>

@@ -126,15 +126,15 @@
 			    </div>
 			    
 			    <div class="col-md-12 col-sm-12 font_valor retirapadding">
+			    	<p:remoteCommand name="processarPagamentos" actionListener="#{pedidoView.execPagamentos}" update="@form"/>
 			    	<div class="col-md-5 col-sm-12 espaco12">
-			    		<p:selectOneRadio value="#{pedidoView.tipo}">
-			    			<f:selectItem itemValue="boleto" itemLabel="Boleto"/>
-			    			<f:selectItem itemValue="cartao" itemLabel="Cartão"/>
+			    		<p:selectOneRadio value="#{pedidoView.tipo}" widgetVar="opcaoPag">
+			    			<f:selectItem itemValue="BOLETO" itemLabel="Boleto"/>
+			    			<f:selectItem itemValue="CREDIT_CARD" itemLabel="Cartão"/>
 			    			<p:ajax event="change" update="@form" listener="#{pedidoView.handleKeyEvent}" oncomplete="handleSession(xhr, status, args)"/>
 			    		</p:selectOneRadio>
 			    	</div>
 			    </div>
-			    
 			    
 			    <c:if test="#{not empty pedidoView.cards}">
 			    	<div class="col-md-12 col-sm-12 font_valor retirapadding">
@@ -150,11 +150,11 @@
 					    			
 					    			<f:selectItems value="#{pedidoView.cards}" var="op" itemLabel="#{op.displayName}" itemValue="#{op.name}" />
 					    			
-					    			<p:ajax event="change" listener="#{pedidoView.changeParcela}" update="@form" />
+					    			<p:ajax event="change"  update="@form" listener="#{pedidoView.changeParcela}" />
 								</p:selectOneListbox>
 				    		</div>
 				    	</div>
-				    	<c:if test="#{pedidoView.tipo == 'cartao'}">
+				    	<c:if test="#{pedidoView.tipo == 'CREDIT_CARD'}">
 				    	<div class="col-md-9 col-sm-9 espaco12">
 				    		<p:panelGrid columns="3" style="width: 100%">
 				    			<p:outputLabel value="Parcelas:"/>

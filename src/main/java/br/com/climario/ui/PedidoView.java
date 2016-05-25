@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -15,10 +16,12 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.HttpSession;
 
 import org.primefaces.component.inputtext.InputText;
 import org.primefaces.context.RequestContext;
+import org.primefaces.json.JSONObject;
 
 import br.com.climario.dominio.Cliente;
 import br.com.climario.dominio.ItemPedido;
@@ -58,6 +61,8 @@ import br.com.uol.pagseguro.service.TransactionService;
 @ManagedBean
 @ViewScoped
 public class PedidoView implements Serializable {
+
+	private static final String BOLETO_METHOD = "BOLETO";
 
 	private static final String NUMERO = "numero";
 
@@ -120,8 +125,21 @@ public class PedidoView implements Serializable {
 	}
 	
 	public void handleKeyEvent() {
+		
         System.out.println(tipo);
-        checkout(null);
+		try {
+			
+			AccountCredentials accountCredentials = getAccountCredencials();
+			final String sessionId = SessionService.createSession(accountCredentials);
+			System.out.println("Session ID: " + sessionId);
+			RequestContext.getCurrentInstance().addCallbackParam("sessionId", sessionId);
+			RequestContext.getCurrentInstance().addCallbackParam("valorTotal", format.format(getTotalPedido()));
+	        //checkout(null);
+			
+		} catch (PagSeguroServiceException e) {
+			
+			e.printStackTrace();
+		}
     }
 	
 	public String getToken() {
@@ -245,9 +263,41 @@ public class PedidoView implements Serializable {
 		}
 	}
 	
+	public void execPagamentos() {
+	
+		FacesContext context = FacesContext.getCurrentInstance();
+	    Map<String, String> map = context.getExternalContext().getRequestParameterMap();
+	    processarPagamentos(map);
+	}
+	
+	public void processarPagamentos(Map<String, String> map) {
+		
+		JSONObject methods = new JSONObject(map.get("paymentMethods"));
+	    cards.clear();
+	    
+	    Iterator<String> payments = methods.getJSONObject(tipo).getJSONObject("options").keys();
+	    while (payments.hasNext()) {
+	    	
+	    	String k = payments.next();
+	    	JSONObject obj = methods.getJSONObject(tipo).getJSONObject("options").getJSONObject(k);
+	    	
+	    	PaymentMethod p = new PaymentMethod(obj.getInt("code"), obj.getString("name"), obj.getString("displayName"), PaymentMethodStatus.valueOf(obj.getString("status")));
+	    	if (PaymentMethodStatus.UNAVAILABLE.equals(p.getStatus())) {
+				continue;
+			}
+	    	
+	    	cards.add(p);
+		}
+	    
+	    if(BOLETO_METHOD.equals(tipo) && !cards.isEmpty()) {
+			option = cards.get(0).getName();
+		}
+	}
+	
 	public void exec() {
 		
-		if("boleto".equals(tipo)) {
+		System.out.println("exec: " + tipo);
+		if(BOLETO_METHOD.equals(tipo)) {
 			execBoleto();
 		}
 		else {
@@ -261,8 +311,8 @@ public class PedidoView implements Serializable {
 		
 	    FacesContext context = FacesContext.getCurrentInstance();
 	    Map<String, String> map = context.getExternalContext().getRequestParameterMap();
-	    System.out.println("token card" + map.get("token"));
-	    System.out.println("sender hash" + map.get("senderHash"));
+	    System.out.println("token card: " + map.get("token"));
+	    System.out.println("sender hash: " + map.get("senderHash"));
 	
 	    final BoletoCheckout request = new BoletoCheckout();
 
@@ -446,18 +496,16 @@ public class PedidoView implements Serializable {
 		
 		return accountCredentials;
 	}
+	
+	public void handleChange(ValueChangeEvent event){
+		System.out.println("here "+event.getNewValue());
+	}
 
 	public void checkout(ActionEvent actionEvent) {
 
 		System.out.println(actionEvent);
 
 		try {
-
-			if (Util.getString("environment").equals("sandbox")) {
-				PagSeguroConfig.setSandboxEnvironment();
-			} else {
-				PagSeguroConfig.setProductionEnvironment();
-			}
 
 			System.out.println(Util.getString("environment"));
 
@@ -466,17 +514,14 @@ public class PedidoView implements Serializable {
 			System.out.println(accountCredentials.getEmail());
 			System.out.println(accountCredentials.getToken());
 			
-			final String sessionId = SessionService.createSession(accountCredentials);
-			System.out.println("Session ID: " + sessionId);
-
-			final String publicKey = Util.getString("credential.public");
-			System.out.println("publicKey: " + publicKey);
+			//TODO: pagseguro irá atualizar a lib para acertar erro de publicKey
+			/*final String publicKey = Util.getString("credential." + Util.getString("environment") + ".public");
+			System.out.println("publicKey: " + publicKey);*/
 			
-			final PaymentMethods paymentMethods = PaymentMethodService.getPaymentMethods(accountCredentials, publicKey);
-			RequestContext.getCurrentInstance().addCallbackParam("sessionId", sessionId);
-
+			final PaymentMethods paymentMethods = PaymentMethodService.getPaymentMethods(accountCredentials, accountCredentials.getToken());
+			
 			cards.clear();
-			for (PaymentMethod paymentMethod : paymentMethods.getPaymentMethodsByType("boleto".equals(tipo) ? PaymentMethodType.BOLETO : PaymentMethodType.CREDIT_CARD)) {
+			for (PaymentMethod paymentMethod : paymentMethods.getPaymentMethodsByType(BOLETO_METHOD.equals(tipo) ? PaymentMethodType.BOLETO : PaymentMethodType.CREDIT_CARD)) {
 
 				if (PaymentMethodStatus.UNAVAILABLE.equals(paymentMethod.getStatus())) {
 					continue;
@@ -486,7 +531,7 @@ public class PedidoView implements Serializable {
 			}
 			
 			
-			if("boleto".equals(tipo) && !cards.isEmpty()) {
+			if(BOLETO_METHOD.equals(tipo) && !cards.isEmpty()) {
 				option = cards.get(0).getName();
 			}
 			
@@ -494,7 +539,7 @@ public class PedidoView implements Serializable {
 
 		} catch (PagSeguroServiceException e) {
 
-			System.err.println(e.getMessage());
+			e.printStackTrace();
 		}
 
 		/*

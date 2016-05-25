@@ -1,3 +1,12 @@
+function opcoes() {
+	/*PagSeguroDirectPayment.getPaymentMethods({
+		2. amount: {valor da transação}
+		3. success: {função de callback para chamadas bem sucedidas},
+		4. error: {função de callback para chamadas que falharam},
+		5. complete: {função de callback para todas chamadas}
+		6. });*/
+}
+
 
 function retornoProcessamento(xhr, status, args) {
 	console.log(args.erro);
@@ -14,6 +23,28 @@ function handleSession(xhr, status, args) {
 	console.log(args.sessionId);
 	PagSeguroDirectPayment.setSessionId(args.sessionId);
 	console.log(PagSeguroDirectPayment.getSenderHash());
+	PagSeguroDirectPayment.getPaymentMethods({
+		amount: args.valorTotal,
+		success: function(response) {
+			//meios de pagamento disponíveis
+			console.log("success....");
+			//console.log(response.paymentMethods);
+			//console.log(JSON.stringify(response.paymentMethods));
+//			processarPagamentos([{name: 'paymentMethods', value: [{"name": "teste", "display":"Teste"}, {"name": "teste1", "display":"Teste 1"}]}]);
+			processarPagamentos([{name: 'paymentMethods', value: JSON.stringify(response.paymentMethods)}]);
+			
+		},
+		error: function(response) {
+			//tratamento do erro
+			console.log("error....");
+			console.log(response);
+		},
+		complete: function(response) {
+			console.log("complete....");
+			console.log(response);
+			//tratamento comum para todas chamadas
+		}
+	});
 }
 
 function autorizar(xhr, status, args) {
@@ -32,7 +63,7 @@ function autorizar(xhr, status, args) {
 	console.log($('#validade').val());
 	console.log($('#basic').val());
 	
-	if(args.tipo == "boleto") {
+	if(args.tipo == "BOLETO") {
 		processar([{name: 'senderHash', value: PagSeguroDirectPayment.getSenderHash()}]);
 	}
 	else {
