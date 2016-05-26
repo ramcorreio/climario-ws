@@ -245,6 +245,32 @@ public class PedidoServiceImplTest {
 	}
 	
 	@Test
+	public void existeClienteEmail() {
+		
+		Cliente c = new Cliente();
+		c.setCodigo("07828359710");
+		c.setNome("Cliente de Teste 10");
+    	c.setCpfCnpj("07828359710");
+    	c.setEmail("07828359710@cpf.com");
+    	c.setLogradouro("Rua A");
+    	c.setNumero("100");
+    	c.setComplemento("casa");
+    	c.setBairro("Santa Rosa");
+    	c.setCidade("Niterói");
+    	c.setEstado("RJ");
+    	c.setCep("38924923");
+    	c.setEmailRca("racrca@hfhfhfh.com");
+    	c.setCodigoRca("8934724238");
+    	c.setNomeRca("Nome RCA");
+		c = pedidoService.criarCliente(c);
+		
+		assertThat(c.getId(), notNullValue());
+		assertThat(c.getId(), greaterThan(0l));
+		assertThat(pedidoService.isClienteExiste(c.getCpfCnpj(), c.getEmail()), is(equalTo(true)));
+		assertThat(pedidoService.isClienteExiste("17828359710", c.getEmail()), is(equalTo(false)));
+	}
+	
+	@Test
 	public void recuperarCliente() {
 		
 		

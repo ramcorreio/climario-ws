@@ -1,26 +1,13 @@
-function opcoes() {
-	/*PagSeguroDirectPayment.getPaymentMethods({
-		2. amount: {valor da transação}
-		3. success: {função de callback para chamadas bem sucedidas},
-		4. error: {função de callback para chamadas que falharam},
-		5. complete: {função de callback para todas chamadas}
-		6. });*/
-}
-
-
 function retornoProcessamento(xhr, status, args) {
 	console.log(args.erro);
 	console.log(args.messagem);
 	console.log(args.link);
-	
-	/*if(args.erro){
-		alert("Falha no processamento do pedido.\n erro: " + args.codigo)
-	}*/
 }
 
 function handleSession(xhr, status, args) {
 	
 	console.log(args.sessionId);
+	
 	PagSeguroDirectPayment.setSessionId(args.sessionId);
 	console.log(PagSeguroDirectPayment.getSenderHash());
 	PagSeguroDirectPayment.getPaymentMethods({
@@ -28,9 +15,6 @@ function handleSession(xhr, status, args) {
 		success: function(response) {
 			//meios de pagamento disponíveis
 			console.log("success....");
-			//console.log(response.paymentMethods);
-			//console.log(JSON.stringify(response.paymentMethods));
-//			processarPagamentos([{name: 'paymentMethods', value: [{"name": "teste", "display":"Teste"}, {"name": "teste1", "display":"Teste 1"}]}]);
 			processarPagamentos([{name: 'paymentMethods', value: JSON.stringify(response.paymentMethods)}]);
 			
 		},
@@ -41,7 +25,7 @@ function handleSession(xhr, status, args) {
 		},
 		complete: function(response) {
 			console.log("complete....");
-			console.log(response);
+			//console.log(response);
 			//tratamento comum para todas chamadas
 		}
 	});
@@ -68,7 +52,7 @@ function autorizar(xhr, status, args) {
 	}
 	else {
 		
-		var param = {
+		var params = {
 			cardNumber: $('#numeroCartao').val(),
 		    cvv: $('#cvv').val(),
 		    brand: $('#basic').val().toLowerCase(),
@@ -77,20 +61,17 @@ function autorizar(xhr, status, args) {
 		    success: function(response) {
 		    	console.log(response);
 		        var param = response['card']['token'];
-		        console.log(param);
-		    	//processar({name1:$('#token').val(), name2:'value2'});
+		        console.log("token: " + param);
 		    	processar([
 		           {name: 'token', value: param},
 		           {name: 'senderHash', value: PagSeguroDirectPayment.getSenderHash()}
 		    	]);
-		    	//$("#finalizar").click();
-		        //$("#token").attr('type','text');
 		    },
 		    error: function(response) {
 		    	console.log(response);
 		    }
 		}
 		
-		PagSeguroDirectPayment.createCardToken(param);
+		PagSeguroDirectPayment.createCardToken(params);
 	}
 }

@@ -1,4 +1,4 @@
-package br.com.climario.ui;
+package br.com.climario.validation;
 
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -12,16 +12,16 @@ import javax.faces.validator.ValidatorException;
 
 import org.primefaces.validate.ClientValidator;
 
-@FacesValidator("custom.numberValidator")
-public class NumberValidator implements Validator, ClientValidator {
+@FacesValidator("custom.emailValidator")
+public class EmailValidator implements Validator, ClientValidator {
 
 	private Pattern pattern;
 
-	private static final String NUMBER_PATTERN = "\\d+";
+	private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
-	public NumberValidator() {
-	        pattern = Pattern.compile(NUMBER_PATTERN);
-	    }
+	public EmailValidator() {
+		pattern = Pattern.compile(EMAIL_PATTERN);
+	}
 
 	public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 		if (value == null) {
@@ -29,7 +29,7 @@ public class NumberValidator implements Validator, ClientValidator {
 		}
 
 		if (!pattern.matcher(value.toString()).matches()) {
-			throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Validation Error", value + " não é número."));
+			throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", value + " não é um email válido."));
 		}
 	}
 
@@ -38,7 +38,7 @@ public class NumberValidator implements Validator, ClientValidator {
 	}
 
 	public String getValidatorId() {
-		return "custom.numberValidator";
+		return "custom.emailValidator";
 	}
 
 }

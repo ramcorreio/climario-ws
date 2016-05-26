@@ -133,6 +133,8 @@ public class PedidoView implements Serializable {
 			final String sessionId = SessionService.createSession(accountCredentials);
 			System.out.println("Session ID: " + sessionId);
 			RequestContext.getCurrentInstance().addCallbackParam("sessionId", sessionId);
+			/*RequestContext.getCurrentInstance().addCallbackParam("account", accountCredentials.getEmail());
+			RequestContext.getCurrentInstance().addCallbackParam("token", accountCredentials.getToken());*/
 			RequestContext.getCurrentInstance().addCallbackParam("valorTotal", format.format(getTotalPedido()));
 	        //checkout(null);
 			
@@ -218,6 +220,10 @@ public class PedidoView implements Serializable {
 		
 		return pedido != null; 
 	}
+	
+	public String getEnv() {
+		return Util.getString("environment");
+	}
 
 	public void consultar(ActionEvent actionEvent) {
 
@@ -238,7 +244,7 @@ public class PedidoView implements Serializable {
 	public String getTotalAmount(BigDecimal totalAmount) {
 	
 		//return DecimalFormat.getCurrencyInstance(new Locale("pt_BR")).format(totalAmount.doubleValue());
-		return DecimalFormat.getCurrencyInstance().format(totalAmount.doubleValue());
+		return DecimalFormat.getCurrencyInstance(new Locale("pt", "BR")).format(totalAmount.doubleValue());
 	}
 	
 	public void changeParcela() {
@@ -272,6 +278,7 @@ public class PedidoView implements Serializable {
 	
 	public void processarPagamentos(Map<String, String> map) {
 		
+		System.out.println("processarPagamentos: " + tipo);
 		JSONObject methods = new JSONObject(map.get("paymentMethods"));
 	    cards.clear();
 	    
@@ -694,21 +701,21 @@ public class PedidoView implements Serializable {
 	public void solicitar(ActionEvent actionEvent) {
 		
 		InputText cpfCnpj = (InputText) actionEvent.getComponent().findComponent("cpfCnpj");
-		InputText nuPedido = (InputText) actionEvent.getComponent().findComponent("nuPedido");
+		InputText email = (InputText) actionEvent.getComponent().findComponent("email");
 		InputText telefone = (InputText) actionEvent.getComponent().findComponent("telefone");
 		
-		if(!pedidoService.isPedidoClienteExiste(cpfCnpj.getValue().toString(), nuPedido.getValue().toString())){
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pedido não cadastrado!", "Erro!"));
+		if(!pedidoService.isClienteExiste(cpfCnpj.getValue().toString(), email.getValue().toString())){
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cliente não cadastrado!", "Erro!"));
 		}
 		else {
-			Pedido p = pedidoService.recuperarPedido(nuPedido.getValue().toString());
-			Cliente c = p.getCliente();
+			//Pedido p = pedidoService.recuperarPedido(email.getValue().toString());
+			Cliente c = pedidoService.recuperarCliente(cpfCnpj.getValue().toString());
 			
 			//Cliente c = pedidoService.recuperarCliente(cpfCnpj.getValue().toString());
 			Object[] args = new Object[]{c.getNome(), c.getCpfCnpj(), telefone.getValue()};
 			
 			String txtCliente = Util.getString("texto.solicitacao.info", args);
-			Util.sendMail(p.getCliente().getEmail(), "Solicitar Pedido", txtCliente);
+			Util.sendMail(c.getEmail(), "Solicitar Pedido", txtCliente);
 			
 			String txtClima = Util.getString("texto.solicitacao", args);
 			Util.sendMail(Util.getString("email.sender.account"), "Solicitar Pedido", txtClima);

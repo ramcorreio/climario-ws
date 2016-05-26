@@ -31,22 +31,22 @@
             rowsPerPageTemplate="25,50,100"
             currentPageReportTemplate="({currentPage} de {totalPages})">
             
-            	<p:column headerText="Id" width="50">
+            	<p:column headerText="Id" width="30">
   					<h:outputText value="#{pedido.id}" />
   				</p:column>
-  				<p:column headerText="Número" width="100">
+  				<p:column headerText="Número" width="80">
   					<h:outputText value="#{pedido.numero}" />
   				</p:column>
-  				<p:column headerText="CPF/CNPJ"  width="120">
+  				<p:column headerText="CPF/CNPJ" width="100">
   					<h:outputText value="#{pedido.cliente.cpfCnpj}" />
   				</p:column>
   				<p:column headerText="Cliente Nome">
-  					<h:outputText value="#{pedido.cliente.nome}" />
+  					<h:outputText value="#{pedido.cliente.nome}(#{pedido.cliente.email})" />
   				</p:column>
-  				<p:column headerText="Filial">
+  				<p:column headerText="Filial" width="220">
   					<h:outputText value="#{pedido.filial}" />
   				</p:column>
-  				<p:column headerText="Código Transação">
+  				<p:column headerText="Código Transação" width="290">
   					<h:outputText value="#{pedido.codigoAutorizacao}" />
   				</p:column>
   				<p:column headerText="Status" width="210">

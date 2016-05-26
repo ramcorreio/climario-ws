@@ -15,7 +15,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @NamedQueries({ 
 	@NamedQuery(name = "Cliente.all", query = "select c from Cliente c order by nome"),
-	@NamedQuery(name = "Cliente.existe", query = "select c from Cliente c where cpfCnpj = :cpfCnpj")
+	@NamedQuery(name = "Cliente.existe.cnpj", query = "select c from Cliente c where cpfCnpj = :cpfCnpj"),
+	@NamedQuery(name = "Cliente.existe.cnpj.email", query = "select c from Cliente c where c.cpfCnpj = :cpfCnpj and c.email = :email")
 })
 @XmlRootElement
 public class Cliente implements Serializable {
@@ -37,6 +38,7 @@ public class Cliente implements Serializable {
 	private String nome;
 
 	@NotNull
+	@Column(length = 100, unique = true)
 	private String email;
 
 	@NotNull

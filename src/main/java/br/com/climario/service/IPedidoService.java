@@ -17,11 +17,13 @@ public interface IPedidoService {
 
 	public boolean isPedidoClienteExiste(String codigo, String numero);
 	
+	public boolean isClienteExiste(String codigo, String email);
+	
 	public boolean isClienteExiste(String codigo);
 	
 	public boolean isPedidoExiste(String numero);
 	
-	public Cliente recuperarCliente(String codigo);
+	public Cliente recuperarCliente(String cpfCnpj);
 	
 	public Pedido recuperarPedido(String numero);
 

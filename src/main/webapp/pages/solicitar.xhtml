@@ -46,18 +46,19 @@
 		    		</div>
 		    	</article>
 		    	<article class="col-md-12 center espaco">
-		    		<div class="col-md-5 col-sm-3 mudatmfont estilofonte1">Número do Pedido</div>
+		    		<div class="col-md-5 col-sm-3 mudatmfont estilofonte1">Email</div>
 		    		<div class="col-md-6 col-sm-9">
-		    			<p:inputText id="nuPedido" styleClass="camponovo" maxlength="15" required="true" requiredMessage="É necessário informar o número do pedido."  value="#{pedidoView.numero}">
-		    				<f:validator validatorId="custom.numberValidator" />
+		    			<p:inputText id="email" styleClass="camponovo" maxlength="100" required="true" requiredMessage="É necessário informar o e-mail corretamente.">
+		    				<f:validateLength minimum="6" maximum="100" />
+		    				<f:validator validatorId="custom.emailValidator" />
 		    			</p:inputText>
-		    			<p:message for="nuPedido" />
+		    			<p:message for="email" />
 		    		</div>
 		    	</article>
 		    	<article class="col-md-12 center espaco">
 		    		<div class="col-md-5 col-sm-3 mudatmfont estilofonte1">Número do Telefone</div>
 		    		<div class="col-md-6 col-sm-9">
-		    			<p:inputText id="telefone" styleClass="camponovo" maxlength="11" required="true" requiredMessage="É necessário informar um telefone."  value="#{pedidoView.telefone}">
+		    			<p:inputText id="telefone" styleClass="camponovo" maxlength="11" required="true" requiredMessage="É necessário informar um telefone.">
 		    				<f:validateLength minimum="10" maximum="11" />
 		    				<f:validator validatorId="custom.numberValidator" />
 		    			</p:inputText>

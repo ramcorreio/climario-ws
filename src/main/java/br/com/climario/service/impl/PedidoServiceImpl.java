@@ -61,9 +61,18 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService, Se
 	}
 	
 	@Override
+	public boolean isClienteExiste(String codigo, String email) {
+		
+		TypedQuery<Cliente> query = createNamedQuery("Cliente.existe.cnpj.email", Cliente.class);
+		query.setParameter("cpfCnpj", codigo);
+		query.setParameter("email", email);
+		return !query.getResultList().isEmpty();
+	}
+	
+	@Override
 	public boolean isClienteExiste(String cpfCnpj) {
 		
-		TypedQuery<Cliente> query = createNamedQuery("Cliente.existe", Cliente.class);
+		TypedQuery<Cliente> query = createNamedQuery("Cliente.existe.cnpj", Cliente.class);
 		query.setParameter("cpfCnpj", cpfCnpj);
 		return !query.getResultList().isEmpty();
 	}
@@ -79,7 +88,7 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService, Se
 	@Override
 	public Cliente recuperarCliente(String cpfCnpj) {
 		
-		TypedQuery<Cliente> query = createNamedQuery("Cliente.existe", Cliente.class);
+		TypedQuery<Cliente> query = createNamedQuery("Cliente.existe.cnpj", Cliente.class);
 		query.setParameter("cpfCnpj", cpfCnpj);
 		try {
 			return query.getSingleResult();

@@ -12,9 +12,18 @@
    	<f:metadata>
     	<f:event type="preRenderView" listener="#{pedidoView.init}" />
 	</f:metadata>
+	
+	<ui:define name="head">
+		<c:if test="#{pedidoView.env == 'sandbox'}">
+			<script type="text/javascript" src="https://stc.sandbox.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>
+		</c:if>
+		<c:if test="#{pedidoView.env == 'production'}">
+			<script type="text/javascript" src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js"></script>
+		</c:if>
+		<h:outputScript library="js" name="pagamento.js" /> 
+	</ui:define>
    	
    	<ui:define name="content">
-   		
    		
    		<p:panel rendered="#{!pedidoView.existePedido}">
    			<div class="container altura_confirmacao">
@@ -126,7 +135,7 @@
 			    </div>
 			    
 			    <div class="col-md-12 col-sm-12 font_valor retirapadding">
-			    	<p:remoteCommand name="processarPagamentos" actionListener="#{pedidoView.execPagamentos}" update="@form"/>
+			    	<p:remoteCommand name="processarPagamentos" process="@this" actionListener="#{pedidoView.execPagamentos}" update="@form"/>
 			    	<div class="col-md-5 col-sm-12 espaco12">
 			    		<p:selectOneRadio value="#{pedidoView.tipo}" widgetVar="opcaoPag">
 			    			<f:selectItem itemValue="BOLETO" itemLabel="Boleto"/>
