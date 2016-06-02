@@ -41,7 +41,7 @@ public class PedidoServiceImplTest {
     	c.setCodigo("07828359705");
     	c.setNome("Teste Ws");
     	c.setCpfCnpj("07828359705");
-    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setEmail("07828359705@hfhfhfh.com");
     	c.setLogradouro("Rua A");
     	c.setNumero("100");
     	c.setComplemento("casa");
@@ -121,7 +121,7 @@ public class PedidoServiceImplTest {
     	c.setCodigo("07828359712");
     	c.setNome("Cliente de Teste");
     	c.setCpfCnpj("07828359712");
-    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setEmail("07828359712@hfhfhfh.com");
     	c.setLogradouro("Rua A");
     	c.setNumero("100");
     	c.setComplemento("casa");
@@ -161,7 +161,7 @@ public class PedidoServiceImplTest {
     	c.setCodigo("0782835998798398439");
     	c.setNome("Teste Ws");
     	c.setCpfCnpj("0782835998798398439");
-    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setEmail("0782835998798398439@hfhfhfh.com");
     	c.setLogradouro("Rua A");
     	c.setNumero("100");
     	c.setComplemento("casa");
@@ -226,7 +226,7 @@ public class PedidoServiceImplTest {
 		c.setCodigo("07828359708");
 		c.setNome("Cliente de Teste 2");
     	c.setCpfCnpj("07828359708");
-    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setEmail("07828359708@hfhfhfh.com");
     	c.setLogradouro("Rua A");
     	c.setNumero("100");
     	c.setComplemento("casa");
@@ -278,7 +278,7 @@ public class PedidoServiceImplTest {
 		c.setCodigo("07828359709");
 		c.setNome("Cliente de Teste 2");
     	c.setCpfCnpj("07828359709");
-    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setEmail("07828359709@hfhfhfh.com");
     	c.setLogradouro("Rua A");
     	c.setNumero("100");
     	c.setComplemento("casa");
@@ -304,7 +304,7 @@ public class PedidoServiceImplTest {
     	c.setCodigo("07828359711");
     	c.setNome("Cliente de Teste Final");
     	c.setCpfCnpj("07828359711");
-    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setEmail("07828359711@hfhfhfh.com");
     	c.setLogradouro("Rua A");
     	c.setNumero("100");
     	c.setComplemento("casa");
@@ -379,7 +379,7 @@ public class PedidoServiceImplTest {
 		c.setCodigo("07828359713");
 		c.setNome("Cliente de Teste Pedido");
     	c.setCpfCnpj("07828359713");
-    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setEmail("07828359713@hfhfhfh.com");
     	c.setLogradouro("Rua A");
     	c.setNumero("100");
     	c.setComplemento("casa");
@@ -450,7 +450,7 @@ public class PedidoServiceImplTest {
     	c.setCodigo("09809809834");
     	c.setNome("Teste Ws");
     	c.setCpfCnpj("09809809834");
-    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setEmail("09809809834@hfhfhfh.com");
     	c.setLogradouro("Rua A");
     	c.setNumero("100");
     	c.setComplemento("casa");
@@ -494,7 +494,7 @@ public class PedidoServiceImplTest {
     	c.setCodigo("09809809444");
     	c.setNome("Teste Ws");
     	c.setCpfCnpj("09809809444");
-    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setEmail("09809809444@hfhfhfh.com");
     	c.setLogradouro("Rua A");
     	c.setNumero("100");
     	c.setComplemento("casa");

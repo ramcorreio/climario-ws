@@ -63,7 +63,7 @@ public class WebServicePedidoTest extends JerseyTest {
     	c.setCodigo("90283129830912");
     	c.setNome("Teste Ws");
     	c.setCpfCnpj("748237489274298");
-    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setEmail("748237489274298@hfhfhfh.com");
     	c.setLogradouro("Rua A");
     	c.setNumero("100");
     	c.setComplemento("casa");
@@ -97,7 +97,7 @@ public class WebServicePedidoTest extends JerseyTest {
     	c.setCodigo("90283129830912");
     	c.setNome("Teste Ws");
     	c.setCpfCnpj("748237489274298");
-    	c.setEmail("roororor@hfhfhfh.com");
+    	c.setEmail("748237489274298@hfhfhfh.com");
     	c.setLogradouro("Rua A");
     	c.setNumero("100");
     	c.setComplemento("casa");
@@ -144,7 +144,7 @@ public class WebServicePedidoTest extends JerseyTest {
     				+ "\"codigo\":\"90283129830912\","
     				+ "\"nome\":\"Teste Ws\","
     				+ "\"cpfCnpj\":\"748237489274298\","
-    				+ "\"email\":\"roororor@hfhfhfh.com\","
+    				+ "\"email\":\"748237489274298@hfhfhfh.com\","
     				+ "\"logradouro\":\"Rua A\","
     				+ "\"numero\":\"100\","
     				+ "\"complemento\":\"casa\","
@@ -181,7 +181,7 @@ public class WebServicePedidoTest extends JerseyTest {
     				+ "\"codigo\":\"90283129830912\","
     				+ "\"nome\":\"Teste Ws\","
     				+ "\"cpfCnpj\":\"748237489274298\","
-    				+ "\"email\":\"roororor@hfhfhfh.com\","
+    				+ "\"email\":\"748237489274298@hfhfhfh.com\","
     				+ "\"logradouro\":\"Rua A\","
     				+ "\"numero\":\"100\","
     				+ "\"complemento\":\"casa\","
