@@ -11,7 +11,7 @@
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 	
-	 <context-param>
+	<context-param>
 		<param-name>contextConfigLocation</param-name>
         <param-value>WEB-INF/app-context*.xml</param-value>
 	</context-param>
@@ -35,6 +35,19 @@
         <servlet-name>Jersey Web Application</servlet-name>
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
+    
+    <filter>
+		<display-name>apiFilter</display-name>
+        <filter-name>apiFilter</filter-name>
+        <filter-class>br.com.climario.integracao.ApiFilter</filter-class>
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>apiFilter</filter-name>
+		<url-pattern>/api/*</url-pattern>
+	</filter-mapping>
+    
+    
 
 	<!-- <context-param>
 		<param-name>contextConfigLocation</param-name>
@@ -93,12 +106,12 @@
 		<display-name>loginFilter</display-name>
         <filter-name>loginFilter</filter-name>
         <filter-class>br.com.climario.integracao.LoginFilter</filter-class>
-     </filter>
-
-     <filter-mapping>
+	</filter>
+	
+	<filter-mapping>
 		<filter-name>loginFilter</filter-name>
 		<url-pattern>/admin/*</url-pattern>
-     </filter-mapping>
+	</filter-mapping>
 
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>

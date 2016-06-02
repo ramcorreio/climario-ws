@@ -22,6 +22,8 @@ import javax.servlet.http.HttpSession;
 import org.primefaces.component.inputtext.InputText;
 import org.primefaces.context.RequestContext;
 import org.primefaces.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import br.com.climario.dominio.Cliente;
 import br.com.climario.dominio.ItemPedido;
@@ -61,6 +63,8 @@ import br.com.uol.pagseguro.service.TransactionService;
 @ManagedBean
 @ViewScoped
 public class PedidoView implements Serializable {
+	
+	private static Logger _logger = LoggerFactory.getLogger(PedidoView.class);
 
 	private static final String BOLETO_METHOD = "BOLETO";
 
@@ -126,12 +130,12 @@ public class PedidoView implements Serializable {
 	
 	public void handleKeyEvent() {
 		
-        System.out.println(tipo);
+        _logger.info(tipo);
 		try {
 			
 			AccountCredentials accountCredentials = getAccountCredencials();
 			final String sessionId = SessionService.createSession(accountCredentials);
-			System.out.println("Session ID: " + sessionId);
+			_logger.info("Session ID: " + sessionId);
 			RequestContext.getCurrentInstance().addCallbackParam("sessionId", sessionId);
 			/*RequestContext.getCurrentInstance().addCallbackParam("account", accountCredentials.getEmail());
 			RequestContext.getCurrentInstance().addCallbackParam("token", accountCredentials.getToken());*/
@@ -249,7 +253,7 @@ public class PedidoView implements Serializable {
 	
 	public void changeParcela() {
 		
-		System.out.println(option);
+		_logger.info(option);
 		
 		String cardBrand = option.toLowerCase();
 		
@@ -259,7 +263,7 @@ public class PedidoView implements Serializable {
 			
 			parcelas.clear();
 			for (Installment installment : installments.get(cardBrand)) {
-				System.out.println(installment);
+				_logger.info(installment.toString());
 				parcelas.add(installment);
 			}
 		
@@ -278,7 +282,7 @@ public class PedidoView implements Serializable {
 	
 	public void processarPagamentos(Map<String, String> map) {
 		
-		System.out.println("processarPagamentos: " + tipo);
+		_logger.info("processarPagamentos: " + tipo);
 		JSONObject methods = new JSONObject(map.get("paymentMethods"));
 	    cards.clear();
 	    
@@ -303,7 +307,7 @@ public class PedidoView implements Serializable {
 	
 	public void exec() {
 		
-		System.out.println("exec: " + tipo);
+		_logger.info("exec: " + tipo);
 		if(BOLETO_METHOD.equals(tipo)) {
 			execBoleto();
 		}
@@ -318,8 +322,8 @@ public class PedidoView implements Serializable {
 		
 	    FacesContext context = FacesContext.getCurrentInstance();
 	    Map<String, String> map = context.getExternalContext().getRequestParameterMap();
-	    System.out.println("token card: " + map.get("token"));
-	    System.out.println("sender hash: " + map.get("senderHash"));
+	    _logger.info("token card: " + map.get("token"));
+	    _logger.info("sender hash: " + map.get("senderHash"));
 	
 	    final BoletoCheckout request = new BoletoCheckout();
 
@@ -356,7 +360,7 @@ public class PedidoView implements Serializable {
         for (ItemPedido item : pedido.getItens()) {
 			
 			String val = format.format(item.getPrecoUnitario());
-			System.out.println(val);
+			_logger.info(val);
 			
 			request.addItem(new Item(item.getCodigo(), //
 					item.getDescricao(), //
@@ -371,8 +375,8 @@ public class PedidoView implements Serializable {
 		
 	    FacesContext context = FacesContext.getCurrentInstance();
 	    Map<String, String> map = context.getExternalContext().getRequestParameterMap();
-	    System.out.println("token card" + map.get("token"));
-	    System.out.println("sender hash" + map.get("senderHash"));
+	    _logger.info("token card" + map.get("token"));
+	    _logger.info("sender hash" + map.get("senderHash"));
 	
 	    final CreditCardCheckout request = new CreditCardCheckout();
 
@@ -409,7 +413,7 @@ public class PedidoView implements Serializable {
         for (ItemPedido item : pedido.getItens()) {
 			
 			String val = format.format(item.getPrecoUnitario());
-			System.out.println(val);
+			_logger.info(val);
 			
 			request.addItem(new Item(item.getCodigo(), //
 					item.getDescricao(), //
@@ -442,7 +446,7 @@ public class PedidoView implements Serializable {
 	}
 	
 	public void validar(ActionEvent actionEvent){
-		System.out.println(actionEvent);
+		_logger.info("actionEvent", actionEvent);
 		RequestContext.getCurrentInstance().addCallbackParam("autorizar", true);
 		RequestContext.getCurrentInstance().addCallbackParam("tipo", tipo);
 	}
@@ -453,8 +457,8 @@ public class PedidoView implements Serializable {
 		Transaction transaction = null; 
 		try {
 			
-			System.out.println("----------------------");
-			System.out.println("processamento: " + codigo);
+			_logger.info("----------------------");
+			_logger.info("processamento: " + codigo);
 			final AccountCredentials accountCredentials = getAccountCredencials();
 	
 	        transaction = TransactionService.createTransaction(accountCredentials, request);
@@ -469,7 +473,7 @@ public class PedidoView implements Serializable {
 	        RequestContext.getCurrentInstance().addCallbackParam("link", transaction.getPaymentLink());
 	
 	        if (transaction != null) {
-	            System.out.println("Transaction Code - Default Mode: " + transaction.getCode());
+	            _logger.info("Transaction Code - Default Mode: " + transaction.getCode());
 	        }
 	        RequestContext.getCurrentInstance().addCallbackParam("erro", false);
 		} catch (PagSeguroServiceException e) {
@@ -483,8 +487,8 @@ public class PedidoView implements Serializable {
 	        RequestContext.getCurrentInstance().showMessageInDialog(message);
 	    }
 		
-		System.out.println();
-		System.out.println();
+		_logger.info("");
+		_logger.info("");
 		return transaction;
 	}
 
@@ -505,25 +509,25 @@ public class PedidoView implements Serializable {
 	}
 	
 	public void handleChange(ValueChangeEvent event){
-		System.out.println("here "+event.getNewValue());
+		_logger.info("here "+event.getNewValue());
 	}
 
 	public void checkout(ActionEvent actionEvent) {
 
-		System.out.println(actionEvent);
+		_logger.info("actionEvent", actionEvent);
 
 		try {
 
-			System.out.println(Util.getString("environment"));
+			_logger.info(Util.getString("environment"));
 
 			final AccountCredentials accountCredentials = getAccountCredencials();
 
-			System.out.println(accountCredentials.getEmail());
-			System.out.println(accountCredentials.getToken());
+			_logger.info(accountCredentials.getEmail());
+			_logger.info(accountCredentials.getToken());
 			
 			//TODO: pagseguro irá atualizar a lib para acertar erro de publicKey
 			/*final String publicKey = Util.getString("credential." + Util.getString("environment") + ".public");
-			System.out.println("publicKey: " + publicKey);*/
+			_logger.info("publicKey: " + publicKey);*/
 			
 			final PaymentMethods paymentMethods = PaymentMethodService.getPaymentMethods(accountCredentials, accountCredentials.getToken());
 			
@@ -581,14 +585,14 @@ public class PedidoView implements Serializable {
 		 * checkout.register(PagSeguroConfig.getAccountCredentials(),
 		 * onlyCheckoutCode);
 		 * 
-		 * System.out.println(response);
+		 * _logger.info(response);
 		 * 
 		 * 
 		 * } catch (PagSeguroServiceException e) {
 		 * 
 		 * System.err.println(e.getMessage()); }
 		 * 
-		 * System.out.println(checkout);
+		 * _logger.info(checkout);
 		 */
 		// checkout.addItem("id", "ddd", 1, new BigDecimal(3), 0l, new
 		// BigDecimal(0));
@@ -618,7 +622,7 @@ public class PedidoView implements Serializable {
 			}
 			catch(RuntimeException e) {
 			
-				System.out.println("Pedido " + numero + " não existe.");
+				_logger.info("Pedido " + numero + " não existe.");
 			}
 		}
 		
@@ -635,7 +639,7 @@ public class PedidoView implements Serializable {
 			}
 			catch(RuntimeException e) {
 			
-				System.out.println("Pedido " + numero + " não existe.");
+				_logger.info("Pedido " + numero + " não existe.");
 			}
 		}*/
 	}

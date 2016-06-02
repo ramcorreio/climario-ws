@@ -12,6 +12,8 @@ import javax.faces.event.ActionEvent;
 
 import org.primefaces.component.inputtext.InputText;
 import org.primefaces.component.password.Password;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import br.com.climario.dominio.Usuario;
 import br.com.climario.integracao.LoginFilter;
@@ -21,7 +23,8 @@ import br.com.climario.service.impl.ServiceLocator;
 @ManagedBean(name = LoginFilter.BEAN_NAME)
 @SessionScoped
 public class LoginSession implements Serializable {
-	
+
+	private static Logger _logger = LoggerFactory.getLogger(LoginSession.class);
 	
 	private static final long serialVersionUID = 6689087374231436459L;
 	
@@ -34,7 +37,7 @@ public class LoginSession implements Serializable {
 	}
 
 	/*public void checkLogin() {
-		System.out.println("checkLogin...");
+		_logger.info("checkLogin...");
 		
 		ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
 		
@@ -52,7 +55,7 @@ public class LoginSession implements Serializable {
 	}*/
 	
 	public void initInstall() {
-		System.out.println("initInstall...");
+		_logger.info("initInstall...");
 		
 		if(!userService.listarUsuario().isEmpty()) {
 			Util.redirect(Util.getContextRoot("/admin/entrar.jsf"));			
@@ -60,7 +63,7 @@ public class LoginSession implements Serializable {
 	}
 	
 	public void initLogin() {
-		System.out.println("initLogin...");
+		_logger.info("initLogin...");
 		
 		if(userService.listarUsuario().isEmpty()) {
 			Util.redirect(Util.getContextRoot("/admin/install.jsf"));

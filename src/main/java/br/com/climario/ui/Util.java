@@ -37,7 +37,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Util {
+	
+	private static Logger _logger = LoggerFactory.getLogger(Util.class);
 
 	private static transient ResourceBundle bundle = ResourceBundle.getBundle("pagseguro", new UTF8Control());	
 	
@@ -417,15 +422,15 @@ public class Util {
 
 			// Send message
 			Transport.send(message);
-			System.out.println("envio ok para " + message);
+			_logger.info("envio ok para " + message);
 		} catch (MessagingException mex) {
 			rs = false;
-			System.out.println("erro de envio");
+			_logger.info("erro de envio");
 			mex.printStackTrace();
 		}
 		catch (Exception e) {
 			rs = false;
-			System.out.println("erro de envio");
+			_logger.info("erro de envio");
 			e.printStackTrace();
 		}
 		return rs;

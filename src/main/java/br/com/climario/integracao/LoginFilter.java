@@ -12,11 +12,16 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import br.com.climario.ui.LoginSession;
 
 public class LoginFilter implements Filter {
 
 	public static final String BEAN_NAME = "loginSession";
+	
+	private static Logger _logger = LoggerFactory.getLogger(LoginFilter.class);
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -24,14 +29,14 @@ public class LoginFilter implements Filter {
 
         boolean isLoginPage = httpRequest.getRequestURI().contains("entrar.jsf");
         boolean isInstallPage = httpRequest.getRequestURI().contains("install.jsf");
-        System.out.println("Acessando a " + httpRequest.getRequestURI());
-        System.out.println("Login: " + isLoginPage);
+        _logger.info("Acessando a " + httpRequest.getRequestURI());
+        _logger.info("Login: " + isLoginPage);
         
         FacesContext context = FacesContext.getCurrentInstance();
-        System.out.println(context);
+        _logger.info("context..", context);
         //LoginSession bean = context.getApplication().evaluateExpressionGet(context, "#{loginSession}", LoginSession.class);
 
-        System.out.println(httpRequest.getSession().getAttribute(BEAN_NAME));
+        _logger.info("bean session", httpRequest.getSession().getAttribute(BEAN_NAME));
         LoginSession session = (LoginSession) httpRequest.getSession().getAttribute(BEAN_NAME);
         
         if(isInstallPage) {
@@ -55,11 +60,11 @@ public class LoginFilter implements Filter {
     }
     
     public void init(FilterConfig arg0) throws ServletException {
-        System.out.println("Inicilizando filtro de login.");
+        _logger.info("Inicilizando filtro de login.");
     }
 
     public void destroy() {
-    	System.out.println("Finalizando filtro de login.");
+    	_logger.info("Finalizando filtro de login.");
     }
 
 
