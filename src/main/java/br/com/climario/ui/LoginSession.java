@@ -28,7 +28,7 @@ public class LoginSession implements Serializable {
 	
 	private static final long serialVersionUID = 6689087374231436459L;
 	
-	private IUserService userService = ServiceLocator.getInstance().getUserService();
+	private transient IUserService userService = ServiceLocator.getInstance().getUserService();
 	
 	private boolean logged = false;
 	
@@ -65,9 +65,16 @@ public class LoginSession implements Serializable {
 	public void initLogin() {
 		_logger.info("initLogin...");
 		
-		if(userService.listarUsuario().isEmpty()) {
+		if(userService != null && userService.listarUsuario().isEmpty()) {
 			Util.redirect(Util.getContextRoot("/admin/install.jsf"));
 		}
+	}
+	
+	public void doLogout(ActionEvent actionEvent) {
+		
+		_logger.info("actionEvent...", actionEvent);
+		Util.invalidateSession();
+        Util.redirectByContext("/admin");
 	}
 	
 	public void doLogin(ActionEvent actionEvent) {

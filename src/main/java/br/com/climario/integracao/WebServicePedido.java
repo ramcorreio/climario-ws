@@ -29,7 +29,9 @@ public class WebServicePedido {
 	
 	public enum Code {
 		
-		PEDIDO_EXISTE(100, "Pedido já cadastrado.");
+		ERRO_PROCESSAMENTO(100, "Processamento Ok."),
+		PROCESSADO_COM_SUCESSO(101, "Processamento Ok."),
+		PEDIDO_EXISTE(102, "Pedido já cadastrado.");
 		
 		private int code;
 		
@@ -53,12 +55,14 @@ public class WebServicePedido {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-	public Pedido enviar(Pedido pedido) {
+	public PedidoResponse enviar(PedidoResponse pedido) {
 		
 		_logger.info("processando pedido: " + pedido.getNumero());
 		
 		if(pedidoService.isPedidoExiste(pedido.getNumero())){
-			throw new WebApplicationException(Response.status(Status.PRECONDITION_FAILED).entity(Code.PEDIDO_EXISTE).build());
+			pedido.setCode(Code.PEDIDO_EXISTE);
+			pedido.setMensagem("Pedido já cadastrado.");
+			return pedido;
 		}
 		
 		try {
@@ -71,12 +75,17 @@ public class WebServicePedido {
 			}
 			
 			pedidoService.criar(pedido);
-			return pedido; 
+			pedido.setCode(Code.PROCESSADO_COM_SUCESSO);
+			pedido.setMensagem("Pedido salvo");
 		}
 		catch(RuntimeException e) {
 			
-			throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build());
+			pedido.setCode(Code.ERRO_PROCESSAMENTO);
+			pedido.setMensagem(e.getMessage());
+			//throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build());
 		}
+		
+		return pedido;
 	}
 	
 	@Path("pedidos")

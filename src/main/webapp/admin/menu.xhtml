@@ -7,5 +7,10 @@
    	<p:menubar>
    		<p:menuitem value="Home" icon="ui-icon-home" url="index.jsf" />
   		<p:menuitem value="Pedidos" icon="ui-icon-clipboard" url="pedidos.jsf" />
+  		<f:facet name="options">
+  			<h:form>
+  				<p:commandButton value="Sair" icon="ui-icon-extlink" actionListener="#{loginSession.doLogout}"/>
+  			</h:form>
+        </f:facet>
 	</p:menubar>
 </ui:composition>

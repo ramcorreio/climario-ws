@@ -46,8 +46,12 @@
 		<filter-name>apiFilter</filter-name>
 		<url-pattern>/api/*</url-pattern>
 	</filter-mapping>
-    
-    
+	
+	 <session-config>
+	 	<cookie-config>
+	 		<http-only>true</http-only>
+	 	</cookie-config>
+	 </session-config>
 
 	<!-- <context-param>
 		<param-name>contextConfigLocation</param-name>

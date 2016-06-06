@@ -84,7 +84,7 @@ public class WebServicePedidoTest extends JerseyTest {
         p.setFilial("Niteroi");
         PedidoServiceImplTest.addItem(p, 2);
         
-        final Pedido rtw = target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(p), Pedido.class);
+        final PedidoResponse rtw = target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(p), PedidoResponse.class);
         assertThat(rtw, notNullValue());
         assertThat(rtw.getId(), notNullValue());
         assertThat(rtw.getNumero(), is(equalTo(p.getNumero())));
@@ -118,20 +118,13 @@ public class WebServicePedidoTest extends JerseyTest {
         p.setFilial("Niteroi");
         PedidoServiceImplTest.addItem(p, 2);
         
-        final Pedido rtw = target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(p), Pedido.class);
+        final PedidoResponse rtw = target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(p), PedidoResponse.class);
         assertThat(rtw, notNullValue());
         assertThat(rtw.getId(), notNullValue());
         assertThat(rtw.getNumero(), is(equalTo(p.getNumero())));
         
-        try {
-        	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(p), Pedido.class);
-        	Assert.fail();
-        }
-        catch(WebApplicationException e) {
-        	
-        	assertThat(e.getResponse().getStatus(), is(equalTo(Status.PRECONDITION_FAILED.getStatusCode())));
-        	assertThat(e.getResponse().readEntity(Code.class), is(equalTo(Code.PEDIDO_EXISTE)));
-        }
+    	PedidoResponse r = target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(p), PedidoResponse.class);
+    	assertThat(r.getCode(), is(equalTo(Code.PEDIDO_EXISTE)));
     }
     
     @Test
@@ -163,7 +156,7 @@ public class WebServicePedidoTest extends JerseyTest {
     			+ "\"itens\": [{\"codigo\":\"2\",\"descricao\":\"Descrição 2\",\"qtd\":8,\"precoUnitario\":1.9320663346223177},{\"codigo\":\"5\",\"descricao\":\"Descrição 3\",\"qtd\":2,\"precoUnitario\":200.2}]"
     		+"}";
         
-    	Pedido rtw = target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input), Pedido.class);
+    	Pedido rtw = target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input), PedidoResponse.class);
     	            
     	assertThat(rtw, notNullValue());
         assertThat(rtw.getId(), notNullValue());
@@ -199,7 +192,7 @@ public class WebServicePedidoTest extends JerseyTest {
     			+ "\"cobranca\":\"Cobrasim\","
     			+ "\"itens\": [{\"codigo\":\"2\",\"descricao\":\"Descrição 2\",\"qtd\":8,\"precoUnitario\":1.9320663346223177},{\"codigo\":\"5\",\"descricao\":\"Descrição 3\",\"qtd\":2,\"precoUnitario\":200.2}]"
     		+"}";
-    	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input1), Pedido.class);
+    	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input1), PedidoResponse.class);
     	
     	String input2 = "{"
     			+ "\"numero\":\"93824096\","
@@ -225,7 +218,7 @@ public class WebServicePedidoTest extends JerseyTest {
     			+ "\"cobranca\":\"Cobrasim\","
     			+ "\"itens\": [{\"codigo\":\"2\",\"descricao\":\"Descrição 2\",\"qtd\":8,\"precoUnitario\":1.9320663346223177},{\"codigo\":\"5\",\"descricao\":\"Descrição 3\",\"qtd\":2,\"precoUnitario\":200.2}]"
     		+"}";
-    	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input2), Pedido.class);
+    	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input2), PedidoResponse.class);
     	
     	String input3 = "{"
     			+ "\"numero\":\"93824097\","
@@ -251,7 +244,7 @@ public class WebServicePedidoTest extends JerseyTest {
     			+ "\"cobranca\":\"Cobrasim\","
     			+ "\"itens\": [{\"codigo\":\"2\",\"descricao\":\"Descrição 2\",\"qtd\":8,\"precoUnitario\":1.9320663346223177},{\"codigo\":\"5\",\"descricao\":\"Descrição 3\",\"qtd\":2,\"precoUnitario\":200.2}]"
     		+"}";
-    	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input3), Pedido.class);
+    	target().path("pedido-ws").path("enviar").request(MediaType.APPLICATION_JSON).put(Entity.json(input3), PedidoResponse.class);
     	
     	List<Pedido> pedidos = target().path("pedido-ws").path("pedidos").queryParam("idCliente", "748237489274298").request(MediaType.APPLICATION_JSON).get(new GenericType<List<Pedido>>() {});
     	assertThat(pedidos.size(), greaterThan(2));
