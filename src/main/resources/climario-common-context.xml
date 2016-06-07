@@ -10,7 +10,11 @@
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context-3.0.xsd" default-autowire="byName">
 	
-	<context:property-placeholder location="#{propsLocation}" ignore-unresolvable="true"/>
+	<bean id="props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+  		<property name="location" value="#{propsLocation}"/>
+	</bean>
+	
+	<context:property-placeholder ignore-unresolvable="true" properties-ref="props"/>
 	
 	<!-- bean post-processor for JPA annotations -->
 	<context:annotation-config />

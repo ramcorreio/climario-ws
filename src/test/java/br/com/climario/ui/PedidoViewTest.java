@@ -1,12 +1,14 @@
 package br.com.climario.ui;
 
-import static org.hamcrest.Matchers.hasSize;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -21,6 +23,7 @@ import br.com.climario.dominio.Cliente;
 import br.com.climario.dominio.Pedido;
 import br.com.climario.service.IPedidoService;
 import br.com.climario.service.impl.PedidoServiceImplTest;
+import br.com.climario.service.impl.ServiceLocator;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:climario-test-context.xml" })
@@ -47,11 +50,11 @@ public class PedidoViewTest {
 		
 		pedidoView.setTipo("CREDIT_CARD");
 		pedidoView.processarPagamentos(map);
-		MatcherAssert.assertThat(pedidoView.getCards(), hasSize(15));
+		assertThat(pedidoView.getCards(), hasSize(15));
 		
 		pedidoView.setTipo("BOLETO");
 		pedidoView.processarPagamentos(map);
-		MatcherAssert.assertThat(pedidoView.getCards(), hasSize(1));
+		assertThat(pedidoView.getCards(), hasSize(1));
 	}
 	
 	@Test
@@ -89,6 +92,12 @@ public class PedidoViewTest {
 		pedidoView.setPedido(p);
 		pedidoView.checkout(null);
 		//pedidoView.pagar(null);
+	}
+	
+	@Test
+	public void getProperty() throws IOException {
+		
+		assertThat("sandbox", is(equalTo(ServiceLocator.getInstance().getProperty(ServiceLocator.ENV))));
 	}
 	
 }

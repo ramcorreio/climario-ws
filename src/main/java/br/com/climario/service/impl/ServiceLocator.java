@@ -1,5 +1,7 @@
 package br.com.climario.service.impl;
 
+import java.util.Properties;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
@@ -14,12 +16,14 @@ import br.com.climario.service.IUserService;
  *
  */
 public class ServiceLocator {
-
+	
 	private static ServiceLocator INSTANCE = new ServiceLocator();
+	
+	public static final String ENV = "climario.environment";
 
 	@Autowired
 	private ApplicationContext applicationContext;
-
+	
 	private ServiceLocator() {
 	}
 
@@ -41,5 +45,10 @@ public class ServiceLocator {
 	public IUserService getUserService() {
 
 		return (IUserService) applicationContext.getBean("usuarioService");
+	}
+	
+	public String getProperty(String key) {
+		
+		return Properties.class.cast(applicationContext.getBean("props")).getProperty(key);
 	}
 }

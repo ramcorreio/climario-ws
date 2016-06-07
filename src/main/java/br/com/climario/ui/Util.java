@@ -3,12 +3,10 @@ package br.com.climario.ui;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -222,64 +220,6 @@ public class Util {
 		return c;
 	}
 	
-	/*public static String PaddingWithZero(String string, Integer size, int position) {
-		String stringAux = new String(string);
-		if(position == Util.PADDING_LEFT){
-			while(stringAux.length() < size){
-				stringAux = "0" + stringAux;
-			}
-		}
-		else if(position == Util.PADDING_RIGHT){
-			while(stringAux.length() < size){
-				stringAux = stringAux + "0";
-			}
-		}
-		return stringAux;
-	}*/
-	
-	public static String bigDecimalToString(Double amountTemp) {
-		return amountTemp.toString().replaceAll("\\.", ",");
-	}
-	
-	public static String bigDecimalToString(BigDecimal amountTemp) {
-		return amountTemp.toString().replaceAll("\\.", ",");
-	}
-	
-	public static BigDecimal stringToBigDecimal(String amountTemp) {
-		return new BigDecimal(amountTemp.replaceAll("\\.", "X").replaceAll(",", ".").replaceAll("X", ""));
-	}
-	
-	public static Double stringToBigDouble(String amountTemp) {
-		return new Double(amountTemp.replaceAll("\\.", "X").replaceAll(",", ".").replaceAll("X", ""));
-	}
-	
-	public static String dateToString(Date date, String format) {
-		if (date != null) {
-			SimpleDateFormat formatter = new SimpleDateFormat(format);
-			return formatter.format(date);
-		} else {
-			return "";
-		}
-	}
-
-	public static String secondsToTimeString(Long seconds) {
-		String strHour = "00";
-		String strMinutes = "00";
-		
-		Long minutes = seconds/60;
-		Long hour = Double.valueOf(minutes/60).longValue();
-		strHour = hour.toString();
-		if(hour < 10){
-			strHour = "0" + hour;
-		}
-		minutes = Double.valueOf(minutes % 60).longValue();
-		strMinutes = minutes.toString();
-		if(minutes < 10){
-			strMinutes = "0" + minutes;
-		}
-		return strHour + ":" + strMinutes;
-	}
-	
 	public static void redirectByContext(String redirectTo){
 		
 		redirect(getContextRoot(redirectTo));
@@ -302,21 +242,6 @@ public class Util {
 	public static String getCurrentPage() {
 		return ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getRequestURI();
 	}	
-	
-	public static String getProperties(String key){
-		return getProperties().getProperty(key);
-	}
-	
-	public static Properties getProperties(){
-		Properties prop = new Properties();
-		try {
-			prop.load(Util.class.getClassLoader().getResourceAsStream("application.properties"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return prop;
-	}
 	
 	public static String getString(String key) {
 		
@@ -394,6 +319,9 @@ public class Util {
 
 			// Set To: header field of the header.
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+			
+			//cópia para gestão
+			message.addRecipient(Message.RecipientType.CC, new InternetAddress("marcio@internit.com.br"));
 
 			// Set Subject: header field
 			message.setSubject(subtitle);

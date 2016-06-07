@@ -13,18 +13,15 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response.Status;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;

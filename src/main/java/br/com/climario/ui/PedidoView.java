@@ -226,7 +226,8 @@ public class PedidoView implements Serializable {
 	}
 	
 	public String getEnv() {
-		return Util.getString("environment");
+		//return Util.getString("environment");
+		return ServiceLocator.getInstance().getProperty(ServiceLocator.ENV);
 	}
 
 	public void consultar(ActionEvent actionEvent) {
@@ -497,19 +498,21 @@ public class PedidoView implements Serializable {
 		final AccountCredentials accountCredentials = PagSeguroConfig.getAccountCredentials();
 		accountCredentials.setEmail(Util.getString("credential.email"));
 		
-		if ("sandbox".equals(Util.getString("environment"))) {
+		String env = ServiceLocator.getInstance().getProperty(ServiceLocator.ENV);
+		
+		if ("sandbox".equals(env)) {
 			PagSeguroConfig.setSandboxEnvironment();
-			accountCredentials.setSandboxToken(Util.getString("credential." + Util.getString("environment") + ".token"));
+			accountCredentials.setSandboxToken(Util.getString("credential." + env + ".token"));
 		} else {
 			PagSeguroConfig.setProductionEnvironment();
-			accountCredentials.setProductionToken(Util.getString("credential." + Util.getString("environment") + ".token"));
+			accountCredentials.setProductionToken(Util.getString("credential." + env + ".token"));
 		}
 		
 		return accountCredentials;
 	}
 	
 	public void handleChange(ValueChangeEvent event){
-		_logger.info("here "+event.getNewValue());
+		_logger.info("here " + event.getNewValue());
 	}
 
 	public void checkout(ActionEvent actionEvent) {
@@ -518,16 +521,12 @@ public class PedidoView implements Serializable {
 
 		try {
 
-			_logger.info(Util.getString("environment"));
-
 			final AccountCredentials accountCredentials = getAccountCredencials();
+			_logger.info(PagSeguroConfig.getEnvironment());
+			_logger.info(PagSeguroConfig.getModuleVersion());
 
 			_logger.info(accountCredentials.getEmail());
 			_logger.info(accountCredentials.getToken());
-			
-			//TODO: pagseguro irá atualizar a lib para acertar erro de publicKey
-			/*final String publicKey = Util.getString("credential." + Util.getString("environment") + ".public");
-			_logger.info("publicKey: " + publicKey);*/
 			
 			final PaymentMethods paymentMethods = PaymentMethodService.getPaymentMethods(accountCredentials, accountCredentials.getToken());
 			
@@ -712,10 +711,8 @@ public class PedidoView implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Cliente não cadastrado!", "Erro!"));
 		}
 		else {
-			//Pedido p = pedidoService.recuperarPedido(email.getValue().toString());
 			Cliente c = pedidoService.recuperarCliente(cpfCnpj.getValue().toString());
 			
-			//Cliente c = pedidoService.recuperarCliente(cpfCnpj.getValue().toString());
 			Object[] args = new Object[]{c.getNome(), c.getCpfCnpj(), telefone.getValue()};
 			
 			String txtCliente = Util.getString("texto.solicitacao.info", args);
