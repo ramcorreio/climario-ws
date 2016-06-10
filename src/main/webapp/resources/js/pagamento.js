@@ -64,7 +64,9 @@ function autorizar(xhr, status, args) {
 		        console.log("token: " + param);
 		    	processar([
 		           {name: 'token', value: param},
-		           {name: 'senderHash', value: PagSeguroDirectPayment.getSenderHash()}
+		           {name: 'senderHash', value: PagSeguroDirectPayment.getSenderHash()},
+		           {name: 'cpfCnpjHolder', value: $('#cpfCnpjHolder').val()},
+		           {name: 'nomeHolder', value: $('#nome').val()}
 		    	]);
 		    },
 		    error: function(response) {

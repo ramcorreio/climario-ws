@@ -64,10 +64,14 @@ import br.com.uol.pagseguro.service.TransactionService;
 @ViewScoped
 public class PedidoView implements Serializable {
 	
+	private static final String ERRO_PARAM = "erro";
+
 	private static Logger _logger = LoggerFactory.getLogger(PedidoView.class);
 
 	private static final String BOLETO_METHOD = "BOLETO";
-
+	
+	private static final String ID = "transaction";
+	
 	private static final String NUMERO = "numero";
 
 	private static final long serialVersionUID = -3297581325023937731L;
@@ -101,6 +105,8 @@ public class PedidoView implements Serializable {
 	private String nome;
 	
 	private String validade;
+	
+	private String cpfCnpjHolder;
 	
 	private String tipo;
 	
@@ -187,6 +193,14 @@ public class PedidoView implements Serializable {
 	public void setValidade(String validade) {
 		this.validade = validade;
 	}
+	
+	public String getCpfCnpjHolder() {
+		return cpfCnpjHolder;
+	}
+	
+	public void setCpfCnpjHolder(String cpfCnpjHolder) {
+		this.cpfCnpjHolder = cpfCnpjHolder;
+	}
 
 	public String getNumero() {
 		return numero;
@@ -222,7 +236,7 @@ public class PedidoView implements Serializable {
 	
 	public boolean isExistePedido() {
 		
-		return pedido != null; 
+		return pedido != null;
 	}
 	
 	public String getEnv() {
@@ -236,9 +250,9 @@ public class PedidoView implements Serializable {
 		if (!pedidoService.isPedidoClienteExiste(cpfCnpj.getValue().toString(), numero)) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pedido " + numero + " não encontrado", "Erro!"));
 		} else {
-			String id = Util.getSession().getId();
+			Util.getSession().setAttribute(ID, System.currentTimeMillis());
 			Util.getSession().setAttribute(NUMERO, numero);
-			Util.redirect(Util.getContextRoot("/pages/resumo.jsf?id=" + id));
+			Util.redirect(Util.getContextRoot("/pages/resumo.jsf?id=" + Util.getSession().getAttribute(ID).toString()));
 		}
 	}
 	
@@ -306,20 +320,25 @@ public class PedidoView implements Serializable {
 		}
 	}
 	
-	public void exec() {
+	public void exec(ActionEvent event) {
 		
 		_logger.info("exec: " + tipo);
+		_logger.info("event: " + event);
 		if(BOLETO_METHOD.equals(tipo)) {
-			execBoleto();
+			execBoleto(event);
 		}
 		else {
-			execCartao();
+			execCartao(event);
 		}
 		
-		Util.redirect(Util.getContextRoot("/pages/confirmacao.jsf?id=" + session.getId()));
+		Boolean error = Boolean.valueOf(RequestContext.getCurrentInstance().getCallbackParams().get(ERRO_PARAM).toString());
+		if(!error) {
+			Util.redirect(Util.getContextRoot("/pages/confirmacao.jsf?id=" + Util.getSession().getAttribute(ID).toString()));	
+		}
+		
 	}
 	
-	public void execBoleto() {
+	public void execBoleto(ActionEvent event) {
 		
 	    FacesContext context = FacesContext.getCurrentInstance();
 	    Map<String, String> map = context.getExternalContext().getRequestParameterMap();
@@ -372,12 +391,14 @@ public class PedidoView implements Serializable {
         transation(request, Pagagamento.BOLETO);
 	}
 	
-	public void execCartao() {
+	public void execCartao(ActionEvent event) {
 		
 	    FacesContext context = FacesContext.getCurrentInstance();
 	    Map<String, String> map = context.getExternalContext().getRequestParameterMap();
-	    _logger.info("token card" + map.get("token"));
-	    _logger.info("sender hash" + map.get("senderHash"));
+	    _logger.info("token card: " + map.get("token"));
+	    _logger.info("sender hash: " + map.get("senderHash"));
+	    _logger.info("holder cpf: " + map.get("cpfCnpjHolder"));
+	    _logger.info("holder nome: " + map.get("nomeHolder"));
 	
 	    final CreditCardCheckout request = new CreditCardCheckout();
 
@@ -427,10 +448,10 @@ public class PedidoView implements Serializable {
         Installment installment = parcelas.get(numParcelas - 1);
 
         request.setInstallment(new br.com.uol.pagseguro.domain.direct.Installment(installment.getQuantity(), new BigDecimal(format.format(installment.getAmount()))));
-
-        request.setHolder(new Holder(pedido.getCliente().getNome(), //
+        
+        request.setHolder(new Holder(map.get("nomeHolder"), //
         		new Phone("99", "99999999"), //
-                new Document(pedido.getCliente().getCpfCnpj().length() == 11 ? DocumentType.CPF : DocumentType.CNPJ, pedido.getCliente().getCpfCnpj()), //
+                new Document(map.get("cpfCnpjHolder").length() == 11 ? DocumentType.CPF : DocumentType.CNPJ, map.get("cpfCnpjHolder")), //
                 "01/01/1900"));
 
         request.setBillingAddress(new Address("BRA", //
@@ -476,15 +497,15 @@ public class PedidoView implements Serializable {
 	        if (transaction != null) {
 	            _logger.info("Transaction Code - Default Mode: " + transaction.getCode());
 	        }
-	        RequestContext.getCurrentInstance().addCallbackParam("erro", false);
+	        RequestContext.getCurrentInstance().addCallbackParam(ERRO_PARAM, false);
 		} catch (PagSeguroServiceException e) {
-			RequestContext.getCurrentInstance().addCallbackParam("erro", true);
+			RequestContext.getCurrentInstance().addCallbackParam(ERRO_PARAM, true);
 			RequestContext.getCurrentInstance().addCallbackParam("messagem", e.getMessage());
 			
 			RequestContext.getCurrentInstance().addCallbackParam("codigo", codigo);
 	        System.err.println("codigo ==> " + e.getMessage());
 	        
-	        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Pedido não processadno", "Falha no processamento do pedido. Erro: " + codigo);
+	        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pedido não processado!!", "Falha no processamento do pedido.<br/><br/>Código Erro: " + codigo + ".<br/>Informe o código acima ao administrador do sistema.");
 	        RequestContext.getCurrentInstance().showMessageInDialog(message);
 	    }
 		
@@ -616,7 +637,7 @@ public class PedidoView implements Serializable {
 				pedido = pedidoService.recuperarPedido(numero);
 				ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 				if(pedido.getCodigoAutorizacao() != null && !context.getRequestServletPath().contains("confirmacao.jsf")) {
-					Util.redirect(Util.getContextRoot("/pages/confirmacao.jsf?id=" + session.getId()));	
+					Util.redirect(Util.getContextRoot("/pages/confirmacao.jsf?id=" + Util.getSession().getAttribute(ID).toString()));	
 				}
 			}
 			catch(RuntimeException e) {
@@ -624,23 +645,6 @@ public class PedidoView implements Serializable {
 				_logger.info("Pedido " + numero + " não existe.");
 			}
 		}
-		
-		
-		/*if (FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().containsKey("id")) {
-			
-			ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-			numero = context.getRequestParameterMap().get("id");
-			try{
-				pedido = pedidoService.recuperarPedido(numero);
-				if(pedido.getCodigoAutorizacao() != null && !context.getRequestServletPath().contains("confirmacao.jsf")) {
-					Util.redirect(Util.getContextRoot("/pages/confirmacao.jsf?id=" + numero));	
-				}
-			}
-			catch(RuntimeException e) {
-			
-				_logger.info("Pedido " + numero + " não existe.");
-			}
-		}*/
 	}
 
 	public static class ItemWrap {

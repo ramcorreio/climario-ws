@@ -25,7 +25,7 @@
    	
    	<ui:define name="content">
    		
-   		<p:panel rendered="#{!pedidoView.existePedido}">
+   		<p:panel id="painelNotFound" rendered="#{!pedidoView.existePedido}">
    			<div class="container altura_confirmacao">
 			    <div class="col-md-12">
 			    	<h2 class="titulo_confirmacao">Pedido <span class="numeropedido">#{pedidoView.numero}</span> não localizado.</h2>
@@ -34,7 +34,7 @@
 			</div>
    		</p:panel>	
    	
-   		<p:panel rendered="#{pedidoView.existePedido}">
+   		<p:panel id="painelFounded" rendered="#{pedidoView.existePedido}">
    			
    			<div class="container altura_confirmacao"> 
 		 		<div class="col-md-12 col-sm-12 center espaco5">
@@ -199,6 +199,12 @@
 				    			<p:outputLabel value="Validade:"/>
 				    			<p:inputMask id="validade" label="Validade" mask="99/9999" value="#{pedidoView.validade}" required="true" validatorMessage="Informe a validade do cartão"/>
 				    			<p:message for="validade" />
+				    			
+				    			<p:outputLabel value="CPF/CNPJ:"/>
+				    			<p:inputText id="cpfCnpjHolder" label="CPF/CNPJ" maxlength="14" value="#{pedidoView.cpfCnpjHolder}" required="true" requiredMessage="É necessário informar o CPF/CNPJ.">
+		    						<f:validator validatorId="custom.numberValidator" />
+		    					</p:inputText>
+		    					<p:message for="cpfCnpjHolder" />
 				    		</p:panelGrid>
 				    	</div>
 				    	</c:if>
