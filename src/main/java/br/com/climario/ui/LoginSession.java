@@ -111,5 +111,9 @@ public class LoginSession implements Serializable {
 		userService.criar(u);
 		Util.redirect(Util.getContextRoot("/admin/entrar.jsf"));
 	}
-
+	
+	@Override
+	public String toString() {
+		return  "logged: " + logged;
+	}
 }

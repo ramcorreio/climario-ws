@@ -30,13 +30,13 @@ public class LoginFilter implements Filter {
         boolean isLoginPage = httpRequest.getRequestURI().contains("entrar.jsf");
         boolean isInstallPage = httpRequest.getRequestURI().contains("install.jsf");
         _logger.info("Acessando a " + httpRequest.getRequestURI());
-        _logger.info("Login: " + isLoginPage);
+        _logger.info("Login Page: " + isLoginPage);
         
         FacesContext context = FacesContext.getCurrentInstance();
-        _logger.info("context..", context);
+        _logger.info("context => " + context);
         //LoginSession bean = context.getApplication().evaluateExpressionGet(context, "#{loginSession}", LoginSession.class);
 
-        _logger.info("bean session", httpRequest.getSession().getAttribute(BEAN_NAME));
+        _logger.info("bean session => " + httpRequest.getSession().getAttribute(BEAN_NAME));
         LoginSession session = (LoginSession) httpRequest.getSession().getAttribute(BEAN_NAME);
         
         if(isInstallPage) {
@@ -45,6 +45,7 @@ public class LoginFilter implements Filter {
         else {
         
         	if(!isLoginPage && (session == null || session != null && !session.isLogged())) {
+        	//if(session == null || session != null && !session.isLogged()) {
             	
             	httpResponse.sendRedirect(httpRequest.getContextPath() + "/admin/entrar.jsf");
             }
