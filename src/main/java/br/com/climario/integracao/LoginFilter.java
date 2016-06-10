@@ -27,10 +27,14 @@ public class LoginFilter implements Filter {
         final HttpServletRequest httpRequest = (HttpServletRequest) request;
         final HttpServletResponse httpResponse = (HttpServletResponse) response;
 
+        boolean isAdminHome = httpRequest.getRequestURI().replaceAll("admin/", "admin").endsWith("/admin");
         boolean isLoginPage = httpRequest.getRequestURI().contains("entrar.jsf");
         boolean isInstallPage = httpRequest.getRequestURI().contains("install.jsf");
+        _logger.info("Contexto " + httpRequest.getContextPath());
         _logger.info("Acessando a " + httpRequest.getRequestURI());
+        _logger.info("Admin Home: " + isAdminHome);
         _logger.info("Login Page: " + isLoginPage);
+        _logger.info("Install Page: " + isInstallPage);
         
         FacesContext context = FacesContext.getCurrentInstance();
         _logger.info("context => " + context);
@@ -43,9 +47,11 @@ public class LoginFilter implements Filter {
         	chain.doFilter(request, response);
         }
         else {
-        
-        	if(!isLoginPage && (session == null || session != null && !session.isLogged())) {
+        	
+        	        	
+        	//if(!isLoginPage && (session == null || session != null && !session.isLogged())) {
         	//if(session == null || session != null && !session.isLogged()) {
+        	if(isAdminHome || !isLoginPage && (session == null || (session != null && !session.isLogged()))) {
             	
             	httpResponse.sendRedirect(httpRequest.getContextPath() + "/admin/entrar.jsf");
             }
