@@ -21,7 +21,7 @@
 		    	<p class="texto_confirmacao">Mais detalhes desta transação serão enviados para o seu e-mail. Esta página já pode ser fechada.</p>
 		    	
 		    	<p:panel rendered="#{pedidoView.pedido.link != null}" style="padding: 0em">
-		    		<p class="texto_confirmacao"><a title="Boleto" href="#{pedidoView.pedido.link}">Clique para imprimir o boleto</a></p>
+		    		<p class="texto_confirmacao"><a target="_blank" title="Boleto" href="#{pedidoView.pedido.link}">Clique para imprimir o boleto</a></p>
 		    	</p:panel>
 		    	
 		    	<div class="wrapper_confirmacao"><a href="#{request.contextPath}" class="btn_consultar2">Sair</a></div>

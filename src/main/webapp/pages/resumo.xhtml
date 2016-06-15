@@ -199,12 +199,19 @@
 				    			<p:outputLabel value="Validade:"/>
 				    			<p:inputMask id="validade" label="Validade" mask="99/9999" value="#{pedidoView.validade}" required="true" validatorMessage="Informe a validade do cartão"/>
 				    			<p:message for="validade" />
+		    					
+		    					<p:outputLabel value="CPF"/>
+				    			<p:inputMask id="cpfCnpjHolder" label="CPF" mask="999.999.999-99" value="#{pedidoView.cpfCnpjHolder}" required="true" validatorMessage="É necessário informar o CPF/CNPJ."/>
+				    			<p:message for="cpfCnpjHolder" />
 				    			
-				    			<p:outputLabel value="CPF/CNPJ:"/>
-				    			<p:inputText id="cpfCnpjHolder" label="CPF/CNPJ" maxlength="14" value="#{pedidoView.cpfCnpjHolder}" required="true" requiredMessage="É necessário informar o CPF/CNPJ.">
-		    						<f:validator validatorId="custom.numberValidator" />
-		    					</p:inputText>
-		    					<p:message for="cpfCnpjHolder" />
+				    			<p:outputLabel value="Aniversário"/>
+				    			<p:inputMask id="aniversario" label="CPF" mask="99/99/9999" value="#{pedidoView.aniversario}" required="true" validatorMessage="É necessário informar a Data de Aniversário."/>
+				    			<p:message for="aniversario" />
+				    			
+				    			<p:outputLabel value="Telefone"/>
+				    			<p:inputMask id="telefoneHolder" label="CPF" mask="(99) 99999-9999" value="#{pedidoView.telefoneHolder}" required="true" validatorMessage="É necessário informar o Telefone."/>
+				    			<p:message for="telefoneHolder" />
+		    					
 				    		</p:panelGrid>
 				    	</div>
 				    	</c:if>

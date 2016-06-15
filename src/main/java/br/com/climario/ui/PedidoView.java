@@ -83,6 +83,8 @@ public class PedidoView implements Serializable {
 	private String numero;
 	
 	private String telefone;
+	
+	private String telefoneHolder;
 
 	private Pedido pedido;
 
@@ -104,8 +106,82 @@ public class PedidoView implements Serializable {
 	
 	private String nome;
 	
+	private String aniversario;
+	
 	private String validade;
 	
+	public String getTelefoneHolder() {
+		return telefoneHolder;
+	}
+
+	public void setTelefoneHolder(String telefoneHolder) {
+		this.telefoneHolder = telefoneHolder;
+	}
+
+	public static Logger get_logger() {
+		return _logger;
+	}
+
+	public static void set_logger(Logger _logger) {
+		PedidoView._logger = _logger;
+	}
+
+	public IPedidoService getPedidoService() {
+		return pedidoService;
+	}
+
+	public void setPedidoService(IPedidoService pedidoService) {
+		this.pedidoService = pedidoService;
+	}
+
+	public HttpSession getSession() {
+		return session;
+	}
+
+	public void setSession(HttpSession session) {
+		this.session = session;
+	}
+
+	public DecimalFormat getFormat() {
+		return format;
+	}
+
+	public void setFormat(DecimalFormat format) {
+		this.format = format;
+	}
+
+	public String getAniversario() {
+		return aniversario;
+	}
+
+	public void setAniversario(String aniversario) {
+		this.aniversario = aniversario;
+	}
+
+	public static String getErroParam() {
+		return ERRO_PARAM;
+	}
+
+	public static String getBoletoMethod() {
+		return BOLETO_METHOD;
+	}
+
+	public static String getId() {
+		return ID;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public void setCards(List<PaymentMethod> cards) {
+		this.cards = cards;
+	}
+
+	public void setParcelas(List<Installment> parcelas) {
+		this.parcelas = parcelas;
+	}
+
 	private String cpfCnpjHolder;
 	
 	private String tipo;
@@ -356,7 +432,12 @@ public class PedidoView implements Serializable {
         request.setNotificationURL(Util.getContextRoot("/status"));
 
         request.setReference(pedido.getNumero());
-
+        //System.out.println(pedido.getCliente().getCpfCnpj()+"###############################################111");
+        
+        /*String tel[] = map.get("telefoneHolder").split(" ");
+        tel[0] = tel[0].replace(")", "");
+        tel[0] = tel[0].replace("(", "");*/
+        
         request.setSender(new Sender(pedido.getCliente().getNome(), //
         		pedido.getCliente().getEmail(), //
         		new Phone("99", "99999999"), //
@@ -411,10 +492,16 @@ public class PedidoView implements Serializable {
         request.setNotificationURL(Util.getContextRoot("/status"));
 
         request.setReference(pedido.getNumero());
-
+        //System.out.println(pedido.getCliente().getCpfCnpj()+"###############################################222");
+        //System.out.println(pedido.getNumero()+"###############################################222");
+        
+        String tel[] = map.get("telefoneHolder").split(" ");
+        tel[0] = tel[0].replace(")", "");
+        tel[0] = tel[0].replace("(", "");
+        
         request.setSender(new Sender(pedido.getCliente().getNome(), //
         		pedido.getCliente().getEmail(), //
-        		new Phone("99", "99999999"), //
+        		new Phone(tel[0], tel[1].replace("-","")), //
                 new SenderDocument(pedido.getCliente().getCpfCnpj().length() == 11 ? DocumentType.CPF : DocumentType.CNPJ, pedido.getCliente().getCpfCnpj())));
 
         request.setSenderHash(map.get("senderHash").toString());
@@ -448,11 +535,17 @@ public class PedidoView implements Serializable {
         Installment installment = parcelas.get(numParcelas - 1);
 
         request.setInstallment(new br.com.uol.pagseguro.domain.direct.Installment(installment.getQuantity(), new BigDecimal(format.format(installment.getAmount()))));
+        //System.out.println(map.get("telefoneHolder")+"###############################################");
+       
+       
+        
+        System.out.println(tel[0]);
+        System.out.println(tel[1]);
         
         request.setHolder(new Holder(map.get("nomeHolder"), //
-        		new Phone("99", "99999999"), //
-                new Document(map.get("cpfCnpjHolder").length() == 11 ? DocumentType.CPF : DocumentType.CNPJ, map.get("cpfCnpjHolder")), //
-                "01/01/1900"));
+        		new Phone(tel[0], tel[1].replace("-","")), //
+                new Document(map.get("cpfCnpjHolder").length() == 14 ? DocumentType.CPF : DocumentType.CNPJ, map.get("cpfCnpjHolder")), //
+                map.get("aniversario")));
 
         request.setBillingAddress(new Address("BRA", //
         		pedido.getCliente().getEstado(), //
