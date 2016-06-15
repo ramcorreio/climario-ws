@@ -166,7 +166,7 @@
 				    	<c:if test="#{pedidoView.tipo == 'CREDIT_CARD'}">
 				    	<div class="col-md-9 col-sm-9 espaco12">
 				    		<p:panelGrid columns="3" style="width: 100%">
-				    			<p:outputLabel value="Parcelas:"/>
+				    			<p:outputLabel value="Parcelas"/>
 				    			<p:selectOneListbox 
 					    			id="parcelas" 
 					    			required="true" 
@@ -184,19 +184,19 @@
 								</p:selectOneListbox>
 								<p:message for="parcelas" />
 				    		
-				    			<p:outputLabel value="Número:"/>
+				    			<p:outputLabel value="Número do Cartão"/>
 				    			<p:inputMask id="numeroCartao" label="Número Cartão" mask="9999999999999999" value="#{pedidoView.numeroCartao}" required="true" validatorMessage="Informe o número do cartão"/>
 				    			<p:message for="numeroCartao" />
 				    			
-				    			<p:outputLabel value="CVV:" />
+				    			<p:outputLabel value="Código de Segurança (cvv)" />
 				    			<p:inputMask id="cvv" label="CVV" mask="999" value="#{pedidoView.cvv}" required="true" validatorMessage="Informe o código de segurança"/>
 				    			<p:message for="cvv" />
 				    			
-				    			<p:outputLabel value="Nome:"/>
+				    			<p:outputLabel value="Nome (impresso no cartão)"/>
 				    			<p:inputText id="nome" label="Nome" value="#{pedidoView.nome}" required="true" validatorMessage="Informe o nome conforme o cartão"/>
 				    			<p:message for="nome" />
 				    			
-				    			<p:outputLabel value="Validade:"/>
+				    			<p:outputLabel value="Validade do Cartão"/>
 				    			<p:inputMask id="validade" label="Validade" mask="99/9999" value="#{pedidoView.validade}" required="true" validatorMessage="Informe a validade do cartão"/>
 				    			<p:message for="validade" />
 		    					
@@ -204,7 +204,7 @@
 				    			<p:inputMask id="cpfCnpjHolder" label="CPF" mask="999.999.999-99" value="#{pedidoView.cpfCnpjHolder}" required="true" validatorMessage="É necessário informar o CPF/CNPJ."/>
 				    			<p:message for="cpfCnpjHolder" />
 				    			
-				    			<p:outputLabel value="Aniversário"/>
+				    			<p:outputLabel value="Data de Nascimento"/>
 				    			<p:inputMask id="aniversario" label="CPF" mask="99/99/9999" value="#{pedidoView.aniversario}" required="true" validatorMessage="É necessário informar a Data de Aniversário."/>
 				    			<p:message for="aniversario" />
 				    			
