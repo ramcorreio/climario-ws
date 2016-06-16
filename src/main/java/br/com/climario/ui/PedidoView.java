@@ -85,6 +85,8 @@ public class PedidoView implements Serializable {
 	private String telefone;
 	
 	private String telefoneHolder;
+	
+	private String dddHolder;
 
 	private Pedido pedido;
 
@@ -110,6 +112,14 @@ public class PedidoView implements Serializable {
 	
 	private String validade;
 	
+	public String getDddHolder() {
+		return dddHolder;
+	}
+
+	public void setDddHolder(String dddHolder) {
+		this.dddHolder = dddHolder;
+	}
+
 	public String getTelefoneHolder() {
 		return telefoneHolder;
 	}
@@ -495,13 +505,13 @@ public class PedidoView implements Serializable {
         //System.out.println(pedido.getCliente().getCpfCnpj()+"###############################################222");
         //System.out.println(pedido.getNumero()+"###############################################222");
         
-        String tel[] = map.get("telefoneHolder").split(" ");
+       /* String tel[] = map.get("telefoneHolder").split(" ");
         tel[0] = tel[0].replace(")", "");
-        tel[0] = tel[0].replace("(", "");
-        
+        tel[0] = tel[0].replace("(", "");*/
+        String ddd = map.get("dddHolder").replaceAll("[()]","");
         request.setSender(new Sender(pedido.getCliente().getNome(), //
         		pedido.getCliente().getEmail(), //
-        		new Phone(tel[0], tel[1].replace("-","")), //
+        		new Phone(ddd, map.get("telefoneHolder").replace("-","")), //
                 new SenderDocument(pedido.getCliente().getCpfCnpj().length() == 11 ? DocumentType.CPF : DocumentType.CNPJ, pedido.getCliente().getCpfCnpj())));
 
         request.setSenderHash(map.get("senderHash").toString());
@@ -537,13 +547,9 @@ public class PedidoView implements Serializable {
         request.setInstallment(new br.com.uol.pagseguro.domain.direct.Installment(installment.getQuantity(), new BigDecimal(format.format(installment.getAmount()))));
         //System.out.println(map.get("telefoneHolder")+"###############################################");
        
-       
-        
-        System.out.println(tel[0]);
-        System.out.println(tel[1]);
         
         request.setHolder(new Holder(map.get("nomeHolder"), //
-        		new Phone(tel[0], tel[1].replace("-","")), //
+        		new Phone(ddd, map.get("telefoneHolder").replace("-","")), //
                 new Document(map.get("cpfCnpjHolder").length() == 14 ? DocumentType.CPF : DocumentType.CNPJ, map.get("cpfCnpjHolder")), //
                 map.get("aniversario")));
 
