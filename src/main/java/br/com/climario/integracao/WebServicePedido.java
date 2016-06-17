@@ -1,6 +1,7 @@
 package br.com.climario.integracao;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -16,6 +17,7 @@ import javax.ws.rs.core.Response.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import br.com.climario.dominio.ItemPedido;
 import br.com.climario.dominio.Pedido;
 import br.com.climario.service.IPedidoService;
 import br.com.climario.service.impl.ServiceLocator;
@@ -56,6 +58,21 @@ public class WebServicePedido {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
 	public PedidoResponse enviar(PedidoResponse pedido) {
+		
+		
+		
+		Set<ItemPedido> t1 = pedido.getItens();
+		
+		int i = 0;
+		
+		for(ItemPedido item : t1) {
+			 _logger.info(" ############################################ ");
+			 _logger.info("Código do Item: " + item.getCodigo());
+            _logger.info("Descrição do Item: " + item.getDescricao());
+            _logger.info("Preço unitário dos Item: " + item.getPrecoUnitario());
+            _logger.info(" ############################################ ");
+        }
+		
 		
 		_logger.info("processando pedido: " + pedido.getNumero());
 		
