@@ -107,7 +107,7 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService, Se
 			return query.getSingleResult();
 		}
 		catch(NoResultException e){
-			throw new RuntimeException("Pediod não encontrado.", e);
+			throw new RuntimeException("Pedido não encontrado.", e);
 		}
 	}
 	
@@ -128,7 +128,8 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService, Se
 	
 	@Override
 	@Transactional(value="climarioTM", readOnly = false, propagation = Propagation.REQUIRES_NEW)
-	public void atulizarCodigoTransacao(String numero, Pagagamento pagagamento, String transacao, String link) {
+	public void atulizarCodigoTransacao(String numero, Pagagamento pagagamento, String transacao, String link) 
+	{
 		
 		Pedido p = recuperarPedido(numero);
 		p.setCodigoAutorizacao(transacao);

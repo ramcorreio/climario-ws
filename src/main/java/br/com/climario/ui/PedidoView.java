@@ -419,9 +419,19 @@ public class PedidoView implements Serializable {
 		
 		Boolean error = Boolean.valueOf(RequestContext.getCurrentInstance().getCallbackParams().get(ERRO_PARAM).toString());
 		if(!error) {
+			
+			//Cliente c = pedidoService.recuperarCliente(cpfCnpj.getValue().toString());
+			
+			String texto = "O cliente {nome-cliente}, iniciou o processe de pagamento para o pedido {numero-pedido}. Um novo e-mail será enviado após o retorno do pagamento.";
+			texto += "Clima Rio";
+			texto += "Sempre a melhor compra";
+			
+			//System.out.println("@@@@@");
+			_logger.info(texto);
+			//Util.sendMail("jonath@internit.com.br", "Solicitar Pedido", texto);
+			
 			Util.redirect(Util.getContextRoot("/pages/confirmacao.jsf?id=" + Util.getSession().getAttribute(ID).toString()));	
 		}
-		
 	}
 	
 	public void execBoleto(ActionEvent event) {
@@ -570,6 +580,7 @@ public class PedidoView implements Serializable {
 		_logger.info("actionEvent", actionEvent);
 		RequestContext.getCurrentInstance().addCallbackParam("autorizar", true);
 		RequestContext.getCurrentInstance().addCallbackParam("tipo", tipo);
+		
 	}
 	
 	private Transaction transation(Checkout request, Pagagamento pagagamento) {

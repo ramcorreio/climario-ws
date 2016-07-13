@@ -66,8 +66,8 @@ public class WebServicePedido {
 		int i = 0;
 		
 		for(ItemPedido item : t1) {
-			 _logger.info(" ############################################ ");
-			 _logger.info("Código do Item: " + item.getCodigo());
+			_logger.info(" ############################################ ");
+			_logger.info("Código do Item: " + item.getCodigo());
             _logger.info("Descrição do Item: " + item.getDescricao());
             _logger.info("Preço unitário dos Item: " + item.getPrecoUnitario());
             _logger.info(" ############################################ ");
@@ -84,10 +84,12 @@ public class WebServicePedido {
 		
 		try {
 			
-			if(!pedidoService.isClienteExiste(pedido.getCliente().getCpfCnpj())) {
+			if(!pedidoService.isClienteExiste(pedido.getCliente().getCpfCnpj())) 
+			{
 				pedido.setCliente(pedidoService.criarCliente(pedido.getCliente()));
 			}
-			else {
+			else 
+			{
 				pedido.setCliente(pedidoService.recuperarCliente(pedido.getCliente().getCpfCnpj()));
 			}
 			

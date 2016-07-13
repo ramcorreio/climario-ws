@@ -38,7 +38,7 @@ public class Cliente implements Serializable {
 	private String nome;
 
 	@NotNull
-	@Column(length = 100, unique = true)
+	@Column(length = 100)
 	private String email;
 
 	@NotNull
