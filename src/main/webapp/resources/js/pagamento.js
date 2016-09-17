@@ -6,10 +6,7 @@ function retornoProcessamento(xhr, status, args) {
 
 function handleSession(xhr, status, args) {
 	
-	console.log(args.sessionId);
-	
 	PagSeguroDirectPayment.setSessionId(args.sessionId);
-	console.log(PagSeguroDirectPayment.getSenderHash());
 	PagSeguroDirectPayment.getPaymentMethods({
 		amount: args.valorTotal,
 		success: function(response) {
@@ -29,6 +26,19 @@ function handleSession(xhr, status, args) {
 			//tratamento comum para todas chamadas
 		}
 	});
+	
+	
+}
+
+function httpGetAsync(theUrl, callback)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            callback(xmlHttp.responseText);
+    }
+    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+    xmlHttp.send(null);
 }
 
 function autorizar(xhr, status, args) {

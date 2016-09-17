@@ -12,7 +12,7 @@ import br.com.climario.service.IUserService;
  * Classe responsável por disponibilizar o serviços de acesso a base de dados É
  * uma implementação do padrão sigleton
  * 
- * @author rodrigo
+ * @author rodrigo cabeça
  *
  */
 public class ServiceLocator {
