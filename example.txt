@@ -48,3 +48,33 @@ Content-Type: application/json
 Connection: close
 
 {"numero":"93824094","criacao":"2016-03-18 00:00:00","cliente":{"codigo":"90283129830912","nome":"Teste Ws"},"itens": [{"codigo":"2","descricao":"Descrição 2","qtd":8,"precoUnitario":1.9320663346223177}]}
+
+
+
+--------------------------------------------
+
+{
+	"numero":"93824094",
+	"criacao":"2016-03-18 00:00:00",
+	"cliente":{
+		"codigo":"90283129830912",
+		"nome":"Teste Ws",
+		"cpfCnpj":"07828359705",
+		"email":"c14889687360057694775@sandbox.pagseguro.com.br",
+		"logradouro":"Rua A",
+		"numero":"100",
+		"complemento":"casa",
+		"bairro":"Santa Rosa",
+		"cidade":"Niterói",
+		"estado":"RJ",
+		"cep" : "20993111",
+		"emailRca":"racrca@hfhfhfh.com",
+		"codigoRca":"8934724238",
+		"nomeRca":"Nome RCA"
+	},
+	"filial":"Niteroi",
+	"valorFrete":20,
+	"planoPagamento":"Plano 1",
+	"cobranca":"Cobrasim",
+	"itens": [{"codigo":"2","descricao":"Descrição 2","qtd":8,"precoUnitario":3.93},{"codigo":"5","descricao":"Descrição 3","qtd":2,"precoUnitario":200.20}]
+}
