@@ -32,10 +32,19 @@ import org.primefaces.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import br.com.climario.dominio.AdditionalValues;
+import br.com.climario.dominio.AutorizaECapturaPagamentoRequest;
+import br.com.climario.dominio.Buyer;
 import br.com.climario.dominio.Cliente;
+import br.com.climario.dominio.CreditCard;
+import br.com.climario.dominio.ExtraParameters;
 import br.com.climario.dominio.ItemPedido;
+import br.com.climario.dominio.Merchant;
+import br.com.climario.dominio.Order;
 import br.com.climario.dominio.Pedido;
 import br.com.climario.dominio.Pedido.Pagagamento;
+import br.com.climario.dominio.ShippingAddress;
+import br.com.climario.dominio.TXVALUE;
 import br.com.climario.service.IPedidoService;
 import br.com.climario.service.impl.ServiceLocator;
 import br.com.uol.pagseguro.domain.AccountCredentials;
@@ -82,6 +91,10 @@ import javax.net.ssl.HttpsURLConnection;
 @ViewScoped
 public class PedidoView implements Serializable {
 	
+	private static final String PAYU_API_LOGIN = "465kWF7zi3qGQNo";
+
+	private static final String PAYU_API_KEY = "CCZCKJn3TMUOb9hKJwCwVUVK2E";
+
 	private final static String USER_AGENT = "Mozilla/5.0";
 	
 	private static final String ERRO_PARAM = "erro";
@@ -352,6 +365,7 @@ public class PedidoView implements Serializable {
 
 	public void consultar(ActionEvent actionEvent) {
 		_logger.info(solicitarToken());
+		_logger.info(testAutorizarEConfirmar());
 		
 		InputText cpfCnpj = (InputText) actionEvent.getComponent().getParent().findComponent("cpfCnpj");
 		if (!pedidoService.isPedidoClienteExiste(cpfCnpj.getValue().toString(), numero)) {
@@ -829,8 +843,86 @@ public class PedidoView implements Serializable {
 			 
 			 
 			 JSONObject jsonObj = new JSONObject(metodos.toString());
-			 String metodosPagamento = jsonObj.getString("payByLinks");
-			 System.out.println(metodosPagamento);
+			 //String metodosPagamento = jsonObj.getString("payByLinks");
+			 System.out.println(jsonObj);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return "ok";
+	}
+	
+	public String testAutorizarEConfirmar() {
+		AutorizaECapturaPagamentoRequest request = new AutorizaECapturaPagamentoRequest();
+		request.setLanguage("es");
+		request.setCommand("SUBMIT_TRANSACTION");
+		request.setTest(Boolean.FALSE);
+		Merchant merchant = new Merchant();
+		merchant.setApiKey(PAYU_API_KEY);
+		merchant.setApiLogin(PAYU_API_LOGIN);
+		request.setMerchant(merchant);
+		br.com.climario.dominio.Transaction transaction = new br.com.climario.dominio.Transaction();
+		Order order = new Order();
+		order.setAccountId(512327);
+		order.setReferenceCode("payment_test_00000001");
+		order.setDescription("payment test");
+		order.setLanguage("es");
+		order.setSignature("31eba6f397a435409f57bc16b5df54c3");
+		order.setNotifyUrl("http://www.tes.com/confirmation");
+		AdditionalValues additionalValues = new AdditionalValues();
+		TXVALUE txvalue = new TXVALUE();
+		txvalue.setValue(100);
+		txvalue.setCurrency("BRL");
+		additionalValues.setTXVALUE(txvalue);
+		order.setAdditionalValues(additionalValues);
+		Buyer buyer = new Buyer();
+		buyer.setMerchantBuyerId("1");
+		buyer.setFullName("First name and second buyer name");
+		buyer.setEmailAddress("buyer_test@test.com");
+		buyer.setContactPhone("(11)756312633");
+		buyer.setDniNumber("811.807.405-64");
+		buyer.setCnpj("32593371000110");
+		ShippingAddress shippingAddress = new ShippingAddress();
+		shippingAddress.setStreet1("calle 100");
+		shippingAddress.setStreet2("5555487");
+		shippingAddress.setCity("Sao paulo");
+		shippingAddress.setState("SP");
+		shippingAddress.setCountry("BR");
+		shippingAddress.setPostalCode("01019-030");
+		shippingAddress.setPhone("(11)756312633");
+		buyer.setShippingAddress(shippingAddress);
+        order.setBuyer(buyer);
+		transaction.setOrder(order);
+		CreditCard creditCard = new CreditCard();
+		creditCard.setNumber("4097440000000004");
+		creditCard.setSecurityCode("321");
+		creditCard.setExpirationDate("2014/12");
+		creditCard.setName("APPROVED");
+		transaction.setCreditCard(creditCard);
+		ExtraParameters extraParameters = new ExtraParameters();
+		extraParameters.setINSTALLMENTSNUMBER(1);
+		transaction.setExtraParameters(extraParameters);
+		transaction.setType("AUTHORIZATION_AND_CAPTURE");
+		transaction.setPaymentMethod("VISA");
+		transaction.setPaymentCountry("BR");
+		transaction.setIpAddress("127.0.0.1");
+		request.setTransaction(transaction);
+		return autorizarEConfirmarPagamento(request);
+	}
+	
+	public String autorizarEConfirmarPagamento(AutorizaECapturaPagamentoRequest request) {
+		
+		try {		
+			 String url = "https://sandbox.api.payulatam.com/payments-api/4.0/service.cgi";
+			 JSONObject jsonObject = new JSONObject(request);
+			 String[] headers = {"Content-Type#application/json",};
+			 System.out.println(jsonObject.toString());
+			 StringBuffer metodos = sendPostGet("POST", url, jsonObject.toString(), headers);
+			 
+			 System.out.println(metodos.toString());
+			 JSONObject jsonObj = new JSONObject(metodos.toString());
+			 //String metodosPagamento = jsonObj.getString("payByLinks");
+			 System.out.println(jsonObj);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

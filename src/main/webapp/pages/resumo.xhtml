@@ -144,21 +144,14 @@
 			    		</p:selectOneRadio>
 			    	</div>
 			    </div>
-			    
-			    <c:if test="#{not empty pedidoView.cards}">
+			    <c:if test="#{not empty pedidoView.cards and pedidoView.tipo == 'CREDIT_CARD' }">
 			    	<div class="col-md-12 col-sm-12 font_valor retirapadding">
 			    		<div class="col-md-3 col-sm-3 espaco12">
 				    		<div class="aesquerda fcentraliza">
 				    			<p:message for="basic" />
-					    		<p:selectOneListbox 
-					    			id="basic" 
-					    			value="#{pedidoView.option}" 
-					    			required="true" 
-					    			validatorMessage="Escolha um cartão"
-					    			label="Bandeira Cartão">
-					    			
-					    			<f:selectItems value="#{pedidoView.cards}" var="op" itemLabel="#{op.displayName}" itemValue="#{op.name}" />
-					    			
+				    			
+					    		<p:selectOneListbox id="basic" value="#{pedidoView.option}"	required="true"	validatorMessage="Escolha um cartão" label="Bandeira Cartão">					    			
+					    			<f:selectItems value="#{pedidoView.cards}" var="op" itemLabel="#{op.description}" itemValue="#{op.description}" />					    			
 					    			<p:ajax event="change"  update="@form" listener="#{pedidoView.changeParcela}" />
 								</p:selectOneListbox>
 				    		</div>
@@ -167,21 +160,11 @@
 				    	<div class="col-md-9 col-sm-9 espaco12">
 				    		<p:panelGrid columns="3" style="width: 100%">
 				    			<p:outputLabel value="Parcelas"/>
-				    			<p:selectOneListbox 
-					    			id="parcelas" 
-					    			required="true" 
-					    			value="#{pedidoView.numParcelas}"
-					    			validatorMessage="Escolha o número de parcelas"
-					    			style="width: 100%"
-					    			label="Parcelas">
-					    			
-					    			<f:selectItems 
-					    				value="#{pedidoView.parcelas}" 
-					    				var="parcela" 
-					    				itemLabel="#{parcela.quantity}x - Total: (#{pedidoView.getTotalAmount(parcela.totalAmount)})" 
-					    				itemValue="#{parcela.quantity}"/>
-					    			
+
+				    			<p:selectOneListbox id="parcelas" required="true" value="#{pedidoView.numParcelas}"	validatorMessage="Escolha o número de parcelas"	style="width: 100%"	label="Parcelas">
+					    			<f:selectItems value="#{pedidoView.parcelas}" var="parcela"	itemLabel="#{parcela.quantity}x #{parcela.parcela} - Total: (#{pedidoView.getTotalAmount(parcela.totalAmount)})" itemValue="#{parcela.quantity}"/>
 								</p:selectOneListbox>
+								
 								<p:message for="parcelas" />
 				    		
 				    			<p:outputLabel value="Número do Cartão"/>
@@ -213,7 +196,7 @@
 				    			<p:message for="dddHolder" />
 				    			
 				    			<p:outputLabel value="Telefone"/>
-				    			<p:inputMask id="telefoneHolder" label="CPF" mask="99999-9999" value="#{pedidoView.telefoneHolder}" required="true" validatorMessage="É necessário informar o Telefone."/>
+				    			<p:inputMask id="telefoneHolder" label="CPF" mask="99999-999?9" value="#{pedidoView.telefoneHolder}" required="true" validatorMessage="É necessário informar o Telefone."/>
 				    			<p:message for="telefoneHolder" />
 		    					
 				    		</p:panelGrid>
@@ -224,12 +207,12 @@
 		    	<div class="col-md-12 col-sm-12 font_valor retirapadding"> 
 			    	<div class="col-md-3 col-sm-3 mudatmfont espaco12">FORMA DE PAGAMENTO:</div>
 			    	<div class="col-md-4 col-sm-9 espaco12">
-			    		<h:graphicImage library="media" name="img/pagseguro_img.jpg" alt="Pagseguro"/>
+			    		<h:graphicImage library="media" name="img/payu.jpg" alt="PayU"/>
 			    	</div>
 			    	<div class="col-md-5 col-sm-12 espaco12">
 			    		<div class="adireita fcentraliza">
 			    			<p:remoteCommand name="processar" actionListener="#{pedidoView.exec}" oncomplete="retornoProcessamento(xhr, status, args)"/>
-			    			<p:commandButton id="finalizar" styleClass="btn3" value="Finalizar pedido com Pagseguro" actionListener="#{pedidoView.validar}" oncomplete="autorizar(xhr, status, args)" update="@form" disabled="#{empty pedidoView.cards}"/>
+			    			<p:commandButton id="finalizar" styleClass="btn3" value="Finalizar pedido com PayU" actionListener="#{pedidoView.validar}" oncomplete="autorizar(xhr, status, args)" update="@form" disabled="#{empty pedidoView.cards}"/>
 			    		</div>
 			    	</div>
 			    </div>

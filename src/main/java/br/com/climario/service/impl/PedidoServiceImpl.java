@@ -38,7 +38,7 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService, Se
 		
 		pedido.setCriado(Calendar.getInstance().getTime());
 		pedido.setAtualizado(pedido.getCriacao());
-		pedido.setStatus(PedidoStatus.AGUARDANDO_PAGAMENTO);
+		pedido.setStatus(PedidoStatus.PENDENTE);
 		
 		create(pedido);
 		return pedido;
@@ -110,6 +110,28 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService, Se
 			throw new RuntimeException("Pedido não encontrado.", e);
 		}
 	}
+	@Override
+	public Pedido recuperarPedidoPorTransacao(String codigo)
+	{
+		TypedQuery<Pedido> query = createNamedQuery("Pedido.transacao", Pedido.class);
+		
+		query.setParameter("codigo", codigo);
+		try {
+			return query.getSingleResult();
+		}
+		catch(NoResultException e){
+			throw new RuntimeException("Pedido não encontrado.", e);
+		}
+	}
+	
+	/*public void atualizarPedidoPorTransacao(String codigo, String status) {
+		
+		Pedido p = recuperarPedidoPorTransacao(codigo);
+		p.setAtualizado(Calendar.getInstance().getTime());
+		PedidoStatus.getTIpo(status);
+		//p.setStatus(PedidoStatus);
+		update(p);
+	}*/
 	
 	@Override
 	public List<Pedido> listarPedidosPorCliente(String cpfCnpj) {
@@ -142,7 +164,7 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService, Se
 	@Transactional(value="climarioTM", readOnly = false, propagation = Propagation.REQUIRES_NEW)
 	public void atulizarStatus(String numero, PedidoStatus status) {
 		
-		Pedido p = recuperarPedido(numero);
+		Pedido p = recuperarPedidoPorTransacao(numero);
 		p.setAtualizado(Calendar.getInstance().getTime());
 		p.setStatus(status);
 		update(p);

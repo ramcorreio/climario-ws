@@ -523,8 +523,8 @@ public class PedidoServiceImplTest {
 		assertThat(pedidoService.isPedidoClienteExiste("09809809444", "3298453523999"), is(equalTo(true)));
 		assertThat(pedidoService.isPedidoClienteExiste("09809809444", "3298453523989"), is(equalTo(false)));
 		
-		pedidoService.atulizarStatus(p.getNumero(), PedidoStatus.PAGO);
-		assertThat(pedidoService.recuperarPedido(p.getNumero()).getStatus(), is(equalTo(PedidoStatus.PAGO)));
+		pedidoService.atulizarStatus(p.getNumero(), PedidoStatus.APROVADA);
+		assertThat(pedidoService.recuperarPedido(p.getNumero()).getStatus(), is(equalTo(PedidoStatus.APROVADA)));
 		
 	}
 }

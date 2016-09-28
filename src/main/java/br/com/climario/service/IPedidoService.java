@@ -33,4 +33,6 @@ public interface IPedidoService {
 	
 	public List<Pedido> listar();
 
+	public Pedido recuperarPedidoPorTransacao(String codigo);
+
 }

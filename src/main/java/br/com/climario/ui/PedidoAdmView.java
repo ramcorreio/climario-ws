@@ -35,7 +35,9 @@ public class PedidoAdmView implements Serializable {
 	
 	@PostConstruct
 	public void init() {
-		
+		System.out.println("------------------------");
+		System.out.println(pedidoService.listar());
+		System.out.println("------------------------");
 		pedidos.addAll(pedidoService.listar());
 	}
 	

@@ -33,6 +33,7 @@ import br.com.uol.pagseguro.enums.TransactionStatus;
 	@NamedQuery(name = "Pedido.all", query = "select p from Pedido p order by p.criado desc"),
     @NamedQuery(name = "Pedido.por.cliente", query = "select p from Pedido p where p.cliente.cpfCnpj = :cpfCnpj"),
     @NamedQuery(name = "Pedido.existe", query = "select p from Pedido p where p.numero = :numero"),
+    @NamedQuery(name = "Pedido.transacao", query = "select p from Pedido p where p.codigoAutorizacao = :codigo"),
     @NamedQuery(name = "Pedido.cliente.existe", query = "select p from Pedido p where p.numero = :numero and p.cliente.cpfCnpj = :cpfCnpj"),
 })
 public class Pedido implements Serializable {
@@ -45,40 +46,39 @@ public class Pedido implements Serializable {
 	}
 	
 	public enum PedidoStatus {
+	
+		PENDING, 
+		APROVADA, 
+		REJEITADA, 
+		EXPIRADA, 
+		PENDENTE,
 		
-		AGUARDANDO_PAGAMENTO(TransactionStatus.WAITING_PAYMENT),
-		EM_ANALISE(TransactionStatus.IN_ANALYSIS),
-		PAGO(TransactionStatus.PAID),
-		DISPONIVEL(TransactionStatus.AVAILABLE),
-		EM_DISPUTA(TransactionStatus.IN_DISPUTE),
-		DEVOLVIDO(TransactionStatus.REFUNDED),
-		CANCELADO(TransactionStatus.CANCELLED),
-		ESTORNO(TransactionStatus.SELLER_CHARGEBACK),
-		CONSTESTACAO(TransactionStatus.CONTESTATION),
-		DESCONHECIDO(TransactionStatus.UNKNOWN_STATUS);
+		AGUARDANDO_PAGAMENTO, 
+		CANCELADO,
+		EM_ANALISE,
+		PAGO,
+		DISPONIVEL,
+		EM_DISPUTA,
+		DEVOLVIDO,
+		ESTORNO,
+		CONSTESTACAO,
 		
-		private TransactionStatus status;
+		DESCONHECIDO;
 		
-		private PedidoStatus(TransactionStatus status) {
-			this.status = status;
-		}
 		
-		public TransactionStatus getStatus() {
-			return status;
-		}
+		public static PedidoStatus getTIpo(String status) {
+					
+					for (PedidoStatus pedidoStatus : PedidoStatus.values()) {
+						
+						if(pedidoStatus.toString() == status) {
+							return pedidoStatus;
+						}
+					}
+					
+					return DESCONHECIDO;
 		
-		public static PedidoStatus getTIpo(TransactionStatus status) {
-			
-			for (PedidoStatus pedidoStatus : PedidoStatus.values()) {
-				
-				if(pedidoStatus.status.equals(status)) {
-					return pedidoStatus;
 				}
-			}
-			
-			return DESCONHECIDO;
-
-		}
+		
 	}
 
 	@Id
