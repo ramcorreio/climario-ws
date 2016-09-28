@@ -1,11 +1,24 @@
 package br.com.climario.ui;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.Normalizer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -18,33 +31,21 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
+import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.primefaces.component.inputtext.InputText;
 import org.primefaces.context.RequestContext;
+import org.primefaces.json.JSONArray;
 import org.primefaces.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import br.com.climario.dominio.AdditionalValues;
-import br.com.climario.dominio.AutorizaECapturaPagamentoRequest;
-import br.com.climario.dominio.Buyer;
 import br.com.climario.dominio.Cliente;
-import br.com.climario.dominio.CreditCard;
-import br.com.climario.dominio.ExtraParameters;
 import br.com.climario.dominio.ItemPedido;
-import br.com.climario.dominio.Merchant;
-import br.com.climario.dominio.Order;
 import br.com.climario.dominio.Pedido;
 import br.com.climario.dominio.Pedido.Pagagamento;
-import br.com.climario.dominio.ShippingAddress;
-import br.com.climario.dominio.TXVALUE;
+//import br.com.climario.dominio.Pedido.PedidoStatus;
 import br.com.climario.service.IPedidoService;
 import br.com.climario.service.impl.ServiceLocator;
 import br.com.uol.pagseguro.domain.AccountCredentials;
@@ -56,7 +57,6 @@ import br.com.uol.pagseguro.domain.Sender;
 import br.com.uol.pagseguro.domain.SenderDocument;
 import br.com.uol.pagseguro.domain.Transaction;
 import br.com.uol.pagseguro.domain.direct.Holder;
-import br.com.uol.pagseguro.domain.direct.checkout.BoletoCheckout;
 import br.com.uol.pagseguro.domain.direct.checkout.Checkout;
 import br.com.uol.pagseguro.domain.direct.checkout.CreditCardCheckout;
 import br.com.uol.pagseguro.domain.installment.Installment;
@@ -77,24 +77,11 @@ import br.com.uol.pagseguro.service.SessionService;
 import br.com.uol.pagseguro.service.TransactionService;
 
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
-
-
 
 @ManagedBean
 @ViewScoped
 public class PedidoView implements Serializable {
 	
-	private static final String PAYU_API_LOGIN = "465kWF7zi3qGQNo";
-
-	private static final String PAYU_API_KEY = "CCZCKJn3TMUOb9hKJwCwVUVK2E";
-
 	private final static String USER_AGENT = "Mozilla/5.0";
 	
 	private static final String ERRO_PARAM = "erro";
@@ -125,9 +112,9 @@ public class PedidoView implements Serializable {
 
 	private String option;
 
-	private List<PaymentMethod> cards = new ArrayList<>();
+	private List<CartoesPagamento> cards = new ArrayList<>();
 	
-	private List<Installment> parcelas = new ArrayList<>();
+	private List<Parcelas> parcelas = new ArrayList<>();
 	
 	private Integer numParcelas = 1;
 	
@@ -217,17 +204,19 @@ public class PedidoView implements Serializable {
 		return serialVersionUID;
 	}
 
-	public void setCards(List<PaymentMethod> cards) {
+	public void setCards(List<CartoesPagamento> cards) {
 		this.cards = cards;
 	}
 
-	public void setParcelas(List<Installment> parcelas) {
+	public void setParcelas(List<Parcelas> parcelas) {
 		this.parcelas = parcelas;
 	}
 
 	private String cpfCnpjHolder;
 	
 	private String tipo;
+
+	private String[] arrayDescs;
 	
 	public Integer getNumParcelas() {
 		return numParcelas;
@@ -341,11 +330,11 @@ public class PedidoView implements Serializable {
 		this.option = option;
 	}
 
-	public List<PaymentMethod> getCards() {
+	public List<CartoesPagamento> getCards() {
 		return cards;
 	}
 	
-	public List<Installment> getParcelas() {
+	public List<Parcelas> getParcelas() {
 		return parcelas;
 	}
 
@@ -364,8 +353,6 @@ public class PedidoView implements Serializable {
 	}
 
 	public void consultar(ActionEvent actionEvent) {
-		_logger.info(solicitarToken());
-		_logger.info(testAutorizarEConfirmar());
 		
 		InputText cpfCnpj = (InputText) actionEvent.getComponent().getParent().findComponent("cpfCnpj");
 		if (!pedidoService.isPedidoClienteExiste(cpfCnpj.getValue().toString(), numero)) {
@@ -387,43 +374,101 @@ public class PedidoView implements Serializable {
 		return DecimalFormat.getCurrencyInstance(new Locale("pt", "BR")).format(totalAmount.doubleValue());
 	}
 	
-	public void changeParcela() {
+	public void changeParcela() 
+	{
+		double parcela;
+		int quantity = 1;
+		double totalAmount = getTotalPedido(pedido);
 		
+		parcelas.clear();
+		try {
+		for(int i = 1; i<=10; i++)
+		{
+			parcela = totalAmount/i;
+			
+			
+			DecimalFormat df = new DecimalFormat("###.##");
+			df.setRoundingMode(RoundingMode.UP);
+			
+			Parcelas parc = new Parcelas(df.format(parcela), i, totalAmount);
+			parcelas.add(parc);
+		}
+		
+		
+		
+		
+		/* System.out.println(option);
 		_logger.info(option);
 		
-		String cardBrand = option.toLowerCase();
+		String cardBrand = option.toLowerCase();*/
 		
-		try {
-			final AccountCredentials accountCredentials = getAccountCredencials();
+		
+		
+			/*final AccountCredentials accountCredentials = getAccountCredencials();
 			Installments installments = InstallmentService.getInstallments(accountCredentials, new BigDecimal(format.format(getTotalPedido())), option.toLowerCase());
 			
 			parcelas.clear();
 			for (Installment installment : installments.get(cardBrand)) {
 				_logger.info(installment.toString());
 				parcelas.add(installment);
-			}
+			}*/
+			
 		
-		} catch (PagSeguroServiceException e) {
+		} catch (Exception e) {
 
 			System.err.println(e.getMessage());
 		}
+		
 	}
 	
 	public void execPagamentos() {
 	
 		FacesContext context = FacesContext.getCurrentInstance();
-	    Map<String, String> map = context.getExternalContext().getRequestParameterMap();
-	    processarPagamentos(map);
+	    Map<String, String> map = context.getExternalContext().getRequestParameterMap();	
+	    
+	    JSONObject token = solicitarToken();		
+		JSONObject formaPagamento = solicitarPagamentos(token.getString("token_type"), token.getString("access_token"));
+		JSONArray paymentMethods = formaPagamento.getJSONArray("paymentMethods");
+		
+	    processarPagamentos(paymentMethods);
 	}
-	
-	public void processarPagamentos(Map<String, String> map) {
+	//TODO: teste
+	public void processarPagamentos(JSONArray paymentMethods) {
 		
 		_logger.info("processarPagamentos: " + tipo);
-		JSONObject methods = new JSONObject(map.get("paymentMethods"));
+		//JSONObject methods = new JSONObject(map.get("paymentMethods"));
 	    cards.clear();
 	    
-	    Iterator<String> payments = methods.getJSONObject(tipo).getJSONObject("options").keys();
-	    while (payments.hasNext()) {
+	    List<String> arrayDescs = new ArrayList<>();
+	    
+	    for (int i = 0; i < paymentMethods.length(); ++i) {
+		    JSONObject rec = paymentMethods.getJSONObject(i);
+		    
+		    int id = rec.getInt("id");
+		    String description = rec.getString("description");
+		    String country = rec.getString("country");
+		    Boolean enabled = rec.getBoolean("enabled");
+		    //String reason = rec.getString("reason");
+		    
+		    //PaymentMethod p = new PaymentMethod(obj.getInt("code"), obj.getString("name"), obj.getString("displayName"), PaymentMethodStatus.valueOf(obj.getString("status")));
+		    
+		    /*System.out.println(arrayDescs);
+		    System.out.println(description);
+		    System.out.println(arrayDescs.contains(description));*/
+		    
+		    if(arrayDescs.contains(description) == false && !description.equals("BOLETO_BANCARIO") && !tipo.equals("BOLETO"))
+		    {
+			    CartoesPagamento c = new CartoesPagamento(id, description, country, enabled);
+			    cards.add(c);
+			    
+		    }else if(description.equals("BOLETO_BANCARIO") && tipo.equals("BOLETO")){
+		    	 CartoesPagamento c = new CartoesPagamento(id, description, country, enabled);
+				 cards.add(c);
+		    }
+		    arrayDescs.add(description);
+		}
+	    System.out.println(cards);
+	    /*while (payments.hasNext()) {
 	    	
 	    	String k = payments.next();
 	    	JSONObject obj = methods.getJSONObject(tipo).getJSONObject("options").getJSONObject(k);
@@ -434,17 +479,15 @@ public class PedidoView implements Serializable {
 			}
 	    	
 	    	cards.add(p);
-		}
+		}*/
 	    
-	    if(BOLETO_METHOD.equals(tipo) && !cards.isEmpty()) {
+	   /* if(BOLETO_METHOD.equals(tipo) && !cards.isEmpty()) {
 			option = cards.get(0).getName();
-		}
+		}*/
 	}
 	
 	public void exec(ActionEvent event) {
 		
-		_logger.info("exec: " + tipo);
-		_logger.info("event: " + event);
 		if(BOLETO_METHOD.equals(tipo)) {
 			execBoleto(event);
 		}
@@ -455,71 +498,23 @@ public class PedidoView implements Serializable {
 		Boolean error = Boolean.valueOf(RequestContext.getCurrentInstance().getCallbackParams().get(ERRO_PARAM).toString());
 		if(!error) {
 			
-			//Cliente c = pedidoService.recuperarCliente(cpfCnpj.getValue().toString());
 			
 			String texto = "O cliente {nome-cliente}, iniciou o processe de pagamento para o pedido {numero-pedido}. Um novo e-mail será enviado após o retorno do pagamento.";
 			texto += "Clima Rio";
 			texto += "Sempre a melhor compra";
 			
-			//System.out.println("@@@@@");
 			_logger.info(texto);
-			//Util.sendMail("jonath@internit.com.br", "Solicitar Pedido", texto);
-			
 			Util.redirect(Util.getContextRoot("/pages/confirmacao.jsf?id=" + Util.getSession().getAttribute(ID).toString()));	
 		}
 	}
 	
+	
 	public void execBoleto(ActionEvent event) {
 		
-	    FacesContext context = FacesContext.getCurrentInstance();
-	    Map<String, String> map = context.getExternalContext().getRequestParameterMap();
-	    _logger.info("token card: " + map.get("token"));
-	    _logger.info("sender hash: " + map.get("senderHash"));
-	
-	    final BoletoCheckout request = new BoletoCheckout();
-
-        request.setPaymentMode(PaymentMode.DEFAULT);
-
-        request.setReceiverEmail(Util.getString("credential.email"));
-
-        request.setCurrency(Currency.BRL);
-
-        request.setNotificationURL(Util.getContextRoot("/status"));
-
-        request.setReference(pedido.getNumero());
+		JSONObject token = solicitarToken();		
+		JSONObject pagamento = efetuarPagamento(token.getString("token_type"), token.getString("access_token"), pedido,"boleto", null);
         
-        request.setSender(new Sender(pedido.getCliente().getNome(), //
-        		pedido.getCliente().getEmail(), //
-        		new Phone("99", "99999999"), //
-                new SenderDocument(pedido.getCliente().getCpfCnpj().length() == 11 ? DocumentType.CPF : DocumentType.CNPJ, pedido.getCliente().getCpfCnpj())));
-
-        request.setSenderHash(map.get("senderHash").toString());
-        
-        request.setShippingAddress(new Address("BRA", //
-        		pedido.getCliente().getEstado(), //
-        		pedido.getCliente().getCidade(), //
-        		pedido.getCliente().getBairro(), //
-        		pedido.getCliente().getCep(), //
-        		pedido.getCliente().getLogradouro(), //
-        		pedido.getCliente().getNumero(), //
-        		pedido.getCliente().getComplemento()));
-        
-        request.setShippingType(ShippingType.SEDEX);
-
-        request.setShippingCost(new BigDecimal(format.format(pedido.getValorFrete())));
-
-        for (ItemPedido item : pedido.getItens()) {
-			
-			String val = format.format(item.getPrecoUnitario());
-			_logger.info(val);
-			
-			request.addItem(new Item(item.getCodigo(), //
-					item.getDescricao(), //
-	                item.getQtd(), //
-	                new BigDecimal(val)));	 
-		}
-        
-        transation(request, Pagagamento.BOLETO);
+        transation(pagamento, Pagagamento.BOLETO);
 	}
 	
 	public void execCartao(ActionEvent event) {
@@ -531,73 +526,12 @@ public class PedidoView implements Serializable {
 	    _logger.info("holder cpf: " + map.get("cpfCnpjHolder"));
 	    _logger.info("holder nome: " + map.get("nomeHolder"));
 	
-	    final CreditCardCheckout request = new CreditCardCheckout();
-
-        request.setPaymentMode(PaymentMode.DEFAULT);
-
-        request.setReceiverEmail(Util.getString("credential.email"));
-
-        request.setCurrency(Currency.BRL);
-        
-        request.setNotificationURL(Util.getContextRoot("/status"));
-
-        request.setReference(pedido.getNumero());
-
-        String ddd = map.get("dddHolder").replaceAll("[()]","");
-        
-        request.setSender(new Sender(pedido.getCliente().getNome(), //
-        		pedido.getCliente().getEmail(), //
-        		new Phone(ddd, map.get("telefoneHolder").replace("-","")), //
-                new SenderDocument(pedido.getCliente().getCpfCnpj().length() == 11 ? DocumentType.CPF : DocumentType.CNPJ, pedido.getCliente().getCpfCnpj())));
-
-        request.setSenderHash(map.get("senderHash").toString());
-        
-        request.setShippingAddress(new Address("BRA", //
-        		pedido.getCliente().getEstado(), //
-        		pedido.getCliente().getCidade(), //
-        		pedido.getCliente().getBairro(), //
-        		pedido.getCliente().getCep(), //
-        		pedido.getCliente().getLogradouro(), //
-        		pedido.getCliente().getNumero(), //
-        		pedido.getCliente().getComplemento()));
-        
-        request.setShippingType(ShippingType.SEDEX);
-
-        request.setShippingCost(new BigDecimal(format.format(pedido.getValorFrete())));
-
-        for (ItemPedido item : pedido.getItens()) {
-			
-			String val = format.format(item.getPrecoUnitario());
-			_logger.info(val);
-			
-			request.addItem(new Item(item.getCodigo(), //
-					item.getDescricao(), //
-	                item.getQtd(), //
-	                new BigDecimal(val)));	 
-		}
-
-        request.setCreditCardToken(map.get("token").toString());
-        
-        Installment installment = parcelas.get(numParcelas - 1);
-
-        request.setInstallment(new br.com.uol.pagseguro.domain.direct.Installment(installment.getQuantity(), new BigDecimal(format.format(installment.getAmount()))));
-        
-        request.setHolder(new Holder(map.get("nomeHolder"), //
-        		new Phone(ddd, map.get("telefoneHolder").replace("-","")), //
-                new Document(map.get("cpfCnpjHolder").length() == 14 ? DocumentType.CPF : DocumentType.CNPJ, map.get("cpfCnpjHolder")), //
-                map.get("aniversario")));
-
-        request.setBillingAddress(new Address("BRA", //
-        		pedido.getCliente().getEstado(), //
-        		pedido.getCliente().getCidade(), //
-        		pedido.getCliente().getBairro(), //
-        		pedido.getCliente().getCep(), //
-        		pedido.getCliente().getLogradouro(), //
-        		pedido.getCliente().getNumero(), //
-        		pedido.getCliente().getComplemento()));
-        
-        
-        transation(request, Pagagamento.CARTAO);
+	    System.out.println(map);
+	    
+	    JSONObject token = solicitarToken();
+	    JSONObject pagamento = efetuarPagamento(token.getString("token_type"), token.getString("access_token"), pedido,"cartao", map);
+	    	    
+	    transation(pagamento,Pagagamento.CARTAO);
 	}
 	
 	public void validar(ActionEvent actionEvent){
@@ -607,45 +541,47 @@ public class PedidoView implements Serializable {
 		
 	}
 	
-	private Transaction transation(Checkout request, Pagagamento pagagamento) {
-	
-		String codigo = Long.toString(System.currentTimeMillis());
-		Transaction transaction = null; 
-		try {
-			
-			_logger.info("----------------------");
-			_logger.info("processamento: " + codigo);
-			final AccountCredentials accountCredentials = getAccountCredencials();
-	
-	        transaction = TransactionService.createTransaction(accountCredentials, request);
-	        pedido.setCodigoAutorizacao(transaction.getCode());
-	        if(Pagagamento.BOLETO.equals(pagagamento)) {
-	        	pedidoService.atulizarCodigoTransacao(pedido.getNumero(), pagagamento, transaction.getCode(), transaction.getPaymentLink());
-	        }
-	        else {
-	        	pedidoService.atulizarCodigoTransacao(pedido.getNumero(), pagagamento, transaction.getCode(), null);
-	        }
-	        
-	        RequestContext.getCurrentInstance().addCallbackParam("link", transaction.getPaymentLink());
-	
-	        if (transaction != null) {
-	            _logger.info("Transaction Code - Default Mode: " + transaction.getCode());
-	        }
-	        RequestContext.getCurrentInstance().addCallbackParam(ERRO_PARAM, false);
-		} catch (PagSeguroServiceException e) {
-			RequestContext.getCurrentInstance().addCallbackParam(ERRO_PARAM, true);
-			RequestContext.getCurrentInstance().addCallbackParam("messagem", e.getMessage());
-			
-			RequestContext.getCurrentInstance().addCallbackParam("codigo", codigo);
-	        System.err.println("codigo ==> " + e.getMessage());
-	        
-	        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pedido não processado!!", "Falha no processamento do pedido.<br/><br/>Código Erro: " + codigo + ".<br/>Informe o código acima ao administrador do sistema.");
-	        RequestContext.getCurrentInstance().showMessageInDialog(message);
-	    }
+	private void transation(JSONObject pagamento, Pagagamento pagagamento) {
 		
-		_logger.info("");
-		_logger.info("");
-		return transaction;
+		JSONObject token = solicitarToken();
+		String codigo = Long.toString(System.currentTimeMillis());
+		//TODO: teste	    
+		try {
+					
+					
+					JSONObject transaction = pagamento.getJSONObject("transactionResponse");			        
+			        pedido.setCodigoAutorizacao(pagamento.getJSONObject("transactionResponse").getString("transactionId"));
+			        
+			        if(Pagagamento.BOLETO.equals(pagagamento)) {
+			        	pedidoService.atulizarCodigoTransacao(pedido.getNumero(), pagagamento, transaction.getString("transactionId"), transaction.getJSONObject("extraParameters").getString("URL_BOLETO_BANCARIO"));
+			        }
+			        else {
+			        	pedidoService.atulizarCodigoTransacao(pedido.getNumero(), pagagamento, transaction.getString("transactionId"), null);
+			        }
+			        
+			        //pedidoService.atulizarStatus(pedido.getNumero(), PedidoStatus.APROVADA)
+			        
+			        RequestContext.getCurrentInstance().addCallbackParam("link", transaction.getJSONObject("extraParameters").getString("URL_BOLETO_BANCARIO"));
+			
+			        if (transaction != null) {
+			            _logger.info("Transaction Code - Default Mode: " + transaction.getString("transactionId"));
+			        }
+			        
+			        RequestContext.getCurrentInstance().addCallbackParam(ERRO_PARAM, false);
+			        
+			        
+			        
+				} catch (Exception e) {
+					RequestContext.getCurrentInstance().addCallbackParam(ERRO_PARAM, true);
+					RequestContext.getCurrentInstance().addCallbackParam("messagem", e.getMessage());
+					
+					RequestContext.getCurrentInstance().addCallbackParam("codigo", codigo);
+					System.err.println("codigodp erro ==> " + codigo);
+			        System.err.println("codigo ==> " + e.getMessage());
+			        
+			        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pedido não processado!!", "Falha no processamento do pedido.<br/><br/>Código Erro: " + codigo + ".<br/>Informe o código acima ao administrador do sistema.");
+			        RequestContext.getCurrentInstance().showMessageInDialog(message);
+			    }
 	}
 
 	public static AccountCredentials getAccountCredencials() throws PagSeguroServiceException {
@@ -692,13 +628,13 @@ public class PedidoView implements Serializable {
 					continue;
 				}
 
-				cards.add(paymentMethod);
+				//cards.add(paymentMethod);
 			}
 			
 			
-			if(BOLETO_METHOD.equals(tipo) && !cards.isEmpty()) {
+			/*if(BOLETO_METHOD.equals(tipo) && !cards.isEmpty()) {
 				option = cards.get(0).getName();
-			}
+			}*/
 			
 			
 
@@ -719,9 +655,16 @@ public class PedidoView implements Serializable {
 		else {
 			try{
 				numero = session.getAttribute(NUMERO).toString();
-				pedido = pedidoService.recuperarPedido(numero);
+				pedido = pedidoService.recuperarPedido(numero);	
+				
 				ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-				if(pedido.getCodigoAutorizacao() != null && !context.getRequestServletPath().contains("confirmacao.jsf")) {
+				
+				/*JSONObject token = solicitarToken();		
+				JSONObject formaPagamento = solicitarPagamentos(token.getString("token_type"), token.getString("access_token"));
+				JSONObject pagamento = efetuarPagamento(token.getString("token_type"), token.getString("access_token"), pedido);*/
+				
+				if(pedido.getCodigoAutorizacao() != null && !context.getRequestServletPath().contains("confirmacao.jsf")) 
+				{
 					Util.redirect(Util.getContextRoot("/pages/confirmacao.jsf?id=" + Util.getSession().getAttribute(ID).toString()));	
 				}
 			}
@@ -812,122 +755,225 @@ public class PedidoView implements Serializable {
 		}
 		
 	}
-	
-	public static String solicitarToken() {
+	public static JSONObject efetuarPagamento(String tokenType, String access_token, Pedido pedido, String tipo, Map<String, String> map){
+		
+		String urlParameters = null;
+		JSONObject xml = null;
 		
 		try {		
-			 String url = "https://secure.payu.com/pl/standard/user/oauth/authorize";
-			 String urlParameters = "grant_type=client_credentials&client_id=145227&client_secret=12f071174cb7eb79d4aac5bc2f07563f";
+			 String url = "https://api.payulatam.com/payments-api/4.0/service.cgi";
+			 urlParameters = capturarParametros(pedido, tipo, map);
+			 String[] headers = {"Content-Type#application/json","Accept#application/json; charset=utf-8"};
+			 System.out.println("Paramentro de Envio");
+			 System.out.println(urlParameters);
+			 StringBuffer pagamento = sendPostGet("POST", url, urlParameters, headers);
+			 System.out.println("Retorno do PAYU");
+			 System.out.println(pagamento);
+
+			 xml = new JSONObject(pagamento.toString());
+			 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return xml;
+		
+	}
+	
+	public static byte[] gerarHash(String frase, String algoritmo) {
+		  try {
+		    MessageDigest md = MessageDigest.getInstance(algoritmo);
+		    md.update(frase.getBytes());
+		    return md.digest();
+		  } catch (NoSuchAlgorithmException e) {
+		    return null;
+		  }
+		}
+	
+	private static String stringHexa(byte[] bytes) 
+		{
+		   StringBuilder s = new StringBuilder();
+		   for (int i = 0; i < bytes.length; i++) {
+		       int parteAlta = ((bytes[i] >> 4) & 0xf) << 4;
+		       int parteBaixa = bytes[i] & 0xf;
+		       if (parteAlta == 0) s.append('0');
+		       s.append(Integer.toHexString(parteAlta | parteBaixa));
+		   }
+		   return s.toString();
+		}
+		
+	public static String capturarParametros(Pedido pedido, String tipo, Map<String, String> map){
+		
+		String referenceCode = pedido.getNumero();
+		//String referenceCode = "pedido_"+Calendar.getInstance().getTime();
+		
+		String amount = getTotalPedido(pedido).toString();
+		//String amount = "9";	
+		String apiKey = "CCZCKJn3TMUOb9hKJwCwVUVK2E";
+		String cpfTeste = "10792984790";
+		String merchantBuyerId = "576002";
+		String accountId = "578808";
+		InetAddress ip = null;
+		
+		
+		try {
+			ip = InetAddress.getLocalHost();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		String validade=null;
+		String cpf = null;
+		
+		if(tipo.equals("cartao"))
+		{
+			String val = map.get("validade");
+			
+			String array[] = new String[3];
+			array = val.split("/");
+			validade = array[1] +"/"+array[0];
+			
+			cpf = map.get("cpfCnpjHolder").replaceAll("[^0-9]", "");
+		} else if (tipo.equals("boleto"))
+		{
+			cpf = pedido.getCliente().getCpfCnpj();
+		}
+		
+		String ass = stringHexa(gerarHash(apiKey+"~576002~"+referenceCode+"~"+amount+"~BRL", "MD5"));
+		
+		JSONObject parametros = new JSONObject();		
+			parametros.put("language","pt");
+			parametros.put("command","SUBMIT_TRANSACTION");
+		
+			JSONObject merchant = new JSONObject();
+				merchant.put("apiKey",apiKey);
+				merchant.put("apiLogin","465kWF7zi3qGQNo");
+			
+			
+		  
+			JSONObject transaction = new JSONObject();
+				JSONObject order = new JSONObject();
+					order.put("accountId",accountId);
+					order.put("description","Pedido "+pedido.getNumero());
+					order.put("referenceCode",referenceCode);					
+					order.put("language","pt");
+					order.put("signature",ass);
+					order.put("notifyUrl","http://climariopagamentos.com.br/status");
+					
+					JSONObject additionalValues = new JSONObject();
+						JSONObject TX_VALUE = new JSONObject();
+							TX_VALUE.put("value",amount);
+							TX_VALUE.put("currency","BRL");
+						
+					
+					JSONObject buyer = new JSONObject();
+						buyer.put("fullName",map.get("nome"));
+						buyer.put("emailAddress",pedido.getCliente().getEmail());
+						buyer.put("dniNumber",cpf);
+						//buyer.put("dniNumber",cpfTeste);						
+						
+						JSONObject shippingAddress = new JSONObject();
+						shippingAddress.put("street1",pedido.getCliente().getLogradouro());
+						shippingAddress.put("street2",pedido.getCliente().getNumero());
+						shippingAddress.put("city", Normalizer.normalize(pedido.getCliente().getCidade(), Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", ""));
+						shippingAddress.put("state",pedido.getCliente().getEstado());
+						shippingAddress.put("country","BR");
+						shippingAddress.put("postalCode",pedido.getCliente().getCep());
+					
+					
+				transaction.put("order",order);				
+				transaction.put("type","AUTHORIZATION_AND_CAPTURE");
+				transaction.put("paymentMethod","BOLETO_BANCARIO");
+				transaction.put("paymentCountry","BR");				
+				transaction.put("ipAddress",ip.getHostAddress());
+				
+			
+			parametros.put("test",false);
+			
+		if(tipo.equals("boleto"))
+		{
+			String data=null;
+			Date dataDoUsuario = new Date();
+
+			// Através do Calendar, trabalhamos a data informada e adicionamos 1 dia nela
+			Calendar c = Calendar.getInstance();
+			c.setTime(dataDoUsuario);
+			c.add(Calendar.DATE, +5);
+
+			SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+			data = format1.format(c.getTime());
+			
+			
+			System.out.println("----------xxx-------");
+			System.out.println(data);
+			System.out.println("------xxx-----------");
+			transaction.put("expirationDate",data);
+			
+		}
+		if(tipo.equals("cartao"))
+		{
+			buyer.put("merchantBuyerId",pedido.getCliente().getId());
+			buyer.put("contactPhone",map.get("dddHolder")+map.get("telefoneHolder"));
+			shippingAddress.put("phone",map.get("dddHolder")+map.get("telefoneHolder"));	
+			
+			JSONObject creditCard = new JSONObject();
+				creditCard.put("number",map.get("numeroCartao"));
+				creditCard.put("securityCode",map.get("cvv"));
+				creditCard.put("expirationDate",validade);
+				creditCard.put("name",map.get("nome"));				
+			transaction.put("creditCard",creditCard);
+			
+			JSONObject extraParameters = new JSONObject();
+				extraParameters.put("INSTALLMENTS_NUMBER",map.get("parcelas_input"));
+			transaction.put("extraParameters",extraParameters);
+			
+			transaction.put("paymentMethod",map.get("basic_input"));
+		}
+		
+		parametros.put("merchant",merchant);
+		additionalValues.put("TX_VALUE",TX_VALUE);
+		order.put("additionalValues",additionalValues);
+		buyer.put("shippingAddress",shippingAddress);				
+		order.put("buyer",buyer);
+		parametros.put("transaction",transaction);
+		return parametros.toString();
+	}
+	
+	public static JSONObject solicitarToken() {
+
+		JSONObject jsonObj = null;
+		
+		try {		
+			 String url = "https://secure.snd.payu.com/pl/standard/user/oauth/authorize";
+			 String urlParameters = "grant_type=client_credentials&client_id=300046&client_secret=c8d4b7ac61758704f38ed5564d8c0ae0";
 			 String[] headers = {"Content-Type#application/x-www-form-urlencoded"}; 
 			 
 			 StringBuffer token = sendPostGet("POST", url, urlParameters, headers);
-			 JSONObject jsonObj = new JSONObject(token.toString());
-			 
-			 solicitarPagamentos(jsonObj.getString("token_type"), jsonObj.getString("access_token"));
+			 jsonObj = new JSONObject(token.toString());
 			 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		return "ok";
+		return jsonObj;
 	}
 	
 	
-	public static String solicitarPagamentos(String tokenType, String access_token) {
+	public static JSONObject solicitarPagamentos(String tokenType, String access_token) {
+		
+		JSONObject jsonObj = null;
 		
 		try {		
-			 String url = "https://secure.payu.com/api/v2_1/paymethods";
-			 String urlParameters = "";
-			 String[] headers = {"Content-Type#application/json", "Authorization#"+tokenType+" "+access_token};
-			 StringBuffer metodos = sendPostGet("GET", url, urlParameters, headers);
-			 
-			 
-			 JSONObject jsonObj = new JSONObject(metodos.toString());
-			 //String metodosPagamento = jsonObj.getString("payByLinks");
-			 System.out.println(jsonObj);
+			 String url = "https://api.payulatam.com/payments-api/4.0/service.cgi";
+			 String urlParameters = "{   'test': false,   'language': 'pt',   'command': 'GET_PAYMENT_METHODS',   'merchant': {      'apiLogin': '465kWF7zi3qGQNo',      'apiKey': 'CCZCKJn3TMUOb9hKJwCwVUVK2E'   }}";
+			 String[] headers = {"Content-Type#application/json","Accept#application/json"};
+			 StringBuffer metodos = sendPostGet("POST", url, urlParameters, headers);
+
+			 jsonObj = new JSONObject(metodos.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		return "ok";
-	}
-	
-	public String testAutorizarEConfirmar() {
-		AutorizaECapturaPagamentoRequest request = new AutorizaECapturaPagamentoRequest();
-		request.setLanguage("es");
-		request.setCommand("SUBMIT_TRANSACTION");
-		request.setTest(Boolean.FALSE);
-		Merchant merchant = new Merchant();
-		merchant.setApiKey(PAYU_API_KEY);
-		merchant.setApiLogin(PAYU_API_LOGIN);
-		request.setMerchant(merchant);
-		br.com.climario.dominio.Transaction transaction = new br.com.climario.dominio.Transaction();
-		Order order = new Order();
-		order.setAccountId(512327);
-		order.setReferenceCode("payment_test_00000001");
-		order.setDescription("payment test");
-		order.setLanguage("es");
-		order.setSignature("31eba6f397a435409f57bc16b5df54c3");
-		order.setNotifyUrl("http://www.tes.com/confirmation");
-		AdditionalValues additionalValues = new AdditionalValues();
-		TXVALUE txvalue = new TXVALUE();
-		txvalue.setValue(100);
-		txvalue.setCurrency("BRL");
-		additionalValues.setTXVALUE(txvalue);
-		order.setAdditionalValues(additionalValues);
-		Buyer buyer = new Buyer();
-		buyer.setMerchantBuyerId("1");
-		buyer.setFullName("First name and second buyer name");
-		buyer.setEmailAddress("buyer_test@test.com");
-		buyer.setContactPhone("(11)756312633");
-		buyer.setDniNumber("811.807.405-64");
-		buyer.setCnpj("32593371000110");
-		ShippingAddress shippingAddress = new ShippingAddress();
-		shippingAddress.setStreet1("calle 100");
-		shippingAddress.setStreet2("5555487");
-		shippingAddress.setCity("Sao paulo");
-		shippingAddress.setState("SP");
-		shippingAddress.setCountry("BR");
-		shippingAddress.setPostalCode("01019-030");
-		shippingAddress.setPhone("(11)756312633");
-		buyer.setShippingAddress(shippingAddress);
-        order.setBuyer(buyer);
-		transaction.setOrder(order);
-		CreditCard creditCard = new CreditCard();
-		creditCard.setNumber("4097440000000004");
-		creditCard.setSecurityCode("321");
-		creditCard.setExpirationDate("2014/12");
-		creditCard.setName("APPROVED");
-		transaction.setCreditCard(creditCard);
-		ExtraParameters extraParameters = new ExtraParameters();
-		extraParameters.setINSTALLMENTSNUMBER(1);
-		transaction.setExtraParameters(extraParameters);
-		transaction.setType("AUTHORIZATION_AND_CAPTURE");
-		transaction.setPaymentMethod("VISA");
-		transaction.setPaymentCountry("BR");
-		transaction.setIpAddress("127.0.0.1");
-		request.setTransaction(transaction);
-		return autorizarEConfirmarPagamento(request);
-	}
-	
-	public String autorizarEConfirmarPagamento(AutorizaECapturaPagamentoRequest request) {
-		
-		try {		
-			 String url = "https://sandbox.api.payulatam.com/payments-api/4.0/service.cgi";
-			 JSONObject jsonObject = new JSONObject(request);
-			 String[] headers = {"Content-Type#application/json",};
-			 System.out.println(jsonObject.toString());
-			 StringBuffer metodos = sendPostGet("POST", url, jsonObject.toString(), headers);
-			 
-			 System.out.println(metodos.toString());
-			 JSONObject jsonObj = new JSONObject(metodos.toString());
-			 //String metodosPagamento = jsonObj.getString("payByLinks");
-			 System.out.println(jsonObj);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return "ok";
+		return jsonObj;
 	}
 
 	 // HTTP POST request
@@ -945,12 +991,24 @@ public class PedidoView implements Serializable {
 			  con.setRequestProperty(h[0], h[1]);
 		  }
 		  
+		  JSONObject jsonObj = null;
+		  
 		  if(method == "POST")
 		  {
-			  // Send post request
 			  con.setDoOutput(true);
 			  DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-			  wr.writeBytes(urlParameters);
+			  
+			  try{
+				  jsonObj = new JSONObject(urlParameters);	
+				  wr.writeBytes(jsonObj.toString());
+				  //System.out.println(jsonObj);
+			  }catch (Exception e) {
+					//e.printStackTrace();
+				  wr.writeBytes(urlParameters);
+				}
+			  
+			  // Send post request
+			 
 			  wr.flush();
 			  wr.close();
 		  }
