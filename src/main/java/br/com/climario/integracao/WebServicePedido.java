@@ -70,6 +70,9 @@ public class WebServicePedido {
 			_logger.info("Código do Item: " + item.getCodigo());
             _logger.info("Descrição do Item: " + item.getDescricao());
             _logger.info("Preço unitário dos Item: " + item.getPrecoUnitario());
+            _logger.info("Cidade: " + pedido.getCliente().getCidade());
+            _logger.info("Bairro: " + pedido.getCliente().getBairro());
+            _logger.info("Logradouro: " + pedido.getCliente().getLogradouro());
             _logger.info(" ############################################ ");
         }
 		

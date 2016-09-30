@@ -1,8 +1,10 @@
 package br.com.climario.ui;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -763,7 +765,7 @@ public class PedidoView implements Serializable {
 		try {		
 			 String url = "https://api.payulatam.com/payments-api/4.0/service.cgi";
 			 urlParameters = capturarParametros(pedido, tipo, map);
-			 String[] headers = {"Content-Type#application/json","Accept#application/json; charset=utf-8"};
+			 String[] headers = {"Content-Type#application/json","Accept#application/json;charset=utf-8"};
 			 System.out.println("Paramentro de Envio");
 			 System.out.println(urlParameters);
 			 StringBuffer pagamento = sendPostGet("POST", url, urlParameters, headers);
@@ -866,7 +868,7 @@ public class PedidoView implements Serializable {
 						
 					
 					JSONObject buyer = new JSONObject();
-						buyer.put("fullName",map.get("nome"));
+						
 						buyer.put("emailAddress",pedido.getCliente().getEmail());
 						buyer.put("dniNumber",cpf);
 						//buyer.put("dniNumber",cpfTeste);						
@@ -891,6 +893,7 @@ public class PedidoView implements Serializable {
 			
 		if(tipo.equals("boleto"))
 		{
+			buyer.put("fullName",pedido.getCliente().getNome());
 			String data=null;
 			Date dataDoUsuario = new Date();
 
@@ -911,6 +914,7 @@ public class PedidoView implements Serializable {
 		}
 		if(tipo.equals("cartao"))
 		{
+			buyer.put("fullName",map.get("nome"));
 			buyer.put("merchantBuyerId",pedido.getCliente().getId());
 			buyer.put("contactPhone",map.get("dddHolder")+map.get("telefoneHolder"));
 			shippingAddress.put("phone",map.get("dddHolder")+map.get("telefoneHolder"));	
@@ -996,15 +1000,15 @@ public class PedidoView implements Serializable {
 		  if(method == "POST")
 		  {
 			  con.setDoOutput(true);
-			  DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-			  
+			  DataOutputStream write = new DataOutputStream(con.getOutputStream());
+			  BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(write, "UTF-8"));
 			  try{
 				  jsonObj = new JSONObject(urlParameters);	
-				  wr.writeBytes(jsonObj.toString());
+				  wr.write(jsonObj.toString());
 				  //System.out.println(jsonObj);
 			  }catch (Exception e) {
 					//e.printStackTrace();
-				  wr.writeBytes(urlParameters);
+				  wr.write(urlParameters);
 				}
 			  
 			  // Send post request
