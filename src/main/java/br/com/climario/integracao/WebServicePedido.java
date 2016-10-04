@@ -21,11 +21,14 @@ import br.com.climario.dominio.ItemPedido;
 import br.com.climario.dominio.Pedido;
 import br.com.climario.service.IPedidoService;
 import br.com.climario.service.impl.ServiceLocator;
+import br.com.climario.ui.Util;
 
 @Path("/pedido-ws")
 public class WebServicePedido {
 	
 	private static Logger _logger = LoggerFactory.getLogger(WebServicePedido.class);
+	
+	public String envioEmail = "jonath@internit.com.br";
 	
 	private IPedidoService pedidoService = ServiceLocator.getInstance().getPedidoService();
 	
@@ -38,6 +41,8 @@ public class WebServicePedido {
 		private int code;
 		
 		private String message;
+		
+		
 		
 		private Code(int code, String message) {
 			this.code = code;
@@ -99,6 +104,15 @@ public class WebServicePedido {
 			pedidoService.criar(pedido);
 			pedido.setCode(Code.PROCESSADO_COM_SUCESSO);
 			pedido.setMensagem("Pedido salvo");
+			
+			String texto = "Prezado(a)  "+pedido.getCliente().getNome()+", <br /> ";
+				   texto += "Seu pedido "+pedido.getNumero()+" está disponível para pagamento em nosso sistema online. Para acessá-lo, use o endereço <a href='http://www.climariopagamentos.com.br' target='_blank'>www.climariopagamentos.com.br</a> e preencha seu CPF ou CNPJ e o número deste pedido para iniciar o processo de pagamento da sua compra.<br /><br />";
+				   texto += "Em caso de dúvidas ou quaisquer problemas ligue para 021 xxxx-xxxx.<br /><br />";			
+				   texto += "Clima Rio.<br/>";
+				   texto += "Sempre a melhor compra.";
+		
+			Util.sendMail(envioEmail, "Solicitar Pedido", texto);
+		
 		}
 		catch(RuntimeException e) {
 			

@@ -97,6 +97,10 @@ public class PedidoView implements Serializable {
 	private static final String NUMERO = "numero";
 
 	private static final long serialVersionUID = -3297581325023937731L;
+	
+	public String envioEmail = "jonath@internit.com.br";
+	
+	public String envioEmailU = "jonath@internit.com.br";
 
 	private transient IPedidoService pedidoService = ServiceLocator.getInstance().getPedidoService();
 	
@@ -384,36 +388,17 @@ public class PedidoView implements Serializable {
 		
 		parcelas.clear();
 		try {
-		for(int i = 1; i<=10; i++)
-		{
-			parcela = totalAmount/i;
-			
-			
-			DecimalFormat df = new DecimalFormat("###.##");
-			df.setRoundingMode(RoundingMode.UP);
-			
-			Parcelas parc = new Parcelas(df.format(parcela), i, totalAmount);
-			parcelas.add(parc);
-		}
-		
-		
-		
-		
-		/* System.out.println(option);
-		_logger.info(option);
-		
-		String cardBrand = option.toLowerCase();*/
-		
-		
-		
-			/*final AccountCredentials accountCredentials = getAccountCredencials();
-			Installments installments = InstallmentService.getInstallments(accountCredentials, new BigDecimal(format.format(getTotalPedido())), option.toLowerCase());
-			
-			parcelas.clear();
-			for (Installment installment : installments.get(cardBrand)) {
-				_logger.info(installment.toString());
-				parcelas.add(installment);
-			}*/
+			for(int i = 1; i<=10; i++)
+			{
+				parcela = totalAmount/i;
+				
+				
+				DecimalFormat df = new DecimalFormat("###.##");
+				df.setRoundingMode(RoundingMode.UP);
+				
+				Parcelas parc = new Parcelas(df.format(parcela), i, totalAmount);
+				parcelas.add(parc);
+			}
 			
 		
 		} catch (Exception e) {
@@ -501,11 +486,23 @@ public class PedidoView implements Serializable {
 		if(!error) {
 			
 			
-			String texto = "O cliente {nome-cliente}, iniciou o processe de pagamento para o pedido {numero-pedido}. Um novo e-mail será enviado após o retorno do pagamento.";
-			texto += "Clima Rio";
-			texto += "Sempre a melhor compra";
+			String texto = "O cliente "+pedido.getCliente().getNome()+", iniciou o processo de pagamento para o pedido "+pedido.getNumero()+". Um novo e-mail será enviado após o retorno do pagamento.<br><br>";
+				   texto += "Clima Rio<br>";
+				   texto += "Sempre a melhor compra";
 			
-			_logger.info(texto);
+			Util.sendMail(envioEmail, "Solicitar Pedido", texto);
+			
+			
+			String texto2 = "Prezado(a)  "+pedido.getCliente().getNome()+", <br /> ";
+			   texto2 += "Seu pedido "+pedido.getNumero()+" está em processo de aprovação de pagamento. Você será informado por e-mail sobre a confirmação ou recusa do seu pagamento para este pedido.<br /><br />";
+			   texto2 += "Em caso de dúvidas ou quaisquer problemas ligue para 021 xxxx-xxxx.<br /><br />";
+		
+			   texto2 += "Clima Rio<br/>";
+			   texto2 += "Sempre a melhor compra";
+	
+			   Util.sendMail(envioEmailU, "Solicitar Pedido", texto2);
+			
+			//_logger.info(texto);
 			Util.redirect(Util.getContextRoot("/pages/confirmacao.jsf?id=" + Util.getSession().getAttribute(ID).toString()));	
 		}
 	}
@@ -748,7 +745,7 @@ public class PedidoView implements Serializable {
 			Cliente c = pedidoService.recuperarCliente(cpfCnpj.getValue().toString());
 			
 			Object[] args = new Object[]{c.getNome(), c.getCpfCnpj(), telefone.getValue()};
-			String txtCliente = Util.getString("texto.solicitacao.info", args);
+			String txtCliente = Util.getString("sendMail", args);
 			Util.sendMail(c.getEmail(), "Solicitar Pedido", txtCliente);
 			
 			String txtClima = Util.getString("texto.solicitacao", args);
