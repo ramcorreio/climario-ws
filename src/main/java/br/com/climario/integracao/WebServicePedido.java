@@ -105,13 +105,15 @@ public class WebServicePedido {
 			pedido.setCode(Code.PROCESSADO_COM_SUCESSO);
 			pedido.setMensagem("Pedido salvo");
 			
-			String texto = "Prezado(a)  "+pedido.getCliente().getNome()+", <br /> ";
-				   texto += "Seu pedido "+pedido.getNumero()+" está disponível para pagamento em nosso sistema online. Para acessá-lo, use o endereço <a href='http://www.climariopagamentos.com.br' target='_blank'>www.climariopagamentos.com.br</a> e preencha seu CPF ou CNPJ e o número deste pedido para iniciar o processo de pagamento da sua compra.<br /><br />";
-				   texto += "Em caso de dúvidas ou quaisquer problemas ligue para 021 xxxx-xxxx.<br /><br />";			
+			String texto = "Prezado(a)  "+pedido.getCliente().getNome()+", <br /><br /> ";
+				   texto += "Desde já agradecemos a escolha pela Clima Rio.<br /><br />";
+				   texto += "Seu pedido "+pedido.getNumero()+" está disponível para pagamento em nosso sistema online.Para acessá-lo use o endereço <a href='http://www.climariopagamentos.com.br' target='_blank'>www.climariopagamentos.com.br</a> e preencha com seu CPF ou CNPJ, bem como com o número do pedido informado acima para assim, iniciar o processo de pagamento da sua compra.<br /><br />";
+				   texto += "Em caso de dúvida ou problema entre em contato com o consultor de vendas que lhe atendeu.<br /><br />";			
 				   texto += "Clima Rio.<br/>";
-				   texto += "Sempre a melhor compra.";
+				   texto += "Sempre a melhor compra.<br/><br/>";
+				   texto += "<img src='http://climariopagamentos.com.br/javax.faces.resource/img/clima_logo.jpg.jsf?ln=media'>";
 		
-			Util.sendMail(envioEmail, "Solicitar Pedido", texto);
+			Util.sendMail(pedido.getCliente().getEmail(), "Solicitar Pedido", texto);
 		
 		}
 		catch(RuntimeException e) {

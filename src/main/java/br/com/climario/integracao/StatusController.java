@@ -28,7 +28,7 @@ public class StatusController extends HttpServlet {
 	
 	public String envioEmail = "jonath@internit.com.br";
 	
-	public String envioEmailU = "jonath@internit.com.br";
+	//public String envioEmailU = "jonath@internit.com.br";
 	
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -54,28 +54,31 @@ public class StatusController extends HttpServlet {
 			
 			if (ps.toString().equals("APROVADA"))
 			{
-				texto = "O cliente "+pedido.getCliente().getNome()+", completou com sucesso o processo de pagamento para o pedido "+pedido.getNumero()+" e está com o pagamento aprovado. Prosseguir com a entrega e demais rotinas.<br /><br />";
+				texto = "O cliente "+pedido.getCliente().getNome()+", completou com sucesso o processo de pagamento para o pedido "+pedido.getNumero()+" e está com o pagamento aprovado. Favor encaminhar a logística o número do pedido, juntamente com este email informando sobre a aprovação do pagamento.<br /><br />";
 				
-				texto2 += "Seu pedido "+pedido.getNumero()+" teve o pagamento aprovado. A partir de agora você será notificado pela Clima Rio para prosseguimento de entrega deste pedido.<br /><br />";
-				
+				texto2 += "Seu pedido "+pedido.getNumero()+" teve o pagamento aprovado pela sua operadora de cartão. A partir deste instante o mesmo entrará em processo de separação, expedição e entrega.<br /><br />";
+				texto2 += "Em caso de dúvida ou problema entre em contato com o consultor de vendas que lhe atendeu.<br /><br />";
 				   
 			}
 			else if (ps.toString().equals("REJEITADA"))
 			{
-				texto = "O cliente "+pedido.getCliente().getNome()+", não teve sucesso com o pagamento para o pedido "+pedido.getNumero()+" e está com o pagamento recusado. Retornar o contato com o cliente.<br /><br />";
+				texto = "O cliente "+pedido.getCliente().getNome()+", não teve sucesso com o pagamento para o pedido "+pedido.getNumero()+" e está com o pagamento recusado. Retornar o contato ao cliente.<br /><br />";
 				
-				texto2 += "Seu pedido "+pedido.getNumero()+" teve o pagamento reprovado. Entre em contato com a Clima Rio no telefone 021 xxxx-xxxx para mais informações.<br /><br />";
+				texto2 += "Seu pedido "+pedido.getNumero()+" teve o pagamento reprovado pela sua operadora de cartão.<br /><br />";
+				texto2 += "Em caso de dúvidas sobre a reprovação, favor entrar em contato com a sua operadora de cartão.<br /><br />";
 			}
 			
 				texto += "Clima Rio<br>";
-				texto += "Sempre a melhor compra";
+				texto += "Sempre a melhor compra.<br/><br/>";
+				texto += "<img src='http://climariopagamentos.com.br/javax.faces.resource/img/clima_logo.jpg.jsf?ln=media'>";
 				
-				texto2 += "Em caso de dúvidas ou quaisquer problemas ligue para 021 xxxx-xxxx.<br /><br />";
+				
 				texto2 += "Clima Rio<br/>";
-				texto2 += "Sempre a melhor compra";
+				texto2 += "Sempre a melhor compra.<br/><br/>";
+				texto2 += "<img src='http://climariopagamentos.com.br/javax.faces.resource/img/clima_logo.jpg.jsf?ln=media'>";
 			
 			Util.sendMail(envioEmail, "Solicitar Pedido", texto);
-			Util.sendMail(envioEmailU, "Solicitar Pedido", texto2);
+			Util.sendMail(pedido.getCliente().getEmail(), "Solicitar Pedido", texto2);
 			
 			//transaction_id
 			ServiceLocator.getInstance().getPedidoService().atulizarStatus(request.getParameter("transaction_id"), ps);

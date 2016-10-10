@@ -100,7 +100,7 @@ public class PedidoView implements Serializable {
 	
 	public String envioEmail = "jonath@internit.com.br";
 	
-	public String envioEmailU = "jonath@internit.com.br";
+	//public String envioEmailU = "jonath@internit.com.br";
 
 	private transient IPedidoService pedidoService = ServiceLocator.getInstance().getPedidoService();
 	
@@ -410,6 +410,7 @@ public class PedidoView implements Serializable {
 	
 	public void execPagamentos() {
 	
+		_logger.info("teste: " + tipo);
 		FacesContext context = FacesContext.getCurrentInstance();
 	    Map<String, String> map = context.getExternalContext().getRequestParameterMap();	
 	    
@@ -488,19 +489,22 @@ public class PedidoView implements Serializable {
 			
 			String texto = "O cliente "+pedido.getCliente().getNome()+", iniciou o processo de pagamento para o pedido "+pedido.getNumero()+". Um novo e-mail será enviado após o retorno do pagamento.<br><br>";
 				   texto += "Clima Rio<br>";
-				   texto += "Sempre a melhor compra";
+				   texto += "Sempre a melhor compra.<br/><br/>";
+				   texto += "<img src='http://climariopagamentos.com.br/javax.faces.resource/img/clima_logo.jpg.jsf?ln=media'>";
 			
 			Util.sendMail(envioEmail, "Solicitar Pedido", texto);
 			
 			
-			String texto2 = "Prezado(a)  "+pedido.getCliente().getNome()+", <br /> ";
-			   texto2 += "Seu pedido "+pedido.getNumero()+" está em processo de aprovação de pagamento. Você será informado por e-mail sobre a confirmação ou recusa do seu pagamento para este pedido.<br /><br />";
-			   texto2 += "Em caso de dúvidas ou quaisquer problemas ligue para 021 xxxx-xxxx.<br /><br />";
+			String texto2 = "Prezado(a)  "+pedido.getCliente().getNome()+", <br /><br /> ";			   
+			   texto2 += "Seu pedido "+pedido.getNumero()+" está em processo de análise junto a sua operadora de cartão. Você será informado(a), por e-mail, sobre o retorno da operadora referente a conclusão do pagamento.<br /><br />";
+			   texto2 += "O processo de compra será concluído somente após este retorno.<br /><br />";
+			   texto2 += "Em caso de dúvida ou problema entre em contato com o consultor de vendas que lhe atendeu.<br /><br />";
 		
 			   texto2 += "Clima Rio<br/>";
-			   texto2 += "Sempre a melhor compra";
+			   texto2 += "Sempre a melhor compra.<br/><br/>";
+			   texto2 += "<img src='http://climariopagamentos.com.br/javax.faces.resource/img/clima_logo.jpg.jsf?ln=media'>";
 	
-			   Util.sendMail(envioEmailU, "Solicitar Pedido", texto2);
+			   Util.sendMail(pedido.getCliente().getEmail(), "Solicitar Pedido", texto2);
 			
 			//_logger.info(texto);
 			Util.redirect(Util.getContextRoot("/pages/confirmacao.jsf?id=" + Util.getSession().getAttribute(ID).toString()));	
@@ -535,6 +539,7 @@ public class PedidoView implements Serializable {
 	
 	public void validar(ActionEvent actionEvent){
 		_logger.info("actionEvent", actionEvent);
+		_logger.info("tipo", tipo);
 		RequestContext.getCurrentInstance().addCallbackParam("autorizar", true);
 		RequestContext.getCurrentInstance().addCallbackParam("tipo", tipo);
 		
@@ -578,7 +583,8 @@ public class PedidoView implements Serializable {
 					System.err.println("codigodp erro ==> " + codigo);
 			        System.err.println("codigo ==> " + e.getMessage());
 			        
-			        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pedido não processado!!", "Falha no processamento do pedido.<br/><br/>Código Erro: " + codigo + ".<br/>Informe o código acima ao administrador do sistema.");
+			        //FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pedido não processado!!", "Falha no processamento do pedido.<br/><br/>Código Erro: " + codigo + ".<br/>Informe o código acima ao administrador do sistema.");
+			        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pedido não processado!!", "Falha no processamento do pedido.<br/><br/>Erro: " + pagamento.get("error"));
 			        RequestContext.getCurrentInstance().showMessageInDialog(message);
 			    }
 	}
@@ -757,7 +763,7 @@ public class PedidoView implements Serializable {
 	public static JSONObject efetuarPagamento(String tokenType, String access_token, Pedido pedido, String tipo, Map<String, String> map){
 		
 		String urlParameters = null;
-		JSONObject xml = null;
+		JSONObject json = null;
 		
 		try {		
 			 String url = "https://api.payulatam.com/payments-api/4.0/service.cgi";
@@ -769,13 +775,13 @@ public class PedidoView implements Serializable {
 			 System.out.println("Retorno do PAYU");
 			 System.out.println(pagamento);
 
-			 xml = new JSONObject(pagamento.toString());
+			 json = new JSONObject(pagamento.toString());
 			 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		return xml;
+		return json;
 		
 	}
 	
@@ -804,10 +810,8 @@ public class PedidoView implements Serializable {
 	public static String capturarParametros(Pedido pedido, String tipo, Map<String, String> map){
 		
 		String referenceCode = pedido.getNumero();
-		//String referenceCode = "pedido_"+Calendar.getInstance().getTime();
 		
 		String amount = getTotalPedido(pedido).toString();
-		//String amount = "9";	
 		String apiKey = "CCZCKJn3TMUOb9hKJwCwVUVK2E";
 		String cpfTeste = "10792984790";
 		String merchantBuyerId = "576002";
@@ -829,10 +833,10 @@ public class PedidoView implements Serializable {
 			
 			String array[] = new String[3];
 			array = val.split("/");
-			validade = array[1] +"/"+array[0];
-			
+			validade = array[1] +"/"+array[0];			
 			cpf = map.get("cpfCnpjHolder").replaceAll("[^0-9]", "");
-		} else if (tipo.equals("boleto"))
+		} 
+		else if (tipo.equals("boleto"))
 		{
 			cpf = pedido.getCliente().getCpfCnpj();
 		}
@@ -927,7 +931,29 @@ public class PedidoView implements Serializable {
 				extraParameters.put("INSTALLMENTS_NUMBER",map.get("parcelas_input"));
 			transaction.put("extraParameters",extraParameters);
 			
-			transaction.put("paymentMethod",map.get("basic_input"));
+			
+			
+			try {		
+				 String url = "https://www.binlist.net/json/"+map.get("numeroCartao").substring(0,6);
+				 String urlParameters = "";
+				 String[] headers = {"Content-Type#application/x-www-form-urlencoded"}; 
+				 StringBuffer band = sendPostGet("POST", url, urlParameters, headers);
+
+				 JSONObject bandeira = new JSONObject(band.toString());
+				 
+				 System.out.println("---------------------");
+				 System.out.println(bandeira);
+				 System.out.println(bandeira.get("brand").toString());
+				 System.out.println("---------------------");
+				 
+				 transaction.put("paymentMethod",bandeira.get("brand").toString());
+					
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			
+			
 		}
 		
 		parametros.put("merchant",merchant);
@@ -985,13 +1011,14 @@ public class PedidoView implements Serializable {
 		  HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
 	
 		  con.setRequestMethod(method);
-		  
-		  for(int x=0; x < headers.length; x++)
+		  if (headers.length > 0)
 		  {
-			  String h[] = headers[x].split("#");
-			  con.setRequestProperty(h[0], h[1]);
+			  for(int x=0; x < headers.length; x++)
+			  {
+				  String h[] = headers[x].split("#");
+				  con.setRequestProperty(h[0], h[1]);
+			  }
 		  }
-		  
 		  JSONObject jsonObj = null;
 		  
 		  if(method == "POST")

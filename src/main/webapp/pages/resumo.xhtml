@@ -212,7 +212,7 @@
 			    	<div class="col-md-5 col-sm-12 espaco12">
 			    		<div class="adireita fcentraliza">
 			    			<p:remoteCommand name="processar" actionListener="#{pedidoView.exec}" oncomplete="retornoProcessamento(xhr, status, args)"/>
-			    			<p:commandButton id="finalizar" styleClass="btn3" value="Finalizar pedido com PayU" actionListener="#{pedidoView.validar}" oncomplete="autorizar(xhr, status, args)" update="@form" disabled="#{empty pedidoView.cards}"/>
+			    			<p:commandButton id="finalizar" styleClass="btn3" value="Finalizar pedido com PayU" actionListener="#{pedidoView.validar}" update="@form" disabled="#{empty pedidoView.cards}"/>
 			    		</div>
 			    	</div>
 			    </div>
