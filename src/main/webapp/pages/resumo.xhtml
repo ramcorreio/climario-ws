@@ -168,7 +168,7 @@
 								<p:message for="parcelas" />
 				    		
 				    			<p:outputLabel value="Número do Cartão"/>
-				    			<p:inputMask id="numeroCartao" label="Número Cartão" mask="9999999999999999" value="#{pedidoView.numeroCartao}" required="true" validatorMessage="Informe o número do cartão"/>
+				    			<p:inputMask id="numeroCartao" label="Número Cartão" mask="99999999999999?99" value="#{pedidoView.numeroCartao}" required="true" validatorMessage="Informe o número do cartão"/>
 				    			<p:message for="numeroCartao" />
 				    			
 				    			<p:outputLabel value="Código de Segurança (cvv)" />
@@ -212,7 +212,7 @@
 			    	<div class="col-md-5 col-sm-12 espaco12">
 			    		<div class="adireita fcentraliza">
 			    			<p:remoteCommand name="processar" actionListener="#{pedidoView.exec}" oncomplete="retornoProcessamento(xhr, status, args)"/>
-			    			<p:commandButton id="finalizar" styleClass="btn3" value="Finalizar pedido com PayU" actionListener="#{pedidoView.validar}" update="@form" disabled="#{empty pedidoView.cards}"/>
+			    			<p:commandButton id="finalizar" styleClass="btn3" value="Finalizar pedido com PayU" actionListener="#{pedidoView.exec}"   oncomplete="retornoProcessamento(xhr, status, args)" update="@form" disabled="#{empty pedidoView.cards}"/>
 			    		</div>
 			    	</div>
 			    </div>

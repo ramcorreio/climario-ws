@@ -98,7 +98,7 @@ public class PedidoView implements Serializable {
 
 	private static final long serialVersionUID = -3297581325023937731L;
 	
-	public String envioEmail = "jonath@internit.com.br";
+	public String envioEmail = "marcio@internit.com.br";
 	
 	//public String envioEmailU = "jonath@internit.com.br";
 
@@ -492,7 +492,17 @@ public class PedidoView implements Serializable {
 				   texto += "Sempre a melhor compra.<br/><br/>";
 				   texto += "<img src='http://climariopagamentos.com.br/javax.faces.resource/img/clima_logo.jpg.jsf?ln=media'>";
 			
-			Util.sendMail(envioEmail, "Solicitar Pedido", texto);
+			String emailEnvio = "";
+			
+			if(pedido.getCliente().getEmailRca().isEmpty())
+			{
+				emailEnvio = envioEmail;
+			}else{
+				emailEnvio = pedido.getCliente().getEmailRca();
+			}
+		    
+				   
+			Util.sendMail(emailEnvio, "Solicitar Pedido", texto);
 			
 			
 			String texto2 = "Prezado(a)  "+pedido.getCliente().getNome()+", <br /><br /> ";			   
@@ -931,9 +941,9 @@ public class PedidoView implements Serializable {
 				extraParameters.put("INSTALLMENTS_NUMBER",map.get("parcelas_input"));
 			transaction.put("extraParameters",extraParameters);
 			
+			transaction.put("paymentMethod",map.get("basic_input"));
 			
-			
-			try {		
+			/*try {		
 				 String url = "https://www.binlist.net/json/"+map.get("numeroCartao").substring(0,6);
 				 String urlParameters = "";
 				 String[] headers = {"Content-Type#application/x-www-form-urlencoded"}; 
@@ -950,7 +960,7 @@ public class PedidoView implements Serializable {
 					
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
+			}*/
 			
 			
 			
