@@ -84,6 +84,8 @@ import br.com.uol.pagseguro.service.TransactionService;
 @ViewScoped
 public class PedidoView implements Serializable {
 	
+	private static final DecimalFormatSymbols DOLAR = new DecimalFormatSymbols(Locale.US); 
+	
 	private final static String USER_AGENT = "Mozilla/5.0";
 	
 	private static final String ERRO_PARAM = "erro";
@@ -821,7 +823,10 @@ public class PedidoView implements Serializable {
 		
 		String referenceCode = pedido.getNumero();
 		
-		String amount = getTotalPedido(pedido).toString();
+		DecimalFormat decimal = new DecimalFormat("0.00",DOLAR);		
+		String amount =  decimal.format(getTotalPedido(pedido)).toString();
+		//String amount = getTotalPedido(pedido).toString();
+		
 		String apiKey = "CCZCKJn3TMUOb9hKJwCwVUVK2E";
 		String cpfTeste = "10792984790";
 		String merchantBuyerId = "576002";
