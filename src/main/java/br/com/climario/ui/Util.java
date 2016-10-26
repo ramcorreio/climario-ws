@@ -21,10 +21,13 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import javax.mail.Store;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -254,7 +257,7 @@ public class Util {
 	}
 	
 	public static void main(String[] args) {
-		sendMail("ramcorreio@yahoo.com.br", "Assunto", "CORPO EMAIL", null);
+		sendMail("jonath@internit.com.br", "Assunto", "CORPO EMAIL", null);
 	}
 	
 	public static Boolean sendMail(String emailTo, String subject, String txt){
@@ -271,8 +274,8 @@ public class Util {
 		// String from = "";
 		// String from =
 		// configService.findValueByKey(Constants.CONFIG_SYSTEM_MAIL);
-		final String from = getString("email.sender.account");
-		final String fromName = getString("email.sender.label");
+		final String from = "no-reply@climario.com.br";
+		final String fromName = "Clima Rio";
 		//final String password = Constants.EMAIL_B2B_CONTATO_PASS;
 		//final String mailBody = "";
 
@@ -289,6 +292,15 @@ public class Util {
 		properties.setProperty("mail.transport.protocol", "smtp");
 		properties.setProperty("mail.smtp.host", host);
 		
+		
+		properties.put("mail.smtp.host", "mail.climario.com.br");
+		properties.put("mail.smtp.auth", "true");
+		properties.put("mail.debug", "true");
+		properties.put("mail.smtp.debug", "true");
+		properties.put("mail.mime.charset", "ISO-8859-1");
+		properties.put("mail.smtp.port", "587");
+		properties.put("mail.smtp.starttls.enable", "false");
+		
 		// Create a default MimeMessage object.
 		//MimeMessage message = new MimeMessage(Session.getDefaultInstance(properties));
 		
@@ -303,9 +315,17 @@ public class Util {
 				return new PasswordAuthentication(from, password);
 			}
 		});*/
+		
+		Authenticator auth = new Authenticator() {
+			public PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication("no-reply@climario.com.br",
+						"climariopayu"); // Senha do gmail
+			}
+		};
 			
 		// Get the default Session object.
-		Session session = Session.getDefaultInstance(properties);
+		//Session session = Session.getDefaultInstance(properties);
+		Session session = Session.getInstance(properties, auth);
 		session.setDebug(true);
 
 		try {
@@ -321,7 +341,8 @@ public class Util {
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 			
 			//cópia para gestão
-			message.addRecipient(Message.RecipientType.CC, new InternetAddress("marcio@internit.com.br"));
+			message.addRecipient(Message.RecipientType.BCC, new InternetAddress("marcio@internit.com.br"));
+			message.addRecipient(Message.RecipientType.BCC, new InternetAddress("jonath@internit.com.br"));
 
 			// Set Subject: header field
 			message.setSubject(subtitle);
@@ -362,5 +383,48 @@ public class Util {
 			e.printStackTrace();
 		}
 		return rs;
+	}
+    
+    public static String enviarEmail(String emailDest, String nomeDest,
+			String emailRemet, String nomeRemet,
+                        String assunto, String corpo)
+			throws Exception {
+    	
+    	System.out.println("------------------------------------------------");
+    	
+		Properties prop = System.getProperties();
+		prop.put("mail.smtp.host", "mail.climario.com.br");
+		prop.put("mail.smtp.auth", "true");
+		prop.put("mail.debug", "true");
+		prop.put("mail.smtp.debug", "true");
+		prop.put("mail.mime.charset", "ISO-8859-1");
+		prop.put("mail.smtp.port", "587");
+		prop.put("mail.smtp.starttls.enable", "false");
+		
+		prop.put("mail.imap.ssl.enable", "false"); // required for Gmail
+    	prop.put("mail.imap.auth.mechanisms", "XOAUTH2");
+		
+		prop.put("mail.smtp.socketFactory.fallback", "false");
+		
+		prop.put("mail.smtp.socketFactory.port", "465");
+		prop.put("mail.smtp.socketFactory.class",
+				"javax.net.ssl.SSLSocketFactory");
+		
+		Authenticator auth = new Authenticator() {
+			public PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication("no-reply@climario.com.br",
+						"climariopayu"); // Senha do gmail
+			}
+		};
+		Session session = Session.getInstance(prop, auth);
+		MimeMessage message = new MimeMessage(session);
+		message.setFrom(new InternetAddress(emailRemet, nomeRemet));
+		message.addRecipient(Message.RecipientType.TO, new InternetAddress(
+				emailDest, nomeDest));
+		message.setSubject(assunto);
+		message.setContent(corpo, "text/plain");
+		Transport.send(message);
+		
+		return "ok";
 	}
 }

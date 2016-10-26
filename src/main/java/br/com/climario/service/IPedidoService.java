@@ -35,4 +35,6 @@ public interface IPedidoService {
 
 	public Pedido recuperarPedidoPorTransacao(String codigo);
 
+	public Cliente atualizarCliente(Cliente cliente);
+
 }

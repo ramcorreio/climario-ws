@@ -51,6 +51,13 @@ public class PedidoServiceImpl extends BaseManager implements IPedidoService, Se
 		return cliente;
 	}
 	
+	@Transactional(value="climarioTM", readOnly = false, propagation = Propagation.REQUIRES_NEW)
+	public Cliente atualizarCliente(Cliente cliente) {
+		
+		update(cliente);
+		return cliente;
+	}
+	
 	@Override
 	public boolean isPedidoClienteExiste(String cpfCnpj, String numero) {
 		
