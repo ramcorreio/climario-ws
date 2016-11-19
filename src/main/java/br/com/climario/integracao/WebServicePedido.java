@@ -63,24 +63,30 @@ public class WebServicePedido {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
 	public PedidoResponse enviar(PedidoResponse pedido) {
-		
-		
-		
+				
 		Set<ItemPedido> t1 = pedido.getItens();
 		
 		int i = 0;
 		
-		for(ItemPedido item : t1) {
+		for(ItemPedido item : t1) 
+		{
 			_logger.info(" ############################################ ");
 			_logger.info("Código do Item: " + item.getCodigo());
             _logger.info("Descrição do Item: " + item.getDescricao());
             _logger.info("Preço unitário dos Item: " + item.getPrecoUnitario());
+            _logger.info("Quantidade de Itens: " + item.getQtd());
             _logger.info("Cidade: " + pedido.getCliente().getCidade());
             _logger.info("Bairro: " + pedido.getCliente().getBairro());
             _logger.info("Logradouro: " + pedido.getCliente().getLogradouro());
+            _logger.info("Email RCA: " + pedido.getCliente().getEmailRca());
+            _logger.info("Email: " + pedido.getCliente().getEmail());
             _logger.info(" ############################################ ");
         }
 		
+		String email = pedido.getCliente().getEmail();
+		String EmailRca = pedido.getCliente().getEmailRca();
+		
+		System.out.println("------------------------------------------------");
 		
 		_logger.info("processando pedido: " + pedido.getNumero());
 		
@@ -89,7 +95,7 @@ public class WebServicePedido {
 			pedido.setMensagem("Pedido já cadastrado.");
 			return pedido;
 		}
-		
+		 
 		try {
 			
 			if(!pedidoService.isClienteExiste(pedido.getCliente().getCpfCnpj())) 
@@ -99,7 +105,15 @@ public class WebServicePedido {
 			else 
 			{
 				pedido.setCliente(pedidoService.recuperarCliente(pedido.getCliente().getCpfCnpj()));
+				pedido.getCliente().setEmail(email);
+				pedido.getCliente().setEmailRca(EmailRca);
+				pedido.setCliente(pedidoService.atualizarCliente(pedido.getCliente()));
+				
 			}
+			
+			System.out.println("------------------------------------------------");
+			System.out.println(pedido.getCliente().getEmailRca());
+			System.out.println("------------------------------------------------");
 			
 			pedidoService.criar(pedido);
 			pedido.setCode(Code.PROCESSADO_COM_SUCESSO);
@@ -114,7 +128,14 @@ public class WebServicePedido {
 				   texto += "<img src='http://climariopagamentos.com.br/javax.faces.resource/img/clima_logo.jpg.jsf?ln=media'>";
 		
 			Util.sendMail(pedido.getCliente().getEmail(), "Solicitar Pedido", texto);
-		
+			
+			/*try {
+				
+				Util.enviarEmail("jonath@internit.com.br", "Teste Envio",	"jonath@oi.com.br", "Pingo", "Teste Assunto", "Teste texto");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
 		}
 		catch(RuntimeException e) {
 			

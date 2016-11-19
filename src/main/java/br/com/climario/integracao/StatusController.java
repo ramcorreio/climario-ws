@@ -26,7 +26,7 @@ public class StatusController extends HttpServlet {
 	
 	private static final long serialVersionUID = 6656505569565364366L;
 	
-	public String envioEmail = "jonath@internit.com.br";
+	public String envioEmail = "marcio@internit.com.br";
 	
 	//public String envioEmailU = "jonath@internit.com.br";
 	
@@ -76,8 +76,19 @@ public class StatusController extends HttpServlet {
 				texto2 += "Clima Rio<br/>";
 				texto2 += "Sempre a melhor compra.<br/><br/>";
 				texto2 += "<img src='http://climariopagamentos.com.br/javax.faces.resource/img/clima_logo.jpg.jsf?ln=media'>";
-			
-			Util.sendMail(envioEmail, "Solicitar Pedido", texto);
+				
+				
+				String emailEnvio = "";
+				
+				if(pedido.getCliente().getEmailRca().isEmpty())
+				{
+					emailEnvio = envioEmail;
+				}else{
+					emailEnvio = pedido.getCliente().getEmailRca();
+				}
+			//ClimaRio
+			Util.sendMail(emailEnvio, "Solicitar Pedido", texto);
+			//Comprador
 			Util.sendMail(pedido.getCliente().getEmail(), "Solicitar Pedido", texto2);
 			
 			//transaction_id

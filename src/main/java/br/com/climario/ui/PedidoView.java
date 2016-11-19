@@ -84,6 +84,8 @@ import br.com.uol.pagseguro.service.TransactionService;
 @ViewScoped
 public class PedidoView implements Serializable {
 	
+	private static final DecimalFormatSymbols DOLAR = new DecimalFormatSymbols(Locale.US); 
+	
 	private final static String USER_AGENT = "Mozilla/5.0";
 	
 	private static final String ERRO_PARAM = "erro";
@@ -513,7 +515,7 @@ public class PedidoView implements Serializable {
 			   texto2 += "Clima Rio<br/>";
 			   texto2 += "Sempre a melhor compra.<br/><br/>";
 			   texto2 += "<img src='http://climariopagamentos.com.br/javax.faces.resource/img/clima_logo.jpg.jsf?ln=media'>";
-	
+			   System.out.println(pedido.getCliente().getEmail());
 			   Util.sendMail(pedido.getCliente().getEmail(), "Solicitar Pedido", texto2);
 			
 			//_logger.info(texto);
@@ -715,6 +717,9 @@ public class PedidoView implements Serializable {
 		}
 
 		public Double getTotal() {
+			_logger.info(" ############################################ ");
+			_logger.info(item.getDescricao()+" -> Quantidades: " + item.getQtd()+" X Valor: "+item.getPrecoUnitario()+" = "+item.getPrecoUnitario() * item.getQtd());
+			_logger.info(" ############################################ ");
 			return item.getPrecoUnitario() * item.getQtd();
 		}
 
@@ -740,7 +745,7 @@ public class PedidoView implements Serializable {
 	}
 	
 	public static Double getTotalPedido(Pedido p) {
-
+		_logger.info(" ################DEU KAO################# ");
 		Double sum = 0d;
 		for (ItemWrap itemPedido : getItens(p)) {
 			sum += itemPedido.getTotal();
@@ -821,7 +826,10 @@ public class PedidoView implements Serializable {
 		
 		String referenceCode = pedido.getNumero();
 		
-		String amount = getTotalPedido(pedido).toString();
+		DecimalFormat decimal = new DecimalFormat("0.00",DOLAR);		
+		String amount =  decimal.format(getTotalPedido(pedido)).toString();
+		//String amount = getTotalPedido(pedido).toString();
+		
 		String apiKey = "CCZCKJn3TMUOb9hKJwCwVUVK2E";
 		String cpfTeste = "10792984790";
 		String merchantBuyerId = "576002";
