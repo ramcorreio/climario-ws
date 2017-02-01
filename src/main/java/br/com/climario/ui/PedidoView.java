@@ -416,8 +416,7 @@ public class PedidoView implements Serializable {
 		FacesContext context = FacesContext.getCurrentInstance();
 	    Map<String, String> map = context.getExternalContext().getRequestParameterMap();	
 	    
-	    JSONObject token = solicitarToken();		
-		JSONObject formaPagamento = solicitarPagamentos(token.getString("token_type"), token.getString("access_token"));
+		JSONObject formaPagamento = solicitarPagamentos();
 		JSONArray paymentMethods = formaPagamento.getJSONArray("paymentMethods");
 		
 	    processarPagamentos(paymentMethods);
@@ -526,8 +525,8 @@ public class PedidoView implements Serializable {
 	
 	public void execBoleto(ActionEvent event) {
 		
-		JSONObject token = solicitarToken();		
-		JSONObject pagamento = efetuarPagamento(token.getString("token_type"), token.getString("access_token"), pedido,"boleto", null);
+		//JSONObject token = solicitarToken();		
+		JSONObject pagamento = efetuarPagamento(pedido,"boleto", null);
         
         transation(pagamento, Pagagamento.BOLETO);
 	}
@@ -543,8 +542,8 @@ public class PedidoView implements Serializable {
 	
 	    System.out.println(map);
 	    
-	    JSONObject token = solicitarToken();
-	    JSONObject pagamento = efetuarPagamento(token.getString("token_type"), token.getString("access_token"), pedido,"cartao", map);
+	    //JSONObject token = solicitarToken();
+	    JSONObject pagamento = efetuarPagamento(pedido,"cartao", map);
 	    	    
 	    transation(pagamento,Pagagamento.CARTAO);
 	}
@@ -559,7 +558,7 @@ public class PedidoView implements Serializable {
 	
 	private void transation(JSONObject pagamento, Pagagamento pagagamento) {
 		
-		JSONObject token = solicitarToken();
+		//JSONObject token = solicitarToken();
 		String codigo = Long.toString(System.currentTimeMillis());
 		//TODO: teste	    
 		try {
@@ -775,7 +774,7 @@ public class PedidoView implements Serializable {
 		}
 		
 	}
-	public static JSONObject efetuarPagamento(String tokenType, String access_token, Pedido pedido, String tipo, Map<String, String> map){
+	public static JSONObject efetuarPagamento(Pedido pedido, String tipo, Map<String, String> map){
 		
 		String urlParameters = null;
 		JSONObject json = null;
@@ -1003,7 +1002,7 @@ public class PedidoView implements Serializable {
 	}
 	
 	
-	public static JSONObject solicitarPagamentos(String tokenType, String access_token) {
+	public static JSONObject solicitarPagamentos() {
 		
 		JSONObject jsonObj = null;
 		

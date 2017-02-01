@@ -63,7 +63,9 @@ public class WebServicePedido {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
 	public PedidoResponse enviar(PedidoResponse pedido) {
-				
+		
+		_logger.info(" ############################################ ");
+		
 		Set<ItemPedido> t1 = pedido.getItens();
 		
 		int i = 0;
