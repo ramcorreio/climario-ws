@@ -13,7 +13,9 @@
 	<http pattern="/admin/index.jsf" security="none"/>
 	<http pattern="/admin/install.jsf" security="none"/>
 	<http pattern="/api/**" security="none"/> -->
-
+	
+	<intercept-url pattern="/**" requires-channel="https"/>
+	
 	<http use-expressions="true">
 		<intercept-url pattern="/admin/**" access="isAuthenticated()" />
 		

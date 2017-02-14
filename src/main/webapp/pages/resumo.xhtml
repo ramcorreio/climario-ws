@@ -55,7 +55,7 @@
 			 
 			    <div class="col-md-12 col-sm-12 center espaco7">
 			    	<div class="col-md-4 col-sm-4">Endereço do cliente<br/>
-			    		<div class="numeropedido20sline">#{pedidoView.pedido.cliente.logradouro}<br/>#{pedidoView.pedido.cliente.bairro} - #{pedidoView.pedido.cliente.cidade} - #{pedidoView.pedido.cliente.estado}<br/>CEP 24240-070</div>
+			    		<div class="numeropedido20sline">#{pedidoView.pedido.cliente.logradouro}<br/>#{pedidoView.pedido.cliente.bairro} - #{pedidoView.pedido.cliente.cidade} - #{pedidoView.pedido.cliente.estado}<br/> CEP: #{pedidoView.pedido.cliente.cep.substring(0,5)}-#{pedidoView.pedido.cliente.cep.substring(5,8)}</div>
 			    	</div>
 			    	<div class="col-md-4 col-sm-3">Nome do RCA (cód.)<br/><span class="numeropedido20">#{pedidoView.pedido.cliente.nomeRca}(#{pedidoView.pedido.cliente.codigoRca})</span></div>
 			    	<div class="col-md-4 col-sm-5">E-mail do RCA<br/><span class="numeropedido20">#{pedidoView.pedido.cliente.emailRca}</span></div>    	
